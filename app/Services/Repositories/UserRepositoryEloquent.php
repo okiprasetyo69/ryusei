@@ -4,6 +4,7 @@ namespace App\Services\Repositories;
 
 use App\Models\User;
 use App\Services\Interfaces\UserService;
+
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -37,14 +38,23 @@ use Yajra\DataTables\Facades\DataTables;
     public function getUser(Request $request){
         try{
 
-           DB::statement( DB::raw( 'set @rownum=0' ));
-            $user = $this->user::with('role')->select([
-                'users.*',
-                DB::raw( '@rownum  := @rownum  + 1 AS rownum' ),
-            ]);
+           
+            $user = $this->user::with('role');
+
+            if($request->name != null){
+                $user->where("name", "like", "%" . $request->name. "%");
+            }
+
+            if($request->email != null ){
+                $user->where("email", "like", "%" . $request->email. "%");
+            }
+
+            if($request->phone != null ){
+                $user->where("phone", "like", "%" . $request->phone. "%");
+            }
 
             if($user != null){
-                $datatables = Datatables::of( $user );
+                $datatables = Datatables::of( $user->get() );
                 return $datatables->make( true );
             }
 
@@ -85,5 +95,27 @@ use Yajra\DataTables\Facades\DataTables;
 
     public function delete(Request $request){}
 
-    public function detail(Request $request){}
+    public function detail(Request $request){
+        try{
+
+            $user = $this->user::find($request->id);
+
+            if($user == null){
+                return response()->json([
+                    'data' => null,
+                    'message' => 'Data not found',
+                    'status' => 400
+                ]);
+            }
+
+            return response()->json([
+                'data' =>  $user,
+                'message' => 'Success get user !',
+                'status' => 200
+            ]);
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+         }
+    }
  }

@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\RoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,5 +24,10 @@ Route::controller(UserController::class)->group(function() {
     Route::get('/user', 'getUser')->name('user.data');
     Route::post('/user/create', 'create')->name('user.create');
     Route::post('/user/delete', 'delete')->name('user.delete');
-    Route::post('/user/detail', 'delete')->name('user.detail');
+    Route::post('/user/detail', 'detail')->name('user.detail');
+});
+
+Route::controller(RoleController::class)->group(function() {
+    Route::get('/role', 'getRole')->name('user.role');
+   
 });

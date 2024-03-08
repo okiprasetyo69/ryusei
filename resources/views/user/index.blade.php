@@ -48,13 +48,13 @@
                     <div class="card-body">
                         <div class="row mt-2"> 
                             <div class="col md-4">
-                                <button type="button" class="btn btn-md btn-primary rounded-pill btn-add" data-toggle="modal" data-target="#exampleModalCenter">
+                                <button type="button" class="btn btn-md btn-primary rounded-pill btn-add" data-toggle="modal" data-target="#userModal">
                                     <i class="bi bi-person-plus"></i>
                                 </button>
                             </div>
                             <div class="table-responsive mt-4">
-                                <table class="table" id="table-user">
-                                    <thead class="thead-dark">
+                                <table class="table table-striped" id="table-user">
+                                    <thead>
                                         <tr>
                                             <th scope="col">#</th>
                                             <th scope="col">Nama</th>
@@ -79,7 +79,7 @@
 <!-- End #main -->
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -128,38 +128,44 @@
 <script type="text/javascript"> 
     
     var table
+    var name
+    var email
+    var phone
 
       $(document).ready(function(){
+
+            datatable()
             // show modal
+
             $(".btn-add").click(function (e) { 
                 e.preventDefault();
-                $("#exampleModalCenter").modal("show")
+                $("#userModal").modal("show")
             });
 
-            // // close modal
+            // close modal
             $("#btn-close").click(function(e){
                 e.preventDefault();
-                $("#exampleModalCenter").modal("hide")
+                $("#userModal").modal("hide")
             })
-
+            
             // filter
             $("#filter_name").keyup(function (e) { 
-                console.log("Masuk filter name")
+                name =  $("#filter_name").val()
+                datatable(name)
             });
 
             $("#filter_email").keyup(function (e) { 
-                console.log("Masuk filter email")
+                email =  $("#filter_email").val()
+                datatable(name, email)
             });
 
             $("#filter_phone").keyup(function (e) { 
-                console.log("Masuk filter phone")
+                phone =  $("#filter_phone").val()
+                datatable(name, email, phone)
             });
-
-           
-           datatable()
       })
 
-      function datatable(){
+      function datatable(name=null, email=null, phone=null){
         if (table != null) {
             table.destroy();
         }
@@ -175,9 +181,11 @@
             "scrollCollapse" : true,
             "columns":[
                 { 
-                    data: null, 
-                    visible: false,   
-                    render: (data, type, row, meta) => meta.row
+                    data: 'id', 
+                    name: 'id',
+                    render: function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }  
                 },
                 { 
                     data: null, 
@@ -212,7 +220,7 @@
                     searchable: false,
                     orderable: false,
                     render: function(response) {
-                        html = "<button type='button' class='btn btn-sm btn-warning'> Ubah </button> <button type='button' class='btn btn-sm btn-danger'> Hapus </button>"
+                        html = "<button type='button' class='btn btn-sm btn-warning' onclick='detail("+response.id+")'> Ubah </button> <button type='button' class='btn btn-sm btn-danger' onclick='confirmDelete("+response.id+")'> Hapus </button>"
                         return html
                     }
                 }
@@ -224,6 +232,9 @@
                     _token: "{{ csrf_token() }}",
                     limit: length,
                     page: pages,
+                    name: name,
+                    email: email,
+                    phone: phone
                     }, function(response) {
                         callback({
                             recordsTotal: response.recordsTotal,
@@ -234,6 +245,43 @@
             },
         })
 
+      }
+
+      function detail(id=null){
+        console.log(id)
+        $.ajax({
+            type: "POST",
+            url: "/api/user/detail",
+            data: {
+                id : id
+            },
+            dataType: "JSON",
+            success: function (response) {
+                var data = response.data
+                $("#id").val(data.id)
+                $("#name").val(data.name)
+                $("#email").val(data.email)
+                $("#phone").val(data.phone)
+
+                $("#userModal").modal("show")
+            }
+        });
+      }
+
+      function confirmDelete(id=null){}
+
+      function delete(id=null){}
+
+      function getRole(id=null){
+        $.ajax({
+            type: "method",
+            url: "url",
+            data: "data",
+            dataType: "dataType",
+            success: function (response) {
+                
+            }
+        });
       }
 </script>
 

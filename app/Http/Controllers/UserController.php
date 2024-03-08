@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Services\Interfaces\UserService;
 
-
 class UserController extends Controller
 {   
     /**
@@ -73,6 +72,32 @@ class UserController extends Controller
             }
 
         }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    // detail user
+    public function detail(Request $request){
+        try{
+            $user = new User();
+            $user->fill($request->all());
+
+            $validator = Validator::make($request->all(), [
+                'id' => 'required',
+            ]);
+
+            if($validator->fails()){
+                return response()->json([
+                    'data' => null,
+                    'message' => $validator->errors(),
+                    'status' => 422
+                ]);
+            }
+
+            return $this->service->detail($request);
+        }
+        catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;
         }
