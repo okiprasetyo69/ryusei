@@ -19,7 +19,7 @@ class RoleController extends Controller
 {
 
     /**
-     * @var User
+     * @var Role
     */
     
     private RoleService $service;
@@ -29,13 +29,11 @@ class RoleController extends Controller
         $this->service = $service;
     }
 
-
     public function getRole(Request $request){
         try{
-            dd("masuk sini");
             $role = $this->service->getRole($request);
 
-            if($user != null){
+            if($role != null){
                 return $role;
             }
             return false;

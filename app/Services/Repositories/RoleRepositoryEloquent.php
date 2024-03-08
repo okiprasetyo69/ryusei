@@ -36,7 +36,7 @@ class RoleRepositoryEloquent implements RoleService {
 
     public function getRole(Request $request){
         try{
-            $role = $this->role::all();
+            $role = $this->role->get();
 
             if($role == null){
                 return response()->json([
@@ -47,7 +47,7 @@ class RoleRepositoryEloquent implements RoleService {
             }
             return response()->json([
                 'data' =>  $role,
-                'message' => 'Success get user !',
+                'message' => 'Success get role !',
                 'status' => 200
             ]);
         }
