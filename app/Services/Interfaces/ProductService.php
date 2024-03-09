@@ -5,7 +5,7 @@ namespace App\Services\Interfaces;
 use Illuminate\Http\Request;
 
 /**
- * Interface CategoryService.
+ * Interface ProductService.
  * 
  * @author Oki Prasetyo <oki.prasetyo45@gmail.com>
  * @since   2024.03.09
@@ -13,41 +13,40 @@ use Illuminate\Http\Request;
  *
  * @package namespace App\Services\Interfaces;
  */
-
- interface CategoryService {
+interface ProductService {
      /**
      * @author Oki Prasetyo <oki.prasetyo45@gmail.com>
      * @since   2024.03.09
-     * Function for handle requests get category.
+     * Function for handle requests get product.
      * 
      * @param Illuminate\Support\Facades\Request
      */
-    public function getCategory(Request $request);
+    public function getProduct(Request $request);
 
-    /**
+     /**
      * @author Oki Prasetyo <oki.prasetyo45@gmail.com>
      * @since   2024.03.09
-     * Function for handle requests create category.
+     * Function for handle requests get create.
      * 
      * @param Illuminate\Support\Facades\Request
      */
     public function create(Request $request);
 
-    /**
+     /**
      * @author Oki Prasetyo <oki.prasetyo45@gmail.com>
      * @since   2024.03.09
-     * Function for handle requests delete category.
-     * 
-     * @param Illuminate\Support\Facades\Request
-     */
-    public function delete(Request $request);
-
-    /**
-     * @author Oki Prasetyo <oki.prasetyo45@gmail.com>
-     * @since   2024.03.09
-     * Function for handle requests detail category.
+     * Function for handle requests detail product.
      * 
      * @param Illuminate\Support\Facades\Request
      */
     public function detail(Request $request);
- }
+
+     /**
+     * @author Oki Prasetyo <oki.prasetyo45@gmail.com>
+     * @since   2024.03.09
+     * Function for handle requests delete product.
+     * 
+     * @param Illuminate\Support\Facades\Request
+     */
+    public function delete(Request $request);
+}

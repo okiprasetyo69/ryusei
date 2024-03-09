@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,4 +39,11 @@ Route::controller(CategoryController::class)->group(function() {
     Route::post('/category/create', 'create')->name('category.create');
     Route::post('/category/delete', 'delete')->name('category.delete');
     Route::post('/category/detail', 'detail')->name('category.detail');
+});
+
+Route::controller(ProductController::class)->group(function() {
+    Route::get('/product', 'getProduct')->name('product.data');
+    Route::post('/product/create', 'create')->name('product.create');
+    Route::post('/product/delete', 'delete')->name('product.delete');
+    Route::post('/product/detail', 'detail')->name('product.detail');
 });
