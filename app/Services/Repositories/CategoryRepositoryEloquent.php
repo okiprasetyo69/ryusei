@@ -50,14 +50,6 @@ use Yajra\DataTables\Facades\DataTables;
 
             $datatables = Datatables::of($category);
             return $datatables->make( true );
-            
-            // return response()->json([
-            //         'status' => 200,
-            //         'message' => true,
-            //         'data' => $category
-            //     ]
-            // ); 
-
         }
         catch(Exception $ex){
             Log::error($ex->getMessage());

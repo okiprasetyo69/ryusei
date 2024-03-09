@@ -4,7 +4,7 @@
 <ul class="sidebar-nav" id="sidebar-nav">
  
   <li class="nav-item">
-    <a class="nav-link " href="#">
+    <a class="nav-link " href="/dashboard">
       <i class="bi bi-grid"></i>
       <span>Dashboard</span>
     </a>
@@ -24,7 +24,7 @@
         </a>
       </li>
       <li>
-        <a href="#">
+        <a href="/product">
           <i class="bi bi-circle"></i><span>Produk</span>
         </a>
       </li>

@@ -5,6 +5,7 @@ use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,10 +28,17 @@ Route::post('/logout', [LoginController::class, 'logout']);
 
 Route::get('/dashboard', [HomePageController::class, 'dashboard'])->name('dashboard')->middleware('super_admin');
 
+// User Menu
 Route::controller(UserController::class)->group(function() {
     Route::get('/user', 'index')->name('user');
 });
 
+// Category Menu
 Route::controller(CategoryController::class)->group(function() {
-    Route::get('/category', 'index')->name('category');
+    Route::get('/category', 'index')->name('user');
+});
+
+// Product Menu
+Route::controller(ProductController::class)->group(function() {
+    Route::get('/product', 'index')->name('product');
 });
