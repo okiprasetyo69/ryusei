@@ -1,7 +1,7 @@
 
 @extends('layout.home')
 @section('title','Dashboard')
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 @section('content')
 
 <main id="main" class="main">
@@ -83,7 +83,7 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Tambah Pengguna</h5>
+        <h5 class="modal-title title-modal" id="exampleModalLongTitle">Tambah Pengguna</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -140,6 +140,11 @@
             $(".btn-add").click(function (e) { 
                 e.preventDefault();
                 getRole()
+                $("#id").val()
+                $("#name").val()
+                $("#email").val()
+                $("#phone").val()
+                $(".title-modal").text("Tambah pengguna")
                 $("#userModal").modal("show")
             });
 
@@ -307,12 +312,29 @@
                 $("#email").val(data.email)
                 $("#phone").val(data.phone)
                 getRole(data.role_id)
+                $(".title-modal").text("Ubah pengguna")
                 $("#userModal").modal("show")
             }
         });
       }
 
-      function confirmDelete(id=null){}
+      function confirm(id=null){
+        $.confirm({
+            title: 'Pesan ',
+            content: 'Apa anda yakin akan menghapus data ini ?',
+            buttons: {
+                Ya: {
+                    btnClass: 'btn-red any-other-class',
+                    action: function(){
+                        remove(id)
+                    }
+                },
+                Batal: {
+                    btnClass: 'btn-secondary',
+                },
+            }
+        });
+      }
 
       function getRole(role_id=null){
         $.ajax({
@@ -322,23 +344,31 @@
             dataType: "JSON",
             success: function (response) {
                 var data = response.data
-                $("#role_id").html("<option value=''> - Pilih Role - </option>")
-                
-                var option = ""
-                var selected = ""
-                $.each(data, function (i, val) {
-                    console.log(val.id)
-                    if(val.id == role_id){
-                        selected = "selected"
-                    } 
-                    option += "<option value="+val.id+" "+selected+"> "+val.name+"</option>"
-                });
-                $("#role_id").append(option)
+                $("#role_id").html("");
+                    var len = 0;
+                    if(response['data'] != null) {
+                        len = response['data'].length
+                        for(i = 0; i < len; i++) {
+                            var selected = ""
+                            var id = response['data'][i].name
+                            var name = response['data'][i].name
+                            if(id == role_id){
+                                selected = "selected"
+                            }
+                            var option = "<option value='"+id+"' "+selected+">"+name+"</option>";
+                            $("#role_id").append(option);
+                    }
+                }
             }
         });
       }
+
+      function remove(id){ 
+        console.log(id)
+      }
 </script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 @endsection
 @section('pagespecificscripts')
    
