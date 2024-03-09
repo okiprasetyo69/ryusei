@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,4 +29,8 @@ Route::get('/dashboard', [HomePageController::class, 'dashboard'])->name('dashbo
 
 Route::controller(UserController::class)->group(function() {
     Route::get('/user', 'index')->name('user');
+});
+
+Route::controller(CategoryController::class)->group(function() {
+    Route::get('/category', 'index')->name('category');
 });

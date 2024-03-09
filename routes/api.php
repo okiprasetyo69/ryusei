@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,5 +30,12 @@ Route::controller(UserController::class)->group(function() {
 
 Route::controller(RoleController::class)->group(function() {
     Route::get('/role', 'getRole')->name('user.role');
-   
+});
+
+
+Route::controller(CategoryController::class)->group(function() {
+    Route::get('/category', 'getCategory')->name('category.data');
+    Route::post('/category/create', 'create')->name('category.create');
+    Route::post('/category/delete', 'delete')->name('category.delete');
+    Route::post('/category/detail', 'detail')->name('category.detail');
 });

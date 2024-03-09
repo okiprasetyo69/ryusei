@@ -7,9 +7,11 @@ use Illuminate\Contracts\Support\DeferrableProvider;
 
 use App\Services\Interfaces\UserService;
 use App\Services\Interfaces\RoleService;
+use App\Services\Interfaces\CategoryService;
 
 use App\Services\Repositories\UserRepositoryEloquent;
 use App\Services\Repositories\RoleRepositoryEloquent;
+use App\Services\Repositories\CategoryRepositoryEloquent;
 
 
 class AppServiceProvider extends ServiceProvider implements DeferrableProvider
@@ -23,6 +25,7 @@ class AppServiceProvider extends ServiceProvider implements DeferrableProvider
     public $singletons = [
         UserService::class => UserRepositoryEloquent::class,
         RoleService::class => RoleRepositoryEloquent::class,
+        CategoryService::class => CategoryRepositoryEloquent::class,
     ];
 
     /**
@@ -39,6 +42,7 @@ class AppServiceProvider extends ServiceProvider implements DeferrableProvider
         return [
             UserService::class,
             RoleService::class,
+            CategoryService::class,
         ];
     }
 

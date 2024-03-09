@@ -135,10 +135,11 @@
       $(document).ready(function(){
 
             datatable()
-            // show modal
 
+            // show modal
             $(".btn-add").click(function (e) { 
                 e.preventDefault();
+                getRole()
                 $("#userModal").modal("show")
             });
 
@@ -169,7 +170,7 @@
         if (table != null) {
             table.destroy();
         }
-
+        
         table = $("#table-user").DataTable({
             "lengthChange": false,
 			"searching": false,
@@ -179,76 +180,119 @@
             "bAutoWidth": true,
             "scrollX" : true,
             "scrollCollapse" : true,
-            "columns":[
-                { 
-                    data: 'id', 
-                    name: 'id',
-                    render: function (data, type, row, meta) {
-                        return meta.row + meta.settings._iDisplayStart + 1;
-                    }  
+            "language": {
+                "emptyTable": "Data tidak tersedia",
+                "zeroRecords": "Tidak ada data yang ditemukan",
+                "infoFiltered": "",
+                "infoEmpty": "",
+                "paginate": {
+                    "previous": "‹",
+                    "next": "›",
                 },
-                { 
-                    data: null, 
-                    orderable: false,
-                    render: function(response){
-                        return response.name
-                    }
+                "info": "Menampilkan _START_ dari _END_ dari _TOTAL_ Pengguna",
+                "aria": {
+                    "paginate": {
+                        "previous": "Previous",
+                        "next": "Next",
+                    },
                 },
-                { 
-                    data: null, 
-                    orderable: false,
-                    render: function(response){
-                        return response.email
-                    }
-                },
-                { 
-                    data: null, 
-                    orderable: false,
-                    render: function(response){
-                        return response.phone
-                    }
-                },
-                { 
-                    data: null, 
-                    orderable: false,
-                    render: function(response){
-                        return response.role.name
-                    }
-                },
-                { 
+            },
+            "columns": [
+                {
                     data: null,
+                    width: "5%",
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+            ],
+            "columnDefs": [
+                {
+                    targets: 0,
                     searchable: false,
                     orderable: false,
-                    render: function(response) {
-                        html = "<button type='button' class='btn btn-sm btn-warning' onclick='detail("+response.id+")'> Ubah </button> <button type='button' class='btn btn-sm btn-danger' onclick='confirmDelete("+response.id+")'> Hapus </button>"
-                        return html
-                    }
-                }
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).addClass("text-center");
+                        $(td).html(table.page.info().start + row + 1);
+                    },
+                },
+                {
+                    targets: 1,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.name);
+                    },
+                },
+                {
+                    targets: 2,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.email);
+                    },
+                },
+                {
+                    targets: 3,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.phone);
+                    },
+                },
+                {
+                    targets: 4,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.role.name);
+                    },
+                },
+                {
+                    targets: 5,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var html = "<button type='button' class='btn btn-sm btn-warning' onclick='detail("+rowData.id+")' > Ubah </button> <button type='button' class='btn btn-sm btn-danger' onclick='confirm("+rowData.id+")'> Hapus </button>"
+                        $(td).html(html);
+                    },
+                },
             ],
             "ajax": function(data, callback, settings) {
                 let length = data.length
                 let pages = (data.start / 10) + 1
                 $.get('/api/user', {
-                    _token: "{{ csrf_token() }}",
-                    limit: length,
-                    page: pages,
-                    name: name,
-                    email: email,
-                    phone: phone
-                    }, function(response) {
+                        _token: "{{ csrf_token() }}",
+                        limit: length,
+                        page: pages,
+                        name: name,
+                        email: email,
+                        phone: phone
+                    }, 
+                    function(res) {
                         callback({
-                            recordsTotal: response.recordsTotal,
-                            recordsFiltered: response.recordsFiltered,
-                            data: response.data
+                            recordsTotal: res.recordsTotal,
+                            recordsFiltered: res.recordsFiltered,
+                            data: res.data
                     });
                 });
             },
         })
-
       }
 
       function detail(id=null){
-        console.log(id)
         $.ajax({
             type: "POST",
             url: "/api/user/detail",
@@ -262,7 +306,7 @@
                 $("#name").val(data.name)
                 $("#email").val(data.email)
                 $("#phone").val(data.phone)
-
+                getRole(data.role_id)
                 $("#userModal").modal("show")
             }
         });
@@ -270,16 +314,26 @@
 
       function confirmDelete(id=null){}
 
-      function delete(id=null){}
-
-      function getRole(id=null){
+      function getRole(role_id=null){
         $.ajax({
-            type: "method",
-            url: "url",
+            type: "GET",
+            url: "/api/role",
             data: "data",
-            dataType: "dataType",
+            dataType: "JSON",
             success: function (response) {
+                var data = response.data
+                $("#role_id").html("<option value=''> - Pilih Role - </option>")
                 
+                var option = ""
+                var selected = ""
+                $.each(data, function (i, val) {
+                    console.log(val.id)
+                    if(val.id == role_id){
+                        selected = "selected"
+                    } 
+                    option += "<option value="+val.id+" "+selected+"> "+val.name+"</option>"
+                });
+                $("#role_id").append(option)
             }
         });
       }

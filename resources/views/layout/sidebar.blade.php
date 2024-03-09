@@ -19,6 +19,11 @@
     </a>
     <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
       <li>
+        <a href="/category">
+          <i class="bi bi-circle"></i><span>Kategori</span>
+        </a>
+      </li>
+      <li>
         <a href="#">
           <i class="bi bi-circle"></i><span>Produk</span>
         </a>
@@ -31,11 +36,6 @@
       <li>
         <a href="#">
           <i class="bi bi-circle"></i><span>Promosi</span>
-        </a>
-      </li>
-      <li>
-        <a href="#">
-          <i class="bi bi-circle"></i><span>Kategori</span>
         </a>
       </li>
       <li>

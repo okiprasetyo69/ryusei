@@ -18,12 +18,12 @@
   <script src="{{ asset('') }}vendor/chart.js/chart.umd.js"></script>
   <script src="{{ asset('') }}vendor/echarts/echarts.min.js"></script>
   <script src="{{ asset('') }}vendor/quill/quill.min.js"></script>
-  <script src="{{ asset('') }}vendor/simple-datatables/simple-datatables.js"></script>
+  <!-- <script src="{{ asset('') }}vendor/simple-datatables/simple-datatables.js"></script> -->
   <script src="{{ asset('') }}vendor/tinymce/tinymce.min.js"></script>
   <script src="{{ asset('') }}vendor/php-email-form/validate.js"></script>
   <!-- Template Main JS File -->
   <script src="{{ asset('') }}js/main.js"></script>
-  <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
+  <script src="https://cdn.datatables.net/2.0.2/js/dataTables.min.js"></script>
 
 </body>
 
