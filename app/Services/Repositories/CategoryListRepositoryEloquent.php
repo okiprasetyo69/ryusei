@@ -2,8 +2,8 @@
 
 namespace App\Services\Repositories;
 
-use App\Models\Category;
-use App\Services\Interfaces\CategoryService;
+use App\Models\CategoryList;
+use App\Services\Interfaces\CategoryListService;
 
 use Exception;
 use Illuminate\Http\Request;
@@ -19,36 +19,35 @@ use Yajra\DataTables\Facades\DataTables;
  * Class CategoryRepositoryEloquent.
  * 
  * @author  Oki Prasetyo  <oki.prasetyo45@gmail.com>
- * @since   2024.03.09
+ * @since   2024.03.12
  * 
  *
  * @package namespace App\Services\Repositories;
- */
+*/
 
- class CategoryRepositoryEloquent implements CategoryService {
-    
-    /**
-     * @var Category
+class CategoryListRepositoryEloquent implements CategoryListService {
+     /**
+     * @var CategoryList
      */
-    private Category $category;
+    private CategoryList $categoryList;
 
-    public function __construct(Category $category)
+    public function __construct(CategoryList $categoryList)
     {
-        $this->category = $category;
+        $this->categoryList = $categoryList;
     }
 
-    public function getCategory(Request $request){
+    public function getListCategory(Request $request){
         try{
             
-            $category = Category::orderBy('name', 'ASC');
+            $categoryList =  $this->categoryList::with('category')->orderBy('list_name', 'ASC');
           
-            if($request->name != null){
-                $category->where("name", "like", "%" . $request->name. "%");
+            if($request->list_name != null){
+                $categoryList->where("list_name", "like", "%" . $request->list_name. "%");
             }
 
-            $category = $category->get();
+            $categoryList = $categoryList->get();
 
-            $datatables = Datatables::of($category);
+            $datatables = Datatables::of($categoryList);
             return $datatables->make( true );
         }
         catch(Exception $ex){
@@ -59,20 +58,21 @@ use Yajra\DataTables\Facades\DataTables;
 
     public function create(Request $request){
         try{
-            $category = $this->category;
-            $category->fill($request->all());
+            $listCategory = $this->categoryList;
+            $listCategory->fill($request->all());
 
             if($request->id != null){
-                $category = $category::find($request->id);
+                $listCategory = $listCategory::find($request->id);
             }
 
-            $category->name = $request->name;
-            $category->save();
+            $listCategory->list_name = $request->list_name;
+            $listCategory->category_id = $request->category_id;
+            $listCategory->save();
 
             return response()->json([
                 'status' => 200,
                 'message' => true,
-                'data' => $category
+                'data' => $listCategory
             ]); 
         }catch(Exception $ex){
             Log::error($ex->getMessage());
@@ -82,8 +82,8 @@ use Yajra\DataTables\Facades\DataTables;
 
     public function delete(Request $request){
         try{
-            $category = $this->category::where("id", $request->id)->first();
-            if($category == null){
+            $categoryList = $this->categoryList::where("id", $request->id)->first();
+            if($categoryList == null){
                 return response()->json([
                     'data' => null,
                     'message' => 'Data not found',
@@ -91,10 +91,10 @@ use Yajra\DataTables\Facades\DataTables;
                 ]);
             }
 
-            $category->delete();
+            $categoryList->delete();
             return response()->json([
                 'status' => 200,
-                'message' => 'Success delete category.',
+                'message' => 'Success delete list category.',
             ]);
 
         }catch(Exception $ex){
@@ -105,15 +105,15 @@ use Yajra\DataTables\Facades\DataTables;
 
     public function detail(Request $request){
         try{
-            $category = $this->category::where("id", $request->id)->first();
+            $listCategory = $this->categoryList::where("id", $request->id)->first();
             return response()->json([
                 'status' => 200,
                 'message' => true,
-                'data' => $category
+                'data' => $listCategory
             ]);
         }catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;
         }
     }
- }
+}

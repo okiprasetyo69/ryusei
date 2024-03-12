@@ -9,8 +9,15 @@
         <h1>Management Barang</h1>
         <nav>
             <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">Katalog</a></li>
-            <li class="breadcrumb-item active">Product</li>
+                <li class="breadcrumb-item">
+                    <a href="#">Katalog</a>
+                </li>
+                <li class="breadcrumb-item active">
+                    <a href="/product">Product</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="/product/add">Tambah</a>
+                </li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -36,33 +43,108 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="row mt-2"> 
-                           <!-- Pills Tabs -->
-                            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="pills-product-tab" data-bs-toggle="pill" data-bs-target="#pills-product" type="button" role="tab" aria-controls="pills-product" aria-selected="true">Product</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="pills-tambah-product-tab" data-bs-toggle="pill" data-bs-target="#pills-tambah-product" type="button" role="tab" aria-controls="pills-tambah-product" aria-selected="false">Tambah</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Contact</button>
-                                </li>
-                            </ul>
-                            <div class="tab-content pt-2" id="myTabContent">
-                                <div class="tab-pane fade show active" id="pills-product" role="tabpanel" aria-labelledby="product-tab">
-                                    @include('product.data')
+                            <div class="row mt-4">
+                                <div class="col-lg-3">
+                                    <div class="card">
+                                        <div class="filter">
+                                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                                <li class="dropdown-header text-start">
+                                                    <h6>Aksi</h6>
+                                                </li>
+                                                <li><a class="dropdown-item" href="#">Ubah</a></li>
+                                                <li><a class="dropdown-item" href="#">Hapus</a></li>
+                                            </ul>
+                                        </div>
+                                        <img class="card-img-top" src="{{ asset('') }}img/ryusei_logo.png">
+                                        <div class="card-body">
+                                            <h5 class="card-title text-center">Artikel</h5>
+                                        </div>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item"> Nama SKU : </li>
+                                            <li class="list-group-item"> Size : </li>
+                                            <li class="list-group-item"> Harga : </li>
+                                            <li class="list-group-item"> Ready : </li>
+                                            <li class="list-group-item"> Kategori : </li>
+                                        </ul>
+                                    </div>
                                 </div>
-                                <div class="tab-pane fade" id="pills-tambah-product" role="tabpanel" aria-labelledby="tambah-product-tab">
-                                    @include('product.form')
+                                <div class="col-lg-3">
+                                    <div class="card">
+                                        <div class="filter">
+                                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                                <li class="dropdown-header text-start">
+                                                    <h6>Aksi</h6>
+                                                </li>
+                                                <li><a class="dropdown-item" href="#">Ubah</a></li>
+                                                <li><a class="dropdown-item" href="#">Hapus</a></li>
+                                            </ul>
+                                        </div>
+                                        <img class="card-img-top" src="{{ asset('') }}img/ryusei_logo.png">
+                                        <div class="card-body">
+                                            <h5 class="card-title text-center"> Artikel : </h5>
+                                        </div>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item">Nama SKU : </li>
+                                            <li class="list-group-item">Size : </li>
+                                            <li class="list-group-item">Harga : </li>
+                                            <li class="list-group-item"> Ready : </li>
+                                            <li class="list-group-item"> Kategori : </li>
+                                        </ul>
+                                    </div>
                                 </div>
-                                <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="contact-tab">
-                                    Saepe animi et soluta ad odit soluta sunt. Nihil quos omnis animi debitis cumque. Accusantium quibusdam perspiciatis qui qui omnis magnam. Officiis accusamus impedit molestias nostrum veniam. Qui amet ipsum iure. Dignissimos fuga tempore dolor.
+                                <div class="col-lg-3">
+                                    <div class="card">
+                                        <div class="filter">
+                                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                                <li class="dropdown-header text-start">
+                                                    <h6>Aksi</h6>
+                                                </li>
+                                                <li><a class="dropdown-item" href="#">Ubah</a></li>
+                                                <li><a class="dropdown-item" href="#">Hapus</a></li>
+                                            </ul>
+                                        </div>
+                                        <img class="card-img-top" src="{{ asset('') }}img/ryusei_logo.png">
+                                        <div class="card-body">
+                                            <h5 class="card-title text-center"> Artikel : </h5>
+                                        </div>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item">Nama SKU : </li>
+                                            <li class="list-group-item">Size : </li>
+                                            <li class="list-group-item">Harga : </li>
+                                            <li class="list-group-item"> Ready : </li>
+                                            <li class="list-group-item"> Kategori : </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="card">
+                                        <div class="filter">
+                                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                                <li class="dropdown-header text-start">
+                                                    <h6>Aksi</h6>
+                                                </li>
+                                                <li><a class="dropdown-item" href="#">Ubah</a></li>
+                                                <li><a class="dropdown-item" href="#">Hapus</a></li>
+                                            </ul>
+                                        </div>
+                                        <img class="card-img-top" src="{{ asset('') }}img/ryusei_logo.png">
+                                        <div class="card-body">
+                                            <h5 class="card-title text-center"> Artikel : </h5>
+                                        </div>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item">Nama SKU : </li>
+                                            <li class="list-group-item">Size : </li>
+                                            <li class="list-group-item">Harga : </li>
+                                            <li class="list-group-item"> Ready : </li>
+                                            <li class="list-group-item"> Kategori : </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                            <!-- End Pills Tabs -->
-                        </div>
                     </div>
                 </div>
             </div>
@@ -74,7 +156,7 @@
 <script type="text/javascript"> 
 
     $(document).ready(function () {
-        
+       
     });
 
 

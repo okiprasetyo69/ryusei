@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ListCategoryController;
 use App\Http\Controllers\ProductController;
 
 /*
@@ -39,6 +40,13 @@ Route::controller(CategoryController::class)->group(function() {
     Route::post('/category/create', 'create')->name('category.create');
     Route::post('/category/delete', 'delete')->name('category.delete');
     Route::post('/category/detail', 'detail')->name('category.detail');
+});
+
+Route::controller(ListCategoryController::class)->group(function() {
+    Route::get('/category/list', 'getListCategory')->name('category.list.data');
+    Route::post('/category/list/create', 'create')->name('category.list.create');
+    Route::post('/category/list/delete', 'delete')->name('category.list.delete');
+    Route::post('/category/list/detail', 'detail')->name('category.list.detail');
 });
 
 Route::controller(ProductController::class)->group(function() {

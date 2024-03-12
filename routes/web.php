@@ -5,6 +5,7 @@ use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ListCategoryController;
 use App\Http\Controllers\ProductController;
 
 /*
@@ -35,10 +36,17 @@ Route::controller(UserController::class)->group(function() {
 
 // Category Menu
 Route::controller(CategoryController::class)->group(function() {
-    Route::get('/category', 'index')->name('user');
+    Route::get('/category', 'index')->name('category');
+});
+
+// Category List Menu
+Route::controller(ListCategoryController::class)->group(function() {
+    Route::get('/category/list', 'index')->name('category.list');
 });
 
 // Product Menu
 Route::controller(ProductController::class)->group(function() {
     Route::get('/product', 'index')->name('product');
+    Route::get('/product/add', 'add')->name('product.add');
+    Route::get('/product/edit/{id}', 'edit')->name('product.edit');
 });

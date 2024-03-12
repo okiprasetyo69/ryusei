@@ -102,4 +102,8 @@ class CategoryController extends Controller
         $category = $this->service->detail($request);
         return $category;
     }
+
+    public function getCategorySelect2(Request $request){
+        
+    }
 }

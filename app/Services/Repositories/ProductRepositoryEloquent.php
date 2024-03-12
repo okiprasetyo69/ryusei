@@ -59,11 +59,56 @@ use Yajra\DataTables\Facades\DataTables;
     }
 
     public function create(Request $request){
-        return true;
+        try{
+     
+            $product = $this->product;
+            $product->fill($request->all());
+
+            if($request->id != null){
+                $product = $product::find($request->id);
+            }
+
+            $product->code = $request->code;
+            $product->article = $request->article;
+            $product->sku = $request->article;
+            $product->size = $request->size;
+            $product->price = $request->price;
+            $product->status = $request->status;
+            $product->category_id = $request->category_id;
+
+            if($request->hasFile('image_path')){
+                $file = $request->file('image_path');
+                $name = $file->getClientOriginalName();
+                $image['filePath'] = $name;
+                $file->move(public_path().'/uploads/product/', $name);
+                $product->image_path= public_path().'/uploads/product/'. $name;
+            }
+
+            $product->save();
+
+            return response()->json([
+                'status' => 200,
+                'message' => true,
+                'data' => $product
+            ]); 
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
     }
 
     public function detail(Request $request){
-        return true;
+        try{
+            $product = $this->product::where("id", $request->id)->first();
+            return response()->json([
+                'status' => 200,
+                'message' => true,
+                'data' => $product
+            ]);
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
     }
 
     public function delete(Request $request){

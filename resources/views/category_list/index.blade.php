@@ -2,7 +2,6 @@
 @extends('layout.home')
 @section('title','Dashboard')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 @section('content')
 
 <main id="main" class="main">
@@ -13,10 +12,10 @@
                 <li class="breadcrumb-item">
                     <a href="#">Katalog</a>
                 </li>
-                <li class="breadcrumb-item active">
+                <li class="breadcrumb-item">
                     <a href="/category">Kategori</a>
                 </li>
-                <li class="breadcrumb-item">
+                <li class="breadcrumb-item active">
                     <a href="/category/list">List Kategori</a>
                 </li>
             </ol>
@@ -46,17 +45,18 @@
                     <div class="card-body">
                         <div class="row mt-2"> 
                             <div class="col md-4">
-                                <button type="button" class="btn btn-primary rounded-pill btn-add" data-toggle="modal" data-target="#categoryModal">
+                                <button type="button" class="btn btn-primary rounded-pill btn-add" data-toggle="modal" data-target="#categoryListModal">
                                     <i class="bi bi-plus-circle"></i> Tambah
                                 </button>
                             </div>
                             <div class="col-md-12">
                                 <div class="">
-                                    <table class="table table-striped" id="table-category">
+                                    <table class="table table-striped" id="table-list-category">
                                         <thead>
                                             <tr>
                                                 <th scope="col">#</th>
-                                                <th scope="col">Nama Kategori</th>
+                                                <th scope="col">List Kategori</th>
+                                                <th scope="col">Kategori</th>
                                                 <th scope="col">Aksi</th>
                                             </tr>
                                         </thead>
@@ -77,7 +77,7 @@
 <!-- End #main -->
 
 <!-- Modal -->
-<div class="modal fade" id="categoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="categoryListModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -86,17 +86,25 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form action="#" id="frm-category">
+      <form action="#" id="frm-list-category">
         @csrf
       <div class="modal-body">
         <input type="hidden" name="id" id="id" class="form-control" />
         <div class="row">
           <div class="col-md-12 mt-2">
-            <label> Nama Kategori</label>
-            <input type="text" class="form-control" name="name" id="name" />
+            <label> Nama List Kategori</label>
+            <input type="text" class="form-control" name="list_name" id="list_name" />
           </div>
         </div>
-        <div class="modal-footer">
+        <div class="row">
+            <div class="col-md-12 mt-2">
+            <label> Kategori</label>
+            <select class="form-control category_list_id" name="category_id" id="category_id" width="100%;"> 
+                <option value=""> - Pilih Kategori - </option>
+            </select>
+          </div>
+        </div>
+      <div class="modal-footer">
         <button type="submit" class="btn btn-md btn-success" id="btn-save">Simpan</button>
         <button type="button" class="btn btn-md btn-secondary" data-dismiss="modal" id="btn-close">Batal</button>
       </div>
@@ -106,67 +114,66 @@
 </div>
 
 <script type="text/javascript"> 
-    var name
+    var list_name
     var table
-    var category_list_id
+    var category_id
     $(document).ready(function () {
         
+        getListCategory()
         getCategory()
-
         // Open Modal
         $(".btn-add").click(function(e){
             e.preventDefault()
-            $("#categoryModal").modal("show")
-            $(".modal-title").text("Tambah kategori")
+            $("#categoryListModal").modal("show")
+            $(".modal-title").text("Tambah List Kategori")
             $("#btn-save").text("Simpan")
             $("#id").val("")
-            $("#name").val("")
+            $("#list_name").val("")
         })
         // Close Modal
         $("#btn-close").click(function(e){
             e.preventDefault()
-            $("#categoryModal").modal("hide")
+            $("#categoryListModal").modal("hide")
         })
 
-        // filter category
+        // filter list category
         $("#filter_name").on("keyup", function(e){
             e.preventDefault()
-            name = $("#filter_name").val()
-            getCategory(name)
+            list_name = $("#filter_name").val()
+            getListCategory(list_name)
         })
-
         // Store data
-        $("#frm-category").on("submit", function(e){
+        $("#frm-list-category").on("submit", function(e){
             e.preventDefault()
 
-            if($("#name").val() == ""){
+            if($("#list_name").val() == ""){
                 $.alert({
                     title: 'Pesan!',
-                    content: 'Nama kategori tidak boleh kosong !',
+                    content: 'Nama list kategori tidak boleh kosong !',
                 });
                 return 
             }
 
             $.ajax({
                 type: "POST",
-                url: "/api/category/create",
+                url: "/api/category/list/create",
                 data: {
                     id : $("#id").val(),
-                    name : $("#name").val(),
-                    category_list_id : $("#category_list_id option:selected").val()
+                    list_name : $("#list_name").val(),
+                    category_id : $("#category_id option:selected").val()
                 },
                 dataType: "JSON",
                 success: function (response) {
                     if(response.status == 200){
-                        $("#categoryModal").modal("hide")
+                        $("#categoryListModal").modal("hide")
                         $.confirm({
                             title: 'Pesan ',
-                            content: 'Data kategori berhasil diperbarui !',
+                            content: 'Data list kategori berhasil diperbarui !',
                             buttons: {
                                 Ya: {
                                     btnClass: 'btn-success any-other-class',
                                     action: function(){
-                                        getCategory()
+                                        getListCategory()
                                     }
                                 },
                             }
@@ -178,11 +185,11 @@
 
     });
 
-    function getCategory(name = null){
+    function getListCategory(name = null){
         if (table != null) {
             table.destroy();
         }
-        table = $("#table-category").DataTable({
+        table = $("#table-list-category").DataTable({
             "lengthChange": false,
 			"searching": false,
             "destroy": true,
@@ -215,7 +222,11 @@
                 },
                 {
                     data: null,
-                    width: "80%",
+                    width: "20%",
+                },
+                {
+                    data: null,
+                    width: "50%",
                 },
                 {
                     data: null,
@@ -236,11 +247,25 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html(rowData.name);
+                        $(td).html(rowData.list_name);
                     },
                 },
                 {
                     targets: 2,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var category = ""
+                        //console.log(rowData.category)
+                        if(rowData.category == null){
+                            $(td).html("-");
+                        }else {
+                            $(td).html(rowData.category.name);
+                        }
+                    },
+                },
+                {
+                    targets: 3,
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
@@ -252,11 +277,11 @@
             "ajax": function(data, callback, settings) {
                 let length = data.length
                 let pages = (data.start / 10) + 1
-                $.get('/api/category', {
+                $.get('/api/category/list', {
                         _token: "{{ csrf_token() }}",
                         limit: length,
                         page: pages,
-                        name: name
+                        list_name: list_name
                     }, 
                     function(res) {
                         callback({
@@ -272,18 +297,18 @@
     function detail(id){
         $.ajax({
             type: "POST",
-            url: "/api/category/detail",
+            url: "/api/category/list/detail",
             data: {
                 id : id
             },
             dataType: "JSON",
             success: function (response) {
                 var data = response.data
-                $("#categoryModal").modal("show")
-                $(".modal-title").text("Ubah kategori")
+                $("#categoryListModal").modal("show")
+                $(".modal-title").text("Ubah List Kategori")
                 $("#btn-save").text("Ubah")
                 $("#id").val(data.id)
-                $("#name").val(data.name)
+                $("#list_name").val(data.list_name)
             }
         });
     }
@@ -309,7 +334,7 @@
     function remove(id){
         $.ajax({
             type: "POST",
-            url: "/api/category/delete",
+            url: "/api/category/list/delete",
             data: {
                 id : id,
             },
@@ -318,12 +343,12 @@
                 if(response.status == 200){
                     $.confirm({
                         title: 'Pesan',
-                        content: 'Data kategori berhasil dihapus !',
+                        content: 'Data list kategori berhasil dihapus !',
                         buttons: {
                             Ya: {
                                 btnClass: 'btn-success any-other-class',
                                 action: function(){
-                                    getCategory()
+                                    getListCategory()
                                 }
                             },
                         }
@@ -333,10 +358,35 @@
         });
     }
 
+    function getCategory(){
+        $.ajax({
+            type: "GET",
+            url: "/api/category",
+            data: "data",
+            dataType: "JSON",
+            success: function (response) {
+                var data = response.data
+                $("#category_id").html();
+                    var len = 0;
+                    if(response['data'] != null) {
+                        len = response['data'].length
+                        for(i = 0; i < len; i++) {
+                            var selected = ""
+                            var id = response['data'][i].id
+                            var name = response['data'][i].name
+                            if(id == category_id){
+                                selected = "selected"
+                            }
+                            var option = "<option value='"+id+"' "+selected+">"+name+"</option>";
+                            $("#category_id").append(option);
+                    }
+                }
+            }
+        });
+    }
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 @endsection
 @section('pagespecificscripts')
    

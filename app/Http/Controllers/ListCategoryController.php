@@ -11,40 +11,31 @@ use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Support\Facades\Log;
 
-use App\Models\Product;
-use App\Services\Interfaces\ProductService;
+use App\Models\CategoryList;
+use App\Services\Interfaces\CategoryListService;
 
-class ProductController extends Controller
+class ListCategoryController extends Controller
 {
     /**
-     * @var Product
+     * @var CategoryList
     */
     
-    private ProductService $service;
+    private CategoryListService $service;
 
-    public function __construct(ProductService $service) 
+    public function __construct(CategoryListService $service) 
     {
         $this->service = $service;
     }
 
     public function index(Request $request){
-        return view("product.index");
+        return view("category_list.index");
     }
 
-    public function add(Request $request){
-        return view("product.add");
-    }
-
-    public function edit(Request $request){
-        $product = Product::where("id", $request->id)->first();
-        return view("product.edit",  compact('product'));
-    }
-
-    public function getProduct(Request $request){
+    public function getListCategory(Request $request){
         try{
-            $product = $this->service->getProduct($request);
-            if($product != null){
-                return $product;
+            $categoryList = $this->service->getListCategory($request);
+            if($categoryList != null){
+                return $categoryList;
             }
             return false;
         }catch(Exception $ex){
@@ -56,12 +47,7 @@ class ProductController extends Controller
     public function create(Request $request){
         $validator = Validator::make(
             $request->all(), [
-                'code' => 'required',
-                'article' => 'required',
-                'sku' => 'required',
-                'size' => 'required',
-                'price' => 'required',
-                'category_id' => 'required',
+                'list_name' => 'required',
             ]
         );
 
@@ -73,10 +59,29 @@ class ProductController extends Controller
             ]);
         }
 
-        $product = $this->service->create($request);
+        $listCategory = $this->service->create($request);
 
-        if($product) {
-            return $product;
+        if($listCategory) {
+            return $listCategory;
+        }
+    }
+
+    public function delete(Request $request){
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'data' => null,
+                'message' => $validator->errors(),
+                'status' => 422
+            ]);
+        }
+
+        $categoryList = $this->service->delete($request);
+        if($categoryList) {
+            return $categoryList;
         }
     }
 
@@ -93,8 +98,10 @@ class ProductController extends Controller
             ]);
         }
 
-        $product = $this->service->detail($request);
-        return $product;
+        $listCategory = $this->service->detail($request);
+        return $listCategory;
     }
-    public function delete(Request $request){}
+
+
+
 }

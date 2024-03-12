@@ -19,13 +19,13 @@
     </a>
     <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
       <li>
-        <a href="/category">
-          <i class="bi bi-circle"></i><span>Kategori</span>
+        <a href="/product">
+          <i class="bi bi-circle"></i><span>Produk</span>
         </a>
       </li>
       <li>
-        <a href="/product">
-          <i class="bi bi-circle"></i><span>Produk</span>
+        <a href="/category">
+          <i class="bi bi-circle"></i><span>Kategori</span>
         </a>
       </li>
       <li>
