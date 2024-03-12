@@ -16,7 +16,7 @@
                     <a href="/product">Product</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="/product/add">Tambah</a>
+                    <a href="/product/edit/{{ $product->id }}">Ubah</a>
                 </li>
             </ol>
         </nav>
@@ -32,6 +32,7 @@
                                 <!-- Floating Labels Form -->
                                 <form action="#" id="frm-add-product" class="row g-3">
                                     @csrf
+                                    <input type="hidden" class="form-control" name="id" id="id" >
                                     <div class="col-md-6">
                                         <div class="form-floating">
                                             <input type="text" class="form-control" name="code" id="code" placeholder="Kode SKU">
@@ -108,7 +109,7 @@
                                         <div class="col-md-12">
                                             <label for="inputNumber" class="col-sm-2 col-form-label">Upload Gambar</label>
                                             <div class="col-sm-10">
-                                                <input class="form-control" type="file" id="image_path" src="">
+                                                <input class="form-control" type="file" id="image_path">
                                             </div>
                                         </div>
                                     </div>
@@ -117,7 +118,7 @@
                                     </div>
                                     <div class="col-md-6"> 
                                         <label for="floatingCity">Preview : </label>
-                                        <img id="preview_image" src="#" alt="product"  class="rounded float-left" style="height: 200px; width: 300px"/>
+                                        <img id="preview_image" src="" alt="product"  class="rounded float-left" style="height: 200px; width: 300px"/>
                                     </div>
                                     <div class="text-center mt-4">
                                         <button type="submit" class="btn btn-success btn-save">Ubah</button>
@@ -140,18 +141,19 @@
     var image_path
     var status
     var product_detail = <?= $product ;?>
-
+    
     $(document).ready(function () {
-
-        var image_path = product_detail.image_path
         // passing data
+        var APP_URL = {!! json_encode(url("/uploads/product/")) !!}
+        var new_url = APP_URL + "/" + product_detail.image_path
+        $("#id").val(product_detail.id)
         $("#code").val(product_detail.code)
         $("#article").val(product_detail.article)
         $("#sku").val(product_detail.sku)
         $("#size").prop("selected", true).val(product_detail.size)
         $("#price").val(product_detail.price)
         $("input[name='status']").prop("checked", true).val(product_detail.status)
-        $("#preview_image").attr("src", image_path)
+        $("#preview_image").attr("src", new_url)
 
         // preview image product
         $("#image_path").change(function(){
@@ -230,6 +232,7 @@
                 status = 0
            }
 
+            formData.append('id', $('#id').val())
             formData.append('code', $('#code').val())
             formData.append('article', $('#article').val())
             formData.append('sku', $('#sku').val())

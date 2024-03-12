@@ -27,6 +27,7 @@ class ProductController extends Controller
         $this->service = $service;
     }
 
+     // View
     public function index(Request $request){
         return view("product.index");
     }
@@ -40,6 +41,7 @@ class ProductController extends Controller
         return view("product.edit",  compact('product'));
     }
 
+    // Api data
     public function getProduct(Request $request){
         try{
             $product = $this->service->getProduct($request);
@@ -96,5 +98,21 @@ class ProductController extends Controller
         $product = $this->service->detail($request);
         return $product;
     }
-    public function delete(Request $request){}
+
+    public function delete(Request $request){
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'data' => null,
+                'message' => $validator->errors(),
+                'status' => 422
+            ]);
+        }
+
+        $product = $this->service->delete($request);
+        return $product;
+    }
 }

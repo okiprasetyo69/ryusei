@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\File; 
 
 /**
  * Class ProductRepositoryEloquent.
@@ -81,7 +82,7 @@ use Yajra\DataTables\Facades\DataTables;
                 $name = $file->getClientOriginalName();
                 $image['filePath'] = $name;
                 $file->move(public_path().'/uploads/product/', $name);
-                $product->image_path= public_path().'/uploads/product/'. $name;
+                $product->image_path= $name;
             }
 
             $product->save();
@@ -112,7 +113,33 @@ use Yajra\DataTables\Facades\DataTables;
     }
 
     public function delete(Request $request){
-        return true;
+        try{
+
+            $product = $this->product::where("id", $request->id)->first();
+            if($product == null){
+                return response()->json([
+                    'data' => null,
+                    'message' => 'Data not found',
+                    'status' => 400
+                ]);
+            }
+
+            $fileName = $product->image_path;
+            $existFile= File::exists(public_path('uploads/product/'.$fileName.'')); 
+            if($existFile){
+                File::delete(public_path('uploads/product/'.$fileName.''));
+            }
+            
+            $product->delete();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Success delete product .',
+            ]);
+
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
     }
 
  }
