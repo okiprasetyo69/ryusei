@@ -37,8 +37,9 @@ class ProductController extends Controller
     }
 
     public function edit(Request $request){
-        $product = Product::where("id", $request->id)->first();
-        return view("product.edit",  compact('product'));
+        $product = Product::where("code", $request->code)->first();
+        $products = Product::where("code", $request->code)->first();
+        return view("product.edit",  compact('product', 'products'));
     }
 
     // Api data
@@ -56,17 +57,15 @@ class ProductController extends Controller
     }
 
     public function create(Request $request){
+       
         $validator = Validator::make(
             $request->all(), [
-                'code' => 'required',
-                'article' => 'required',
-                'sku' => 'required',
-                'size' => 'required',
-                'price' => 'required',
-                'category_id' => 'required',
+                'name' => 'required',
+                'products'  => 'required',
+                'category_id'  => 'required',
             ]
         );
-
+        
         if($validator->fails()){
             return response()->json([
                 'data' => null,
@@ -115,4 +114,47 @@ class ProductController extends Controller
         $product = $this->service->delete($request);
         return $product;
     }
+
+    public function listProduct(Request $request){
+        $validator = Validator::make($request->all(), [
+            'code' => 'required',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'data' => null,
+                'message' => $validator->errors(),
+                'status' => 422
+            ]);
+        }
+
+        $product = $this->service->listProduct($request);
+        return $product;
+    }
+
+    public function update(Request $request){
+       
+        $validator = Validator::make(
+            $request->all(), [
+                'name' => 'required',
+                'products'  => 'required',
+                'category_id'  => 'required',
+            ]
+        );
+        
+        if($validator->fails()){
+            return response()->json([
+                'data' => null,
+                'message' => $validator->errors()->first(),
+                'status' => 422
+            ]);
+        }
+
+        $product = $this->service->update($request);
+
+        if($product) {
+            return $product;
+        }
+    }
+
 }

@@ -52,6 +52,8 @@ Route::controller(ListCategoryController::class)->group(function() {
 Route::controller(ProductController::class)->group(function() {
     Route::get('/product', 'getProduct')->name('product.data');
     Route::post('/product/create', 'create')->name('product.create');
+    Route::post('/product/update', 'update')->name('product.update');
     Route::post('/product/delete', 'delete')->name('product.delete');
     Route::post('/product/detail', 'detail')->name('product.detail');
+    Route::get('/product/list-product', 'listProduct')->name('product.list');
 });

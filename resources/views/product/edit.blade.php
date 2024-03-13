@@ -16,7 +16,7 @@
                     <a href="/product">Product</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="/product/edit/{{ $product->id }}">Ubah</a>
+                    <a href="/product/edit/">Ubah</a>
                 </li>
             </ol>
         </nav>
@@ -32,96 +32,81 @@
                                 <!-- Floating Labels Form -->
                                 <form action="#" id="frm-add-product" class="row g-3">
                                     @csrf
-                                    <input type="hidden" class="form-control" name="id" id="id" >
-                                    <div class="col-md-6">
-                                        <div class="form-floating">
-                                            <input type="text" class="form-control" name="code" id="code" placeholder="Kode SKU">
-                                            <label for="">Kode SKU</label>
-                                        </div>
-                                    </div>                                
-                                    <div class="col-md-6">
-                                        <div class="form-floating">
-                                            <input type="text" class="form-control" name="article" id="article" placeholder="Nama Artikel">
-                                            <label for="">Nama Artikel</label>
+                                    <input type="hidden" name="code" id="code" class="form-control" />
+                                    <div class="row mt-4">
+                                        <div class="col-md-4">
+                                            <button type="button" class="btn btn-md btn-primary" id="btn-add">
+                                                <i class="bi bi-plus-circle"></i> Tambah
+                                            </button>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-floating">
-                                            <input type="text" class="form-control" name="sku" id="sku" placeholder="Nama SKU">
-                                            <label for="floatingPassword">Nama SKU</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <?php 
-                                            $size = $product->size;
-                                        ?>
-                                        <div class="form-floating mb-3">
-                                            <select class="form-select" name="size" id="size">
-                                                <option value="" >- Pilih Size - </option>
-                                                <option value="1">S</option>
-                                                <option value="2">M</option>
-                                                <option value="3">L</option>
-                                                <option value="4">XL</option>
-                                                <option value="5">XXL</option>
-                                                <option value="6">XXXL</option>
-                                            </select>
-                                            <label for="">Size</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-floating">
-                                            <input type="number" min="0" class="form-control" name="price" id="price" placeholder="Harga">
-                                            <label for="floatingTextarea">Harga</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="col-md-12">
+                                    <div class="row mt-4">
+                                        <div class="col-md-6">
                                             <div class="form-floating">
-                                                <select name="category_id" id="category_id" class="form-control" placeholder="Kategori"> 
+                                                <input type="text" class="form-control" name="name" id="name" placeholder="Masukkan Nama SKU" autofocus>
+                                                <label for="">Nama SKU</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-floating">
+                                                <select name="category_id" id="category_id" class="form-control category_id" placeholder="Kategori"> 
                                                     <option> - Pilih Kategori - </option>
                                                 </select>
-                                                <label for="floatingCity">Kategori</label>
+                                                <label for="">Kategori</label>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-floating">
-                                            <fieldset class="row mb-3">
-                                                <legend class="col-form-label">Status</legend>
-                                                <div class="col-sm-10">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input status" type="radio" name="status" id="status" value="0">
-                                                        <label class="form-check-label" for="">
-                                                            Not Ready
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input status" type="radio" name="status" id="status" value="1">
-                                                        <label class="form-check-label" for="">
-                                                            Ready
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </fieldset>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6"> 
-                                        <div class="col-md-12">
-                                            <label for="inputNumber" class="col-sm-2 col-form-label">Upload Gambar</label>
-                                            <div class="col-sm-10">
-                                                <input class="form-control" type="file" id="image_path">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6"> 
+                                    <div class="row mt-4">
+                                        <div class="col-md-8">
+                                            <table class="table table-striped" id="table-add-product">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Size</th>
+                                                    <th scope="col">Kode SKU</th>
+                                                    <th scope="col">Nama Artikel</th>
+                                                    <th scope="col">Harga</th>
+                                                    <th scope="col">Aksi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tbody">
                                         
-                                    </div>
-                                    <div class="col-md-6"> 
-                                        <label for="floatingCity">Preview : </label>
-                                        <img id="preview_image" src="" alt="product"  class="rounded float-left" style="height: 200px; width: 300px"/>
+                                            </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <img id="preview_image" src="#" alt="product"  class="rounded float-left" style="height: 200px; width: 300px"/>
+                                            <div class="col-md-12">
+                                                <label for="" class="col-sm-12 col-form-label">Upload Gambar</label>
+                                                <div class="col-sm-12">
+                                                    <input class="form-control" type="file" id="image_path" value="">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12"> 
+                                                <div class="form-floating">
+                                                    <fieldset class="row mb-3">
+                                                        <legend class="col-form-label">Status</legend>
+                                                        <div class="col-sm-12">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input status" type="radio" name="status" id="status" value="0">
+                                                                <label class="form-check-label" for="">
+                                                                    Not Ready
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input status" type="radio" name="status" id="status" value="1">
+                                                                <label class="form-check-label" for="">
+                                                                    Ready
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </fieldset>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="text-center mt-4">
-                                        <button type="submit" class="btn btn-success btn-save">Ubah</button>
+                                        <button type="submit" class="btn btn-success btn-save">Simpan</button>
                                         <button type="reset" class="btn btn-secondary btn-reset">Reset</button>
                                     </div>
                                 </form>
@@ -140,20 +125,33 @@
     var category_id
     var image_path
     var status
+    var sizes
+    var codes
+    var articles
+    var prices
+    var category_ids
     var product_detail = <?= $product ;?>
     
     $(document).ready(function () {
+
         // passing data
+        var path = ""
+        if(product_detail.image_path != ""){
+            path = product_detail.image_path
+        } 
         var APP_URL = {!! json_encode(url("/uploads/product/")) !!}
-        var new_url = APP_URL + "/" + product_detail.image_path
-        $("#id").val(product_detail.id)
+        var new_url = APP_URL + "/" + path
+     
         $("#code").val(product_detail.code)
+        $("#name").val(product_detail.name)
         $("#article").val(product_detail.article)
         $("#sku").val(product_detail.sku)
         $("#size").prop("selected", true).val(product_detail.size)
         $("#price").val(product_detail.price)
         $("input[name='status']").prop("checked", true).val(product_detail.status)
         $("#preview_image").attr("src", new_url)
+
+        image_path = product_detail.image_path
 
         // preview image product
         $("#image_path").change(function(){
@@ -164,27 +162,29 @@
         category_id = product_detail.category_id
         getCategory(category_id)
 
+        // get product
+        codes = product_detail.code
+        loadProduct(codes)
+
+        $("#btn-add").on("click", function(e){
+            e.preventDefault()
+            let count = $('#table-add-product tr').length
+            let row = "<tr><td>"+count+"</td> <td><select class='form-select size' name='size[]' id='size'><option value=''>- Pilih Size - </option><option value='1'>S</option><option value='2'>M</option><option value='3'>L</option><option value='4'>XL</option><option value='5'>XXL</option><option value='6'>XXXL</option></select></td> <td><input type='text' class='form-control sku' name='code[]' id='sku' placeholder='Kode SKU'></td> <td><input type='text' class='form-control article' name='article[]' id='article' placeholder='Nama Artikel'></td> <td><input type='number' min='0' class='form-control price' name='price' id='price' placeholder='Harga'></td> <td><button type='button' class='btn btn-sm btn-danger delete-row'><i class='bi bi-trash' aria-hidden='true'></i></button> </td></tr>"
+            $('#tbody').append(row);
+        })
+
+        // remove row form table
+        $("#tbody").on("click", '.delete-row',function(e){
+            e.preventDefault()
+            $(this).parent('td').parent('tr').remove(); 
+        })
+
+
         // store product
         $("#frm-add-product").on("submit", function(e){
             e.preventDefault()
 
             // Validation form required
-            if($("#code").val() == "" ){
-                $.alert({
-                    title: 'Pesan !',
-                    content: 'Kode SKU tidak boleh kosong !',
-                });
-                return 
-            }
-
-            if($("#article").val() == ""){
-                $.alert({
-                    title: 'Pesan !',
-                    content: 'Nama Artikel tidak boleh kosong !',
-                });
-                return 
-            }
-
             if($("#sku").val() == ""){
                 $.alert({
                     title: 'Pesan !',
@@ -193,35 +193,22 @@
                 return 
             }
 
-            if($("#size").val() == ""){
-                $.alert({
-                    title: 'Pesan !',
-                    content: 'Silakan pilih size !',
-                });
-                return 
-            }
-
-            if($("#price").val() == ""){
-                $.alert({
-                    title: 'Pesan !',
-                    content: 'Harga tidak boleh kosong !',
-                });
-                return 
-            }
-
-            if($("#category_id").prop('selected', true) == ""){
-                $.alert({
-                    title: 'Pesan !',
-                    content: 'Kategori tidak boleh kosong !',
-                });
-                return 
-            }
+            var formData = new FormData();
+            var products = []
+            $("#table-add-product tbody tr").each(function(index){
+                sizes = $(this).find('.size option:selected').val()
+                skus = $(this).find('.sku').val()
+                articles = $(this).find('.article').val()
+                prices = $(this).find('.price').val()
+                category_ids = $(this).find('.category_id option:selected').val()
+                products.push({size : sizes, sku:skus, article:articles, price:prices, category_id, category_ids })
+            })
 
             var formData = new FormData();
 
             // Assign value
             if($('#image_path').val() == ""){
-                image_path = null
+                image_path = image_path
             } else{
                 image_path = $('#image_path')[0].files[0]
             }
@@ -232,20 +219,20 @@
                 status = 0
            }
 
-            formData.append('id', $('#id').val())
+            var jsonProducts = JSON.stringify(products);
+         
             formData.append('code', $('#code').val())
-            formData.append('article', $('#article').val())
-            formData.append('sku', $('#sku').val())
-            formData.append('size', $('#size option:selected').val())
-            formData.append('price', $('#price').val())
-            formData.append('category_id', $('#category_id option:selected').val())
+            formData.append('name', $('#name').val())
             formData.append('image_path', image_path)
             formData.append("status", status)
+            formData.append("products", jsonProducts)
+            formData.append('category_id', $('#category_id option:selected').val())
+            formData.append('image_path', image_path)
             
             //console.log(formData)
             $.ajax({
                 type: "POST",
-                url: "/api/product/create",
+                url: "/api/product/update",
                 data: formData,
                 contentType: false,
                 processData: false,
@@ -308,6 +295,28 @@
         });
     }
 
+    function loadProduct(codes = null){
+       $.ajax({
+            type: "GET",
+            url: "/api/product/list-product",
+            data: {
+                code : codes
+            },
+            dataType: "JSON",
+            success: function (response) {
+                var data = response.data
+                var row = ""
+                let count = 1
+                var selected = ""
+                $("#table-add-product").find("tr:gt(0)").remove()
+                $.each(data, function (i, val) { 
+                    
+                    row += "<tr><td>"+ (count++) +"</td> <td><select class='form-select size' name='size[]' id='size'><option value=''>- Pilih Size - </option><option value='1'>S</option><option value='2'>M</option><option value='3'>L</option><option value='4'>XL</option><option value='5'>XXL</option><option value='6'>XXXL</option></select></td> <td><input type='text' class='form-control sku' name='sku[]' id='sku' value='"+val.sku+"' placeholder='Kode SKU'></td> <td><input type='text' class='form-control article' name='article[]' value='"+val.article+"' id='article' placeholder='Nama Artikel'></td> <td><input type='number' min='0' value='"+val.price+"' class='form-control price' name='price' id='price' placeholder='Harga'></td> <td><button type='button' class='btn btn-sm btn-danger delete-row'><i class='bi bi-trash' aria-hidden='true'></i></button> </td></tr>"
+                });
+                $("#table-add-product > tbody:last-child").append(row); 
+            }
+       });
+    }
 
 </script>
 

@@ -49,4 +49,22 @@ interface ProductService {
      * @param Illuminate\Support\Facades\Request
      */
     public function delete(Request $request);
+    
+     /**
+     * @author Oki Prasetyo <oki.prasetyo45@gmail.com>
+     * @since   2024.03.13
+     * Function for handle requests get list product.
+     * 
+     * @param Illuminate\Support\Facades\Request
+     */
+    public function listProduct(Request $request);
+
+      /**
+     * @author Oki Prasetyo <oki.prasetyo45@gmail.com>
+     * @since   2024.03.13
+     * Function for handle requests update list product.
+     * 
+     * @param Illuminate\Support\Facades\Request
+     */
+    public function update(Request $request);
 }

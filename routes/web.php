@@ -48,5 +48,5 @@ Route::controller(ListCategoryController::class)->group(function() {
 Route::controller(ProductController::class)->group(function() {
     Route::get('/product', 'index')->name('product');
     Route::get('/product/add', 'add')->name('product.add');
-    Route::get('/product/edit/{id}', 'edit')->name('product.edit');
+    Route::get('/product/edit/{code}', 'edit')->name('product.edit');
 });
