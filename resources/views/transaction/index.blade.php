@@ -52,7 +52,7 @@
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <select name="search_type" id="search_type" class="form-control">
-                                        <option value=""> - Pilih Tipe </option>
+                                        <option value=""> - Pilih Tipe -</option>
                                         <option value="1"> Nomor Order </option>
                                         <option value="2"> Tracking Number </option>
                                         <option value="3"> Kode SKU </option>
@@ -171,7 +171,7 @@
             if(value == "" ){
                 $("#filter_name").hide()
             }
-            
+
             if(value == 1){
                 $("#filter_name").show()
                 $("#filter_name").attr('placeholder','Masukkan nomor order').focus();
