@@ -165,9 +165,26 @@
 
         $("#filter_name").hide()
 
-        $(selector).change(function (e) { 
+        $("#search_type").change(function (e) { 
             e.preventDefault();
+            var value = this.value
+            if(value == "" ){
+                $("#filter_name").hide()
+            }
             
+            if(value == 1){
+                $("#filter_name").show()
+                $("#filter_name").attr('placeholder','Masukkan nomor order').focus();
+            }
+            if(value == 2){
+                $("#filter_name").show()
+                $("#filter_name").attr('placeholder','Masukkan tracking number').focus();
+            }
+            if(value == 3){
+                $("#filter_name").show()
+                $("#filter_name").attr('placeholder','Masukkan Kode SKU').focus();
+            }
+          
         });
     });
 

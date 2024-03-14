@@ -311,15 +311,15 @@
                 $("#table-add-product").find("tr:gt(0)").remove()
 
                 $.each(data, function (i, val) { 
-                    
-                    $(window).on("load", function () {
-                        $('.size option').map(function () {
-                            if ($(this).val() == val.size) 
-                            return this;
-                        }).attr('selected', 'selected'); 
-                    });
 
-                    row += "<tr><td>"+ (count++) +"</td> <td><select class='form-select size' name='size[]' id='size'><option value=''>- Pilih Size - </option><option value='1' >S</option><option value='2'>M</option><option value='3'>L</option><option value='4'>XL</option><option value='5'>XXL</option><option value='6' >XXXL</option></select></td> <td><input type='text' class='form-control sku' name='sku[]' id='sku' value='"+val.sku+"' placeholder='Kode SKU'></td> <td><input type='text' class='form-control article' name='article[]' value='"+val.article+"' id='article' placeholder='Nama Artikel'></td> <td><input type='number' min='0' value='"+val.price+"' class='form-control price' name='price' id='price' placeholder='Harga'></td> <td><button type='button' class='btn btn-sm btn-danger delete-row'><i class='bi bi-trash' aria-hidden='true'></i></button> </td></tr>"
+                    $(window).on("load", function(){
+                        var size = val.size
+                        $(".size option").map(function(){
+                            if ($(this).val() == size) return this
+                        }).attr('selected', 'selected');
+                    })
+                                
+                    row += "<tr><td>"+ (count++) +"</td> <td><select class='form-select size' name='size[]' id='size'><option value=''>- Pilih Size - </option><option value='1'>S</option><option value='2'>M</option><option value='3'>L</option><option value='4'>XL</option><option value='5'>XXL</option><option value='6' >XXXL</option></select></td> <td><input type='text' class='form-control sku' name='sku[]' id='sku' value='"+val.sku+"' placeholder='Kode SKU'></td> <td><input type='text' class='form-control article' name='article[]' value='"+val.article+"' id='article' placeholder='Nama Artikel'></td> <td><input type='number' min='0' value='"+val.price+"' class='form-control price' name='price' id='price' placeholder='Harga'></td> <td><button type='button' class='btn btn-sm btn-danger delete-row'><i class='bi bi-trash' aria-hidden='true'></i></button> </td></tr>"
                 });
                 $("#table-add-product > tbody:last-child").append(row); 
             }
