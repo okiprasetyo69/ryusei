@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ListCategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\TransactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,4 +50,9 @@ Route::controller(ProductController::class)->group(function() {
     Route::get('/product', 'index')->name('product');
     Route::get('/product/add', 'add')->name('product.add');
     Route::get('/product/edit/{code}', 'edit')->name('product.edit');
+});
+
+// Transaction Menu
+Route::controller(TransactionController::class)->group(function() {
+    Route::get('/transaction', 'index')->name('transaction');
 });

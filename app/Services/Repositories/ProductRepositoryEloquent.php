@@ -177,19 +177,36 @@ use Illuminate\Support\Str;
             $product = $this->product;
             $product->fill($request->all());
 
-            // convert json string to array
-            $products = json_decode($request->products, true);
             $code = "";
             $name = "";
-            $productData = [];
-            $arrCode = [];
+            $id = null;
+            $detailsProduct = [];
 
+            // convert json string to array
+            $products = json_decode($request->products, true);
+            $product = $product::where("code", $request->code)->get();
+
+ 
+            // foreach ($products as $key => $value) {
+
+            //    foreach ($product as $k => $v) {
+            //         $id = $v->id;
+            //    }
+            //    array_push($detailsProduct, [
+            //         'id' => $id,
+            //         'sku' => $value['sku'],
+            //         'size' => $value['size'],
+            //         'article' => $value['article'],
+            //         'price' => $value['price'],
+            //    ]);
+            // }
+            // var_dump($detailsProduct); die;
+
+             // done this code
             if($request->code != null){
                 $code = $request->code;
-                $product = $product::where("code", $request->code);
 
                 if($request->hasFile('image_path')){
-                   
                     if(!empty($request->image_path)){
                         // check exist file
                         $imageProduct = $this->product::where("code", $request->code)->first();
@@ -210,40 +227,41 @@ use Illuminate\Support\Str;
                     $name = $request->image_path;
                 }
                 // remove data before insert
-                $product->delete();
+                // $product->delete();
             } else{
                 $code =  Str::random(9);
             }
+            
+            // done this code
+            foreach ($product as $k => $val) {
+                $productUpdate = $this->product::find($val->id);
+                $productUpdate->code = $code;
+                $productUpdate->name = $request->name;
+                $productUpdate->status = $request->status;
+                $productUpdate->category_id = $request->category_id;
+                $productUpdate->image_path = $name;
 
-            foreach ($products as $key => $value) {
-                $product = new Product();
-                // dd($value);
-               
-                $product->code = $code;
-                $product->sku = $value['sku'];
-                $product->article = $value['article'];
-                $product->name = $request->name;
-                $product->size = $value['size'];
-                $product->price = $value['price'];
-                $product->status = $request->status;
-                $product->category_id = $request->category_id;
-                $product->image_path = $name;
-               
-                // array_push($productData, [
-                //     'code' => $code,
-                //     'sku'  => $value['sku'],
-                //     'article' => $value['article'],
-                //     'name' => $request->name,
-                //     'size' => $value['size'],
-                //     'price' =>  $value['price'], 
-                //     'status' =>  $request->status,
-                //     'category_id' => $request->category_id,
-                //     'image_path' =>  $name
-                // ]);
-                $product->save();
-              
+                $productUpdate->save();
             }
-            //$product->save();
+
+            // Still on progress
+          
+            // foreach ($detailsProduct as $key => $value) {
+            //     $productDetail = $this->product::find($value['id']);
+
+            //     foreach ($value['products'] as $k => $v) {
+            //         $productDetail->sku = $v['sku'];
+            //         $productDetail->article = $v['article'];
+            //         $productDetail->size = $v['size'];
+            //         $productDetail->price = $v['price'];
+
+            //         $productDetail->save();
+            //     }
+               
+            // }
+            
+            //var_dump($idsProduct); die;
+           
 
             return response()->json([
                 'status' => 200,
