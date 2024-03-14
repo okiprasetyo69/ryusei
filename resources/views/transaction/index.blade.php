@@ -163,6 +163,12 @@
         });
         $('#end_date').val(today);
 
+        $("#filter_name").hide()
+
+        $(selector).change(function (e) { 
+            e.preventDefault();
+            
+        });
     });
 
 
