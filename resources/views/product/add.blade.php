@@ -137,7 +137,8 @@
         $("#btn-add").on("click", function(e){
             e.preventDefault()
             let count = $('#table-add-product tr').length
-            let row = "<tr><td>"+count+"</td> <td><select class='form-select size' name='size[]' id='size'><option value=''>- Pilih Size - </option><option value='1'>S</option><option value='2'>M</option><option value='3'>L</option><option value='4'>XL</option><option value='5'>XXL</option><option value='6'>XXXL</option></select></td> <td><input type='text' class='form-control sku' name='code[]' id='sku' placeholder='Kode SKU'></td> <td><input type='text' class='form-control article' name='article[]' id='article' placeholder='Nama Artikel'></td> <td><input type='number' min='0' class='form-control price' name='price' id='price' placeholder='Harga'></td> <td><button type='button' class='btn btn-sm btn-danger delete-row'><i class='bi bi-trash' aria-hidden='true'></i></button> </td></tr>"
+            let row = "<tr><td>"+count+"</td> <td><select class='form-select size' name='size[]' id='size' data-id="+count+"><option value=''>- Pilih Size - </option><option value='1'>S</option><option value='2'>M</option><option value='3'>L</option><option value='4'>XL</option><option value='5'>XXL</option><option value='6'>3XL</option></select></td> <td><input type='text' class='form-control sku' name='code[]' id='sku' placeholder='Kode SKU'></td> <td><input type='text' class='form-control article' name='article[]' id='article' placeholder='Nama Artikel'></td> <td><input type='number' min='0' class='form-control price' name='price' id='price' placeholder='Harga'></td> <td><button type='button' class='btn btn-sm btn-danger delete-row'><i class='bi bi-trash' aria-hidden='true'></i></button> </td></tr>"
+            getSize()
             $('#tbody').append(row);
         })
 
@@ -258,6 +259,25 @@
                             $(".category_id").append(option);
                     }
                 }
+            }
+        });
+    }
+
+    function getSize(){
+        $.ajax({
+            type: "GET",
+            url: "/api/size",
+            data: "data",
+            dataType: "JSON",
+            success: function (response) {
+                var data = response.data
+                var option = ""
+                $(".size").html("")
+                $.each(data, function (i, val) { 
+                    option += "<option value="+val.id+"> "+val.name+" </option>"
+                });
+                $(".size").append(option)
+                //console.log(response)
             }
         });
     }

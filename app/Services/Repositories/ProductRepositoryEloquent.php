@@ -40,13 +40,34 @@ use Illuminate\Support\Str;
     public function getProduct(Request $request){
         try{
             
-            $product = $this->product::with('category');
+            $product = $this->product::with('category', 'size');
           
             if($request->name != null){
                 $product->where("name", "like", "%" . $request->name. "%");
             }
 
             $product = $product->get();
+
+            return response()->json([
+                'status' => 200,
+                'message' => true,
+                'data' => $product
+            ]); 
+        }
+        catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function getPaginateProduct(Request $request){
+        try{
+            
+            $product = $this->product::with('category', 'size')->paginate(6);
+          
+            if($request->article != null){
+                $product->where("article", "like", "%" . $request->article. "%");
+            }
 
             return response()->json([
                 'status' => 200,
@@ -139,11 +160,11 @@ use Illuminate\Support\Str;
                 ]);
             }
 
-            $fileName = $product->image_path;
-            $existFile= File::exists(public_path('uploads/product/'.$fileName.'')); 
-            if($existFile){
-                File::delete(public_path('uploads/product/'.$fileName.''));
-            }
+            // $fileName = $product->image_path;
+            // $existFile= File::exists(public_path('uploads/product/'.$fileName.'')); 
+            // if($existFile){
+            //     File::delete(public_path('uploads/product/'.$fileName.''));
+            // }
             
             $product->delete();
             return response()->json([
@@ -243,6 +264,9 @@ use Illuminate\Support\Str;
             // set value product detail
             foreach ($detailsProduct as $key => $value) {
                 $productDetail = Product::find($value['id']);
+                // if($productDetail->id != null){
+                    
+                // }
                 $productDetail->sku = $value['products']['sku'];
                 $productDetail->article =$value['products']['article'];
                 $productDetail->size = $value['products']['size'];

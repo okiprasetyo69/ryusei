@@ -26,7 +26,18 @@ class Product extends Model
         'image_path'
     ];
 
+    protected $appends = ['image_url'];
+
     public function category(){
         return $this->belongsTo(Category::class, 'category_id','id');
+    }
+
+    public function size(){
+        return $this->belongsTo(Size::class, 'size','id');
+    }
+
+    public function getImageUrlAttribute()
+    {
+        return asset('/uploads/product/'. $this->attributes['image_path']);
     }
 }

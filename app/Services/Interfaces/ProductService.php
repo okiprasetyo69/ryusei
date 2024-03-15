@@ -67,4 +67,13 @@ interface ProductService {
      * @param Illuminate\Support\Facades\Request
      */
     public function update(Request $request);
+
+     /**
+     * @author Oki Prasetyo <oki.prasetyo45@gmail.com>
+     * @since   2024.03.15
+     * Function for handle requests update list product.
+     * 
+     * @param Illuminate\Support\Facades\Request
+     */
+    public function getPaginateProduct(Request $request);
 }

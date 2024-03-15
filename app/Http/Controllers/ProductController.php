@@ -12,6 +12,8 @@ use Exception;
 use Illuminate\Support\Facades\Log;
 
 use App\Models\Product;
+use App\Models\Size;
+use App\Models\Category;
 use App\Services\Interfaces\ProductService;
 
 class ProductController extends Controller
@@ -29,8 +31,37 @@ class ProductController extends Controller
 
      // View
     public function index(Request $request){
-        return view("product.index");
+        
+        $category = Category::all();
+        $size = Size::all();
+        $query = Product::query();
+    
+        if($request->filter_article != null){
+          $query->where("article", "like", "%" . $request->filter_article. "%");
+        }
+
+        if($request->category_id != null){
+            $query->where("category_id", $request->category_id);
+        }
+
+        if($request->size != null){
+           $query->where("size", $request->size);
+        }
+
+        if($request->price != null){
+            if($request->price == 1){
+                $query->orderBy("price","ASC");
+            }
+            if($request->price == 2){
+               $query->orderBy("price","DESC");
+            }
+           
+        }
+        $data = $query->with('category', 'size')->paginate(6);
+
+        return view("product.index", ["data" => $data, "category" => $category, "size" => $size]);
     }
+
 
     public function add(Request $request){
         return view("product.add");
@@ -46,6 +77,19 @@ class ProductController extends Controller
     public function getProduct(Request $request){
         try{
             $product = $this->service->getProduct($request);
+            if($product != null){
+                return $product;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function getPaginateProduct(Request $request){
+        try{
+            $product = $this->service->getPaginateProduct($request);
             if($product != null){
                 return $product;
             }

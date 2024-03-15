@@ -3,6 +3,13 @@
 @section('title','Transaksi')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.css" rel="stylesheet" />
+<style> 
+    th, td { white-space: nowrap; }
+    div.dataTables_wrapper {
+        width: 800px;
+        margin: 0 auto;
+    }
+</style>
 @section('content')
 
 <main id="main" class="main">
@@ -104,8 +111,8 @@
                     <div class="card-body">
                         <div class="row mt-2"> 
                             <div class="col-md-12">
-                                <div class="">
-                                    <table class="table table-striped" id="table-transaction">
+                                <div class="table-responsive">
+                                    <table class="table table-striped row-border order-column" id="table-transaction" style="width:100%">
                                         <thead>
                                             <tr>
                                                 <th scope="col">#</th>
@@ -115,19 +122,78 @@
                                                 <th scope="col">Kode SKU</th>
                                                 <th scope="col">Qty</th>
                                                 <th scope="col">Harga Sat</th>
+                                                <th scope="col">Nama SKU</th>
+                                                <th scope="col">Size</th>
                                                 <th scope="col">Tgl Order</th>
                                                 <th scope="col">Tgl Proses Order</th>
+                                                <th scope="col">Keloter</th>
+                                                <th scope="col">Pembayaran</th>
+                                                <th scope="col">Kode Pos</th>
+                                                <th scope="col">Status</th>
                                                 <th scope="col">Total</th>
+                                                <th scope="col">Biaya Admin %</th>
+                                                <th scope="col">Biaya Admin</th>
+                                                <th scope="col">Total Bersih</th>
+                                                <th scope="col">SKU Ok ?</th>
+                                                <th scope="col">Kategori</th>
+                                                <th scope="col">Harga Barcode</th>
+                                                <th scope="col">Diskon</th>
+                                                <th scope="col">Kota</th>
+                                                <th scope="col">Customer Name</th>
+                                                <th scope="col">Customer Code</th>
+                                                <th scope="col">Tgl Order</th>
+                                                <th scope="col">No Order</th>
+                                                <th scope="col">Bundle / Satuan</th>
+                                                <th scope="col">1 / > 1</th>
+                                                <th scope="col">HPP</th>
+                                                <th scope="col">Total HPP</th>
+                                                <th scope="col">Order Status</th>
+                                                <th scope="col">Order Status Sales Channel</th>
                                                 <th scope="col">Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                        
+                                            <tr>
+                                                <th scope="row">1</th>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                                <td>Test</td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
-                            
                         </div>
                     </div>
                 </div>
@@ -139,7 +205,7 @@
 
 
 <script type="text/javascript"> 
- 
+    var table
     $(document).ready(function () {
         var now = new Date();
         var month = (now.getMonth() + 1);               
@@ -184,10 +250,28 @@
                 $("#filter_name").show()
                 $("#filter_name").attr('placeholder','Masukkan Kode SKU').focus();
             }
-          
         });
+
+        getTransaction()
     });
 
+    function getTransaction(){
+        table = $("#table-transaction").DataTable({
+            fixedColumns: true,
+            fixedColumns: {
+                start: 1,
+            },
+            paging: false,
+            scrollCollapse: true,
+            scrollX: true,
+            scrollY: 300,
+            lengthChange: false,
+			searching: false,
+            destroy: true,
+            processing: true,
+            //serverSide: true,
+        })
+    }
 
 </script>
 

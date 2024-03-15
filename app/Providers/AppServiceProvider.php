@@ -10,12 +10,14 @@ use App\Services\Interfaces\RoleService;
 use App\Services\Interfaces\CategoryService;
 use App\Services\Interfaces\CategoryListService;
 use App\Services\Interfaces\ProductService;
+use App\Services\Interfaces\SizeService;
 
 use App\Services\Repositories\UserRepositoryEloquent;
 use App\Services\Repositories\RoleRepositoryEloquent;
 use App\Services\Repositories\CategoryRepositoryEloquent;
 use App\Services\Repositories\CategoryListRepositoryEloquent;
 use App\Services\Repositories\ProductRepositoryEloquent;
+use App\Services\Repositories\SizeRepositoryEloquent;
 
 
 class AppServiceProvider extends ServiceProvider implements DeferrableProvider
@@ -32,6 +34,7 @@ class AppServiceProvider extends ServiceProvider implements DeferrableProvider
         CategoryService::class => CategoryRepositoryEloquent::class,
         CategoryListService::class => CategoryListRepositoryEloquent::class,
         ProductService::class => ProductRepositoryEloquent::class,
+        SizeService::class => SizeRepositoryEloquent::class,
     ];
 
     /**
@@ -51,6 +54,7 @@ class AppServiceProvider extends ServiceProvider implements DeferrableProvider
             CategoryService::class,
             CategoryListService::class,
             ProductService::class,
+            SizeService::class,
         ];
     }
 

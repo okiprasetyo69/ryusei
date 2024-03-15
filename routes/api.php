@@ -7,6 +7,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ListCategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SizeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,10 @@ Route::controller(RoleController::class)->group(function() {
     Route::get('/role', 'getRole')->name('user.role');
 });
 
+Route::controller(SizeController::class)->group(function() {
+    Route::get('/size', 'getAllSize')->name('size.data');
+});
+
 
 Route::controller(CategoryController::class)->group(function() {
     Route::get('/category', 'getCategory')->name('category.data');
@@ -51,6 +56,7 @@ Route::controller(ListCategoryController::class)->group(function() {
 
 Route::controller(ProductController::class)->group(function() {
     Route::get('/product', 'getProduct')->name('product.data');
+    Route::get('/product/item-list', 'getPaginateProduct')->name('product.item-list');
     Route::post('/product/create', 'create')->name('product.create');
     Route::post('/product/update', 'update')->name('product.update');
     Route::post('/product/delete', 'delete')->name('product.delete');

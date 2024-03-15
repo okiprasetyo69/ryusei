@@ -167,19 +167,14 @@
         codes = product_detail.code
         loadProduct(codes)
 
+        // button add
         $("#btn-add").on("click", function(e){
             e.preventDefault()
             let count = $('#table-add-product tr').length
-            let row = "<tr><td>"+count+"</td> <td><select class='form-select size' name='size[]' id='size'><option value=''>- Pilih Size - </option><option value='1'>S</option><option value='2'>M</option><option value='3'>L</option><option value='4'>XL</option><option value='5'>XXL</option><option value='6'>XXXL</option></select></td> <td><input type='text' class='form-control sku' name='code[]' id='sku' placeholder='Kode SKU'></td> <td><input type='text' class='form-control article' name='article[]' id='article' placeholder='Nama Artikel'></td> <td><input type='number' min='0' class='form-control price' name='price' id='price' placeholder='Harga'></td> <td><button type='button' class='btn btn-sm btn-danger delete-row'><i class='bi bi-trash' aria-hidden='true'></i></button> </td></tr>"
+            getSize()
+            let row = "<tr><td>"+count+"</td> <td><select class='form-select size' name='size[]' id='size'><option value=''>- Pilih Size - </option><option value='1'>S</option><option value='2'>M</option><option value='3'>L</option><option value='4'>XL</option><option value='5'>XXL</option><option value='6'>3XL</option></select></td> <td><input type='text' class='form-control sku' name='code[]' id='sku' placeholder='Kode SKU'></td> <td><input type='text' class='form-control article' name='article[]' id='article' placeholder='Nama Artikel'></td> <td><input type='number' min='0' class='form-control price' name='price' id='price' placeholder='Harga'></td> <td><button type='button' class='btn btn-sm btn-danger delete-row'><i class='bi bi-trash' aria-hidden='true'></i></button> </td></tr>"
             $('#tbody').append(row);
         })
-
-        // remove row form table
-        $("#tbody").on("click", '.delete-row',function(e){
-            e.preventDefault()
-            $(this).parent('td').parent('tr').remove(); 
-        })
-
 
         // store product
         $("#frm-add-product").on("submit", function(e){
@@ -311,20 +306,92 @@
                 $("#table-add-product").find("tr:gt(0)").remove()
 
                 $.each(data, function (i, val) { 
-
-                    $(window).on("load", function(){
-                        var size = val.size
-                        $(".size option").map(function(){
-                            if ($(this).val() == size) return this
-                        }).attr('selected', 'selected');
-                    })
-                                
-                    row += "<tr><td>"+ (count++) +"</td> <td><select class='form-select size' name='size[]' id='size'><option value=''>- Pilih Size - </option><option value='1'>S</option><option value='2'>M</option><option value='3'>L</option><option value='4'>XL</option><option value='5'>XXL</option><option value='6' >XXXL</option></select></td> <td><input type='text' class='form-control sku' name='sku[]' id='sku' value='"+val.sku+"' placeholder='Kode SKU'></td> <td><input type='text' class='form-control article' name='article[]' value='"+val.article+"' id='article' placeholder='Nama Artikel'></td> <td><input type='number' min='0' value='"+val.price+"' class='form-control price' name='price' id='price' placeholder='Harga'></td> <td><button type='button' class='btn btn-sm btn-danger delete-row'><i class='bi bi-trash' aria-hidden='true'></i></button> </td></tr>"
+                    var size = val.size
+                    
+                    row += "<tr><td>"+ (count++) +"</td> <td><select class='form-select size' name='size[]' id='size'><option value=''>- Pilih Size - </option><option value='1'>S</option><option value='2'>M</option><option value='3'>L</option><option value='4'>XL</option><option value='5'>XXL</option><option value='6' >3XL</option></select></td> <td><input type='text' class='form-control sku' name='sku[]' id='sku' value='"+val.sku+"' placeholder='Kode SKU'></td> <td><input type='text' class='form-control article' name='article[]' value='"+val.article+"' id='article' placeholder='Nama Artikel'></td> <td><input type='number' min='0' value='"+val.price+"' class='form-control price' name='price' id='price' placeholder='Harga'></td> <td><button type='button' class='btn btn-sm btn-danger delete-row' onclick='confirmDelete("+val.id+")'><i class='bi bi-trash' aria-hidden='true'></i></button> </td></tr>"
+                    getSize(size)
                 });
+               
                 $("#table-add-product > tbody:last-child").append(row); 
+               
             }
        });
     }
+
+    function confirmDelete(id=null){
+        $.confirm({
+            title: 'Pesan ',
+            content: 'Apa anda yakin akan menghapus data ini ?',
+            buttons: {
+                Ya: {
+                    btnClass: 'btn-red any-other-class',
+                    action: function(){
+                        $("#tbody").on("click", '.delete-row',function(e){
+                            e.preventDefault()
+                            $(this).parent('td').parent('tr').remove(); 
+                        })
+                        remove(id)
+                    }
+                },
+                Batal: {
+                    btnClass: 'btn-secondary',
+                },
+            }
+        });
+    }
+
+    function remove(id = null){
+        console.log("masuk sini : " + id)
+        $.ajax({
+            type: "POST",
+            url: "/api/product/delete",
+            data: {
+                id : id,
+            },
+            dataType: "JSON",
+            success: function (response) {
+                if(response.status == 200){
+                    $.confirm({
+                        title: 'Pesan',
+                        content: 'Data produk berhasil dihapus !',
+                        buttons: {
+                            Ya: {
+                                btnClass: 'btn-success any-other-class',
+                                action: function(){
+                                    window.location.reload()
+                                }
+                            },
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    function getSize(size = null){
+        //console.log(size)
+        $.ajax({
+            type: "GET",
+            url: "/api/size",
+            data: "data",
+            dataType: "JSON",
+            success: function (response) {
+                var data = response.data
+                var option = ""
+                var selected = ""
+                $(".size").html("")
+                $.each(data, function (i, val) { 
+                    if(val.id == size){
+                        selected = "selected"
+                    }
+                    option += "<option value="+val.id+" "+selected+"> "+val.name+" </option>"
+                });
+                $(".size").append(option)
+                //console.log(response)
+            }
+        });
+    }
+    
 
 </script>
 
