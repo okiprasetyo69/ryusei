@@ -60,7 +60,7 @@
                                             <li class="list-group-item">
                                                 <label class="text-center"> Kloter :  </label>
                                                 <select name="group_id" id="group_id" class="form-control"> 
-                                                    <option value=""> - Pilih Keloter - </option>
+                                                    <option value=""> - Pilih Kloter - </option>
                                                     <option value="1">Kloter-1 </option>
                                                     <option value="2">Kloter-2 </option>
                                                     <option value="3">Kloter-3 </option>
@@ -146,7 +146,7 @@
         // load data
         getSalesChannel()
         getPaymentMethod()
-        
+        $(".sku_id").select2()
 
         // create new element form dynamic
         $("#btn-add").on("click", function(e){

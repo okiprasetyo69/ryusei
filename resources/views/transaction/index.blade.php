@@ -46,13 +46,13 @@
                                 <label> <strong><span>Tanggal Akhir : </span></strong> </label>
                             </div>
                             <div class="col-md-2">
-                                <label> <strong><span>Channel : </span></strong> </label>
+                                <label> <strong><span>Sales Channel : </span></strong> </label>
                             </div>
                             <div class="col-md-2">
                                 <label> <strong><span>Kloter : </span></strong> </label>
                             </div>
                             <div class="col-md-2">
-                                <label> <strong><span>Tipe Bayar : </span></strong> </label>
+                                <label> <strong><span>Tipe Pembayaran : </span></strong> </label>
                             </div>
                         </div>
                         <div class="row mt-2">
@@ -81,7 +81,7 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    <select name="sales_channel" class="form-control" id="sales_channel"> 
+                                    <select name="sales_channel_id" class="form-control" id="sales_channel_id"> 
                                         <option value=""> - Pilih Channel - </option>
                                     </select>
                                 </div>
@@ -90,12 +90,15 @@
                                 <div class="form-group">
                                     <select name="kloter" class="form-control" id="kloter"> 
                                         <option value=""> - Pilih Kloter - </option>
+                                        <option value="1">Kloter-1 </option>
+                                        <option value="2">Kloter-2 </option>
+                                        <option value="3">Kloter-3 </option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    <select name="payment_type" class="form-control" id="payment_type"> 
+                                    <select name="payment_method_id" class="form-control" id="payment_method_id"> 
                                         <option value=""> - Pilih Pembayaran - </option>
                                     </select>
                                 </div>
@@ -253,6 +256,8 @@
         });
 
         getTransaction()
+        getPaymentMethod()
+        getSalesChannel()
     });
 
     function getTransaction(){
@@ -272,6 +277,43 @@
             //serverSide: true,
         })
     }
+
+    function getPaymentMethod(){
+        $.ajax({
+            type: "GET",
+            url: "/api/payment-method",
+            data: "data",
+            dataType: "JSON",
+            success: function (response) {
+                var data = response.data
+                var option = ""
+                $("#payment_method_id").html()
+                $.each(data, function (i, val) { 
+                    option += "<option value="+val.id+"> "+val.name+" </option>"
+                });
+                $("#payment_method_id").append(option)
+            }
+        });
+    }
+
+    function getSalesChannel(){
+        $.ajax({
+            type: "GET",
+            url: "/api/sales-channel",
+            data: "data",
+            dataType: "JSON",
+            success: function (response) {
+                var data = response.data
+                var option = ""
+                $("#sales_channel_id").html()
+                $.each(data, function (i, val) { 
+                    option += "<option value="+val.id+"> "+val.name+" </option>"
+                });
+                $("#sales_channel_id").append(option)
+            }
+        });
+    }
+
 
 </script>
 
