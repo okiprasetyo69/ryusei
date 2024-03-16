@@ -82,6 +82,7 @@
                                                 <thead>
                                                     <tr class="text-center">
                                                         <th scope="col">#</th>
+                                                        <th scope="col">No Order</th>
                                                         <th scope="col">Tracking Number</th>
                                                         <th scope="col">Kode SKU</th>
                                                         <th scope="col">Quantity</th>
@@ -153,6 +154,7 @@
             let count = $('#table-add-transaction tr').length
             let row = `<tr> 
                         <td>`+count+`</td>
+                        <td><input type="text" name="order_number[]" class="form-control order_number" id="order_number"/></td>    
                         <td><input type="text" name="tracking_number[]" class="form-control tracking_number" id="tracking_number"/></td>    
                         <td ><select name="sku_id[]" class="form-control sku_id" id="sku_id" style="width:100%;"><option value=""> - Pilih Kode SKU -  </option></select></td>    
                         <td><input type="number" min="1" name="qty[]" class="form-control qty" id="qty"/></td>    

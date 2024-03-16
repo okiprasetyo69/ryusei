@@ -288,7 +288,9 @@ use Illuminate\Support\Str;
         try{
             $product = $this->product::where("sku", "like", "%" . $request->input('searchTerm'). "%")
                         ->orderBy('id', 'ASC')
-                        ->get(['id', 'sku as text', 'sku', 'name']);
+                        ->get(['id', 'sku as text', 'sku'])
+                        ->makeHidden(['image_url']);
+                        
             return response()->json($product, 200);
         }
         catch(Exception $ex){
