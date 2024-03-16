@@ -136,36 +136,11 @@
                                             <h5 class="card-title text-center">{{ $item->article }}</h5>
                                         </div>
                                         <ul class="list-group list-group-flush">
-                                            <?php 
-                                                $sizeName = "";
-                                                if($item->size == 1){
-                                                    $sizeName = "S";
-                                                } 
-
-                                                if($item->size == 2){
-                                                    $sizeName = "M";
-                                                } 
-
-                                                if($item->size == 3){
-                                                    $sizeName = "L";
-                                                } 
-
-                                                if($item->size == 4){
-                                                    $sizeName = "XL";
-                                                } 
-
-                                                if($item->size == 5){
-                                                    $sizeName = "XXL";
-                                                } 
-
-                                                if($item->size == 6){
-                                                    $sizeName = "3XL";
-                                                } 
-                                            ;?>
+                                           
                                             <li class="list-group-item">Kode SKU : {{ $item->sku }} </li>
-                                            <li class="list-group-item">{{ $item->name }} </li>
-                                            <li class="list-group-item">Ukuran: {{ $sizeName }}</li>
-                                            <li class="list-group-item">Harga : Rp. {{ number_format($item->price)}}</li>
+                                            <li class="list-group-item text-center">{{ $item->name }} </li>
+                                            <li class="list-group-item">Ukuran : {{ $item->sizes->name }}</li>
+                                            <li class="list-group-item">Harga : Rp. {{ number_format($item->price, 0, ',', '.')}}</li>
                                             <li class="list-group-item">{{ $item->status == 1 ? "Ready" : "Not Ready"}}</li>
                                             <li class="list-group-item"> Kategori : {{ $item->category->name }}</li>
                                         </ul>

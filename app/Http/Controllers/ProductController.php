@@ -57,7 +57,7 @@ class ProductController extends Controller
             }
            
         }
-        $data = $query->with('category', 'size')->paginate(6);
+        $data = $query->with('category', 'sizes')->paginate(6);
 
         return view("product.index", ["data" => $data, "category" => $category, "size" => $size]);
     }

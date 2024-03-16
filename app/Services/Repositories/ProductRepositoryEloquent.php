@@ -40,7 +40,7 @@ use Illuminate\Support\Str;
     public function getProduct(Request $request){
         try{
             
-            $product = $this->product::with('category', 'size');
+            $product = $this->product::with('category', 'sizes');
           
             if($request->name != null){
                 $product->where("name", "like", "%" . $request->name. "%");
@@ -249,7 +249,6 @@ use Illuminate\Support\Str;
                 $productUpdate->image_path = $name;
 
                 // DB::connection()->enableQueryLog();
-                //dd(DB::connection()->enableQueryLog());
                 $productUpdate->save();
             }
   
@@ -260,18 +259,17 @@ use Illuminate\Support\Str;
                     "products" => $products[$key]
                 ]);
                
-            }    
+            }
+           
             // set value product detail
             foreach ($detailsProduct as $key => $value) {
                 $productDetail = Product::find($value['id']);
-                // if($productDetail->id != null){
-                    
-                // }
+
                 $productDetail->sku = $value['products']['sku'];
                 $productDetail->article =$value['products']['article'];
                 $productDetail->size = $value['products']['size'];
                 $productDetail->price = $value['products']['price'];
-
+                //dd($$productDetail);
                 $productDetail->save();
             }
             
