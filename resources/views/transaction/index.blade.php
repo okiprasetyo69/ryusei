@@ -40,10 +40,10 @@
                                 <label> <strong><span>Tipe Pencarian : </span></strong> </label>
                             </div>
                             <div class="col-md-2">
-                                <label> <strong><span>Tanggal Awal : </span></strong> </label>
+                                <label> <strong><span>Tanggal Order : </span></strong> </label>
                             </div>
                             <div class="col-md-2">
-                                <label> <strong><span>Tanggal Akhir : </span></strong> </label>
+                                <label> <strong><span>Tanggal Proses Order : </span></strong> </label>
                             </div>
                             <div class="col-md-2">
                                 <label> <strong><span>Sales Channel : </span></strong> </label>
