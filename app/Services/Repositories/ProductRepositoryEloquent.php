@@ -283,4 +283,17 @@ use Illuminate\Support\Str;
             return false;
         }
     }
+
+    public function getProductSelect2(Request $request){
+        try{
+            $product = $this->product::where("sku", "like", "%" . $request->input('searchTerm'). "%")
+                        ->orderBy('id', 'ASC')
+                        ->get(['id', 'sku as text', 'sku', 'name']);
+            return response()->json($product, 200);
+        }
+        catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
  }

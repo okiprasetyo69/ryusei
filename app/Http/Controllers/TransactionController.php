@@ -9,4 +9,8 @@ class TransactionController extends Controller
     public function index(Request $request){
         return view("transaction.index");
     }
+
+    public function add(Request $request){
+        return view("transaction.add");
+    }
 }

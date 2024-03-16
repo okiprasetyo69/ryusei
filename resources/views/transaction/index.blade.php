@@ -23,7 +23,7 @@
                 <li class="breadcrumb-item active">
                     <a href="/transaction">Transaksi Penjualan</a>
                 </li>
-                <li class="breadcrumb-item active">
+                <li class="breadcrumb-item">
                     <a href="/transaction/add">Tambah</a>
                 </li>
             </ol>

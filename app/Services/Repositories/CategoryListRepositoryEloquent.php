@@ -13,10 +13,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
-
-
 /**
- * Class CategoryRepositoryEloquent.
+ * Class CategoryListRepositoryEloquent.
  * 
  * @author  Oki Prasetyo  <oki.prasetyo45@gmail.com>
  * @since   2024.03.12

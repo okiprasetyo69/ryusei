@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * Class CategoryRepositoryEloquent.
+ * Class SizeRepositoryEloquent.
  * 
  * @author  Oki Prasetyo  <oki.prasetyo45@gmail.com>
  * @since   2024.03.15

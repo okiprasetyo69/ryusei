@@ -201,4 +201,16 @@ class ProductController extends Controller
         }
     }
 
+    public function getProductSelect2(Request $request){
+        try{
+            $product = $this->service->getProductSelect2($request);
+            if($product != null){
+                return $product;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
 }

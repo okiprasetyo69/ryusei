@@ -76,4 +76,13 @@ interface ProductService {
      * @param Illuminate\Support\Facades\Request
      */
     public function getPaginateProduct(Request $request);
+
+     /**
+     * @author Oki Prasetyo <oki.prasetyo45@gmail.com>
+     * @since   2024.03.15
+     * Function for handle requests get product for select2.
+     * 
+     * @param Illuminate\Support\Facades\Request
+     */
+    public function getProductSelect2(Request $request);
 }

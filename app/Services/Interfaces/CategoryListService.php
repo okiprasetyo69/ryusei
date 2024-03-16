@@ -5,7 +5,7 @@ namespace App\Services\Interfaces;
 use Illuminate\Http\Request;
 
 /**
- * Interface CategoryService.
+ * Interface CategoryListService.
  * 
  * @author Oki Prasetyo <oki.prasetyo45@gmail.com>
  * @since   2024.03.12
@@ -18,7 +18,7 @@ use Illuminate\Http\Request;
      /**
      * @author Oki Prasetyo <oki.prasetyo45@gmail.com>
      * @since   2024.03.12
-     * Function for handle requests get category.
+     * Function for handle requests get category list.
      * 
      * @param Illuminate\Support\Facades\Request
      */
@@ -27,7 +27,7 @@ use Illuminate\Http\Request;
      /**
      * @author Oki Prasetyo <oki.prasetyo45@gmail.com>
      * @since   2024.03.12
-     * Function for handle requests create category.
+     * Function for handle requests create category list.
      * 
      * @param Illuminate\Support\Facades\Request
      */
@@ -36,7 +36,7 @@ use Illuminate\Http\Request;
     /**
      * @author Oki Prasetyo <oki.prasetyo45@gmail.com>
      * @since   2024.03.12
-     * Function for handle requests delete category.
+     * Function for handle requests delete category list.
      * 
      * @param Illuminate\Support\Facades\Request
      */
@@ -45,7 +45,7 @@ use Illuminate\Http\Request;
     /**
      * @author Oki Prasetyo <oki.prasetyo45@gmail.com>
      * @since   2024.03.12
-     * Function for handle requests detail category.
+     * Function for handle requests detail category list.
      * 
      * @param Illuminate\Support\Facades\Request
      */
