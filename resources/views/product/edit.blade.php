@@ -149,7 +149,7 @@
         $("#sku").val(product_detail.sku)
         $("#size").prop("selected", true).val(product_detail.size)
         $("#price").val(product_detail.price)
-        $("input[name='status']").prop("checked", true).val(product_detail.status)
+        $("input[name='status'][value="+product_detail.status+"]").attr("checked", true)
         $("#preview_image").attr("src", new_url)
 
         image_path = product_detail.image_path
@@ -208,7 +208,7 @@
                 image_path = $('#image_path')[0].files[0]
             }
 
-           if($('input[name="status"]:checked').val() == 1){
+            if($('input[name="status"]:checked').val() == 1){
                 status = 1
            } else {
                 status = 0
@@ -222,8 +222,8 @@
             formData.append("status", status)
             formData.append("products", jsonProducts)
             formData.append('category_id', $('#category_id option:selected').val())
-            formData.append('image_path', image_path)
             
+            console.log(status)
             //console.log(formData)
             $.ajax({
                 type: "POST",

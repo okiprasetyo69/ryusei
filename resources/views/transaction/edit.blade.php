@@ -18,7 +18,7 @@
                     <a href="/transaction">Transaksi Penjualan</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="/transaction/add">Tambah</a>
+                    <a href="/transaction/edit">Ubah</a>
                 </li>
             </ol>
         </nav>
@@ -68,7 +68,7 @@
                                             </li>
                                             <li class="list-group-item">
                                                 <label class="text-center"> Metode Pembayaran :  </label>
-                                                <select name="payment_method_id" id="payment_method_id" class="form-control"> 
+                                                <select name="payment_method" id="payment_method_id" class="form-control"> 
                                                     <option value=""> - Pilih Metode - </option>
                                                 </select>
                                             </li>
@@ -96,17 +96,13 @@
                                             </table>
                                         </div>
                                     </div>
-                                    <div class="col-md-12">
-                                        <div class="col-md-4">
-                                            <button type="button" class="btn btn-md btn-outline-primary" id="btn-add" ><i class="bx bxs-cart-add"></i> Add </button>
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="text-center">
-                        <button type="submit" class="btn btn-success btn-save">Simpan</button>
+                        <button type="submit" class="btn btn-success btn-save">Ubah</button>
                         <button type="reset" class="btn btn-secondary btn-reset">Reset</button>
                     </div>
                 </div>
@@ -173,104 +169,6 @@
             $(this).parent('td').parent('tr').remove(); 
         })
 
-
-        // insert
-        $("#frm-add-transaction").on("submit", function(e){
-            e.preventDefault()
-
-             // Validation form required
-            if($("#order_date").val() == ""){
-                $.alert({
-                    title: 'Pesan !',
-                    content: 'Tanggal Order tidak boleh kosong !',
-                });
-                return 
-            }
-
-            if($("#process_order_date").val() == ""){
-                $.alert({
-                    title: 'Pesan !',
-                    content: 'Tanggal Proses Order tidak boleh kosong !',
-                });
-                return 
-            }
-
-            if($("#sales_channel_id option:selected").val() == ""){
-                $.alert({
-                    title: 'Pesan !',
-                    content: 'Sales Channel tidak boleh kosong !',
-                });
-                return 
-            }
-
-            if($("#group_id option:selected").val() == ""){
-                $.alert({
-                    title: 'Pesan !',
-                    content: 'Kloter tidak boleh kosong !',
-                });
-                return 
-            }
-
-            if($("#payment_method_id option:selected").val() == ""){
-                $.alert({
-                    title: 'Pesan !',
-                    content: 'Metode Pembyaaran tidak boleh kosong !',
-                });
-                return 
-            }
-
-            var transactions = []
-
-            $("#table-add-transaction tbody tr").each(function(index){
-                order_numbers = $(this).find('.order_number').val()
-                tracking_numbers = $(this).find('.tracking_number').val()
-                sku_ids = $(this).find('.sku_id option:selected').val()
-                qtys = $(this).find('.qty').val()
-                unit_prices = $(this).find('.unit_price').val()
-                postal_codes = $(this).find('.postal_code').val()
-
-                transactions.push({order_number : order_numbers, tracking_number:tracking_numbers, sku_id:sku_ids, qty:qtys, unit_price:unit_prices, postal_code: postal_codes })
-            })
-
-            // convert to json
-            var jsonTransactions = JSON.stringify(transactions);
-
-            var formData = new FormData();
-            // set data
-            formData.append('order_date', $('#order_date').val())
-            formData.append('process_order_date', $('#process_order_date').val())
-            formData.append("sales_channel_id",  $('#sales_channel_id').val())
-            formData.append("group_id",  $('#group_id').val())
-            formData.append("payment_method_id",  $('#payment_method_id').val())
-            formData.append("transactions", jsonTransactions)
-
-            // send data to api
-            $.ajax({
-                type: "POST",
-                url: "/api/transaction/create",
-                data: formData,
-                contentType: false,
-                processData: false,
-                cache: false,
-                success: function (response) {
-                    console.log(response)
-                    if(response.status == 200){
-                        $.confirm({
-                            title: 'Pesan ',
-                            content: 'Data transaksi berhasil diperbarui !',
-                            buttons: {
-                                Ya: {
-                                    btnClass: 'btn-success any-other-class',
-                                    action: function(){
-                                        window.location.href = '/transaction'
-                                    }
-                                },
-                            }
-                        });
-                    }
-                }
-            });
-        })
       
     });
 

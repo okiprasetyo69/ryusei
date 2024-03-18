@@ -91,6 +91,7 @@ use Illuminate\Support\Str;
             $products = json_decode($request->products, true);
             $code = "";
             $name = "";
+            $status = 0;
 
             if($request->code != null){
                 $code = $request->code;
@@ -107,6 +108,13 @@ use Illuminate\Support\Str;
                 $file->move(public_path().'/uploads/product/', $name);
             }
 
+            if($request->status != null){
+                if($request->status == 1){
+                    $status = 1;
+                }else{
+                    $status = 0;
+                }
+            }
             foreach ($products as $key => $value) {
 
                 $product = new Product();
@@ -117,10 +125,11 @@ use Illuminate\Support\Str;
                 $product->name = $request->name;
                 $product->size = $value['size'];
                 $product->price = $value['price'];
-                $product->status = $request->status;
+                $product->status = $status;
                 $product->category_id = $request->category_id;
                 $product->image_path = $name;
-
+                
+                //dd($product);
                 $product->save();
             }
             
@@ -200,12 +209,20 @@ use Illuminate\Support\Str;
 
             $code = "";
             $name = "";
-            $id = null;
             $detailsProduct = [];
+            $status = 0;
 
             // convert json string to array
             $products = json_decode($request->products, true);
             $product = $product::where("code", $request->code)->get();
+
+            if($request->status != null){
+                if($request->status == 1){
+                    $status = 1;
+                }else{
+                    $status = 0;
+                }
+            }
 
              // done this code
             if($request->code != null){
@@ -231,8 +248,6 @@ use Illuminate\Support\Str;
                 } else {
                     $name = $request->image_path;
                 }
-                // remove data before insert
-                // $product->delete();
             } else{
                 $code =  Str::random(9);
             }
@@ -244,7 +259,7 @@ use Illuminate\Support\Str;
           
                 $productUpdate->code = $code;
                 $productUpdate->name = $request->name;
-                $productUpdate->status = $request->status;
+                $productUpdate->status = $status;
                 $productUpdate->category_id = $request->category_id;
                 $productUpdate->image_path = $name;
 
@@ -264,12 +279,11 @@ use Illuminate\Support\Str;
             // set value product detail
             foreach ($detailsProduct as $key => $value) {
                 $productDetail = Product::find($value['id']);
-
                 $productDetail->sku = $value['products']['sku'];
                 $productDetail->article =$value['products']['article'];
                 $productDetail->size = $value['products']['size'];
                 $productDetail->price = $value['products']['price'];
-                //dd($$productDetail);
+                
                 $productDetail->save();
             }
             

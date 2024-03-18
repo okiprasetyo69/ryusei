@@ -37,8 +37,6 @@ use Yajra\DataTables\Facades\DataTables;
 
     public function getUser(Request $request){
         try{
-
-           
             $user = $this->user::with('role');
 
             if($request->name != null){

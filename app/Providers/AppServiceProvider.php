@@ -13,6 +13,7 @@ use App\Services\Interfaces\ProductService;
 use App\Services\Interfaces\SizeService;
 use App\Services\Interfaces\SalesChannelService;
 use App\Services\Interfaces\PaymentMethodService;
+use App\Services\Interfaces\TransactionService;
 
 use App\Services\Repositories\UserRepositoryEloquent;
 use App\Services\Repositories\RoleRepositoryEloquent;
@@ -22,6 +23,7 @@ use App\Services\Repositories\ProductRepositoryEloquent;
 use App\Services\Repositories\SizeRepositoryEloquent;
 use App\Services\Repositories\SalesChannelRepositoryEloquent;
 use App\Services\Repositories\PaymentMethodRepositoryEloquent;
+use App\Services\Repositories\TransactionRepositoryEloquent;
 
 
 class AppServiceProvider extends ServiceProvider implements DeferrableProvider
@@ -41,6 +43,7 @@ class AppServiceProvider extends ServiceProvider implements DeferrableProvider
         SizeService::class => SizeRepositoryEloquent::class,
         SalesChannelService::class => SalesChannelRepositoryEloquent::class,
         PaymentMethodService::class => PaymentMethodRepositoryEloquent::class,
+        TransactionService::class => TransactionRepositoryEloquent::class,
     ];
 
     /**
@@ -63,6 +66,7 @@ class AppServiceProvider extends ServiceProvider implements DeferrableProvider
             SizeService::class,
             SalesChannelService::class,
             PaymentMethodService::class,
+            TransactionService::class,
         ];
     }
 

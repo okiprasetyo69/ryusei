@@ -56,4 +56,5 @@ Route::controller(ProductController::class)->group(function() {
 Route::controller(TransactionController::class)->group(function() {
     Route::get('/transaction', 'index')->name('transaction');
     Route::get('/transaction/add', 'add')->name('transaction.add');
+    Route::get('/transaction/edit/{id}', 'edit')->name('transaction.edit');
 });

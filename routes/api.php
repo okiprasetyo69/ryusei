@@ -10,6 +10,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\SalesChannelController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\TransactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -82,4 +83,12 @@ Route::controller(SalesChannelController::class)->group(function() {
 Route::controller(PaymentMethodController::class)->group(function() {
     Route::get('/payment-method', 'getPaymentMethod')->name('payment.method.data');
     
+});
+
+// Manage Transaction
+Route::controller(TransactionController::class)->group(function() {
+    Route::get('/transaction', 'getTransaction')->name('transaction.data');
+    Route::post('/transaction/create', 'create')->name('transaction.create');
+    Route::post('/transaction/delete', 'delete')->name('transaction.delete');
+    Route::post('/transaction/detail', 'detail')->name('transaction.detail');
 });
