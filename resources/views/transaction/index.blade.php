@@ -173,10 +173,17 @@
 
 <script type="text/javascript"> 
     var table
+    var order_date
+    var process_order_date
+    var order_number
+    var tracking_number
+    var sku_code
+
     $(document).ready(function () {
         var now = new Date();
         var month = (now.getMonth() + 1);               
         var day = now.getDate();
+
         if (month < 10) 
             month = "0" + month;
         if (day < 10) 
@@ -198,17 +205,19 @@
 
         $("#filter_name").hide()
 
+        // filter type
         $("#search_type").change(function (e) { 
             e.preventDefault();
             var value = this.value
             if(value == "" ){
                 $("#filter_name").hide()
             }
-
+            // Search
             if(value == 1){
                 $("#filter_name").show()
                 $("#filter_name").attr('placeholder','Masukkan nomor order').focus();
             }
+
             if(value == 2){
                 $("#filter_name").show()
                 $("#filter_name").attr('placeholder','Masukkan tracking number').focus();
@@ -218,6 +227,9 @@
                 $("#filter_name").attr('placeholder','Masukkan Kode SKU').focus();
             }
         });
+
+
+
 
         getTransaction()
         getPaymentMethod()
@@ -435,7 +447,7 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html(rowData.product.size);
+                        $(td).html(rowData.product.sizes.name);
                     },
                 },
                 {

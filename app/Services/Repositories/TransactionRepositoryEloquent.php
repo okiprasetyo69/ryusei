@@ -40,7 +40,13 @@ use Yajra\DataTables\Facades\DataTables;
     public function getTransaction(Request $request){
         try{
 
-            $transaction = $this->transaction::with('channel', 'product', 'payment', 'product.category');
+            $transaction = $this->transaction::with('channel', 'product', 'payment', 'product.category', 'product.sizes');
+
+            if( ($request->limit != null) && $request->page != null){
+                $offset = ($request->page - 1) * $request->limit;
+
+                $transaction->offset($offset)->limit($request->limit);
+            }
 
             if($request->order_number != null){
                 $transaction->where("order_number", "like", "%" . $request->order_number. "%");
