@@ -89,6 +89,7 @@ Route::controller(PaymentMethodController::class)->group(function() {
 Route::controller(TransactionController::class)->group(function() {
     Route::get('/transaction', 'getTransaction')->name('transaction.data');
     Route::post('/transaction/create', 'create')->name('transaction.create');
+    Route::post('/transaction/update', 'update')->name('transaction.update');
     Route::post('/transaction/delete', 'delete')->name('transaction.delete');
     Route::post('/transaction/detail', 'detail')->name('transaction.detail');
 });

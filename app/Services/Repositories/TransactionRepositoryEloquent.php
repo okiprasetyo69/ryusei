@@ -99,7 +99,112 @@ use Yajra\DataTables\Facades\DataTables;
     }
 
     public function create(Request $request){
-       try{
+        try{
+                $transaction = $this->transaction;
+                $transaction->fill($request->all());
+
+                // convert to array from json params
+                $transactions = json_decode($request->transactions, true);
+                $adminCharge= 0;
+
+                if($request->id != null){
+                    $transaction = $transaction::find($request->id);
+                }
+
+                foreach ($transactions as $key => $value) {
+                    $transaction = new Transaction();
+
+                    $transaction->sales_channel_id = $request->sales_channel_id;
+                    $transaction->order_number = $value['order_number'];
+                    $transaction->tracking_number = $value['tracking_number'];
+                    $transaction->sku_id = $value['sku_id'];
+                    $transaction->qty = $value['qty'];
+                    $transaction->unit_price = $value['unit_price'];
+                    $transaction->order_date =  $request->order_date;
+                    $transaction->process_order_date =  $request->process_order_date;
+                    $transaction->group_id =  $request->group_id;
+                    $transaction->payment_method_id =  $request->payment_method_id;
+                    $transaction->postal_code =  $value['postal_code'];
+                    $transaction->total =  $value['qty'] *  $value['unit_price'];
+
+                    // admin charge
+                    if($request->sales_channel_id != null){
+                        $salesChannel =  SalesChannel::find($request->sales_channel_id);
+                        $adminCharge = $salesChannel->admin_charge;
+                    
+                        if($adminCharge!= null){
+                            // admin charge
+                            $transaction->admin_charge = intval(($value['qty'] *  $value['unit_price']) * ($adminCharge/100));
+                        
+                            // total bersih
+                            $transaction->total_net = intval($transaction->total - ($transaction->total * ($adminCharge/100)));
+                        }
+                    }
+                    
+                    // discount
+                    $unitPrice = $value['unit_price'];
+                    if($value['sku_id'] != null){
+                        // find barcode price
+                        $product = Product::find($value['sku_id']);
+                        // calculate discount
+                        $discount =(1 -  $unitPrice / $product->price) * 100 ;
+                        $transaction->discount =  $discount;
+                    }
+                    $transaction->save();
+                }
+
+                return response()->json([
+                    'status' => 200,
+                    'message' => true,
+                    'data' => $transaction
+                ]); 
+
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function delete(Request $request){
+        try{
+            $transaction = $this->transaction::where("id", $request->id)->first();
+            if($transaction == null){
+                return response()->json([
+                    'data' => null,
+                    'message' => 'Data not found',
+                    'status' => 400
+                ]);
+            }
+
+            $transaction->delete();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Success delete transaction.',
+            ]);
+
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function detail(Request $request){
+        try{
+            $transaction = $this->transaction::where("id", $request->id)->first();
+            return response()->json([
+                'status' => 200,
+                'message' => true,
+                'data' => $transaction
+            ]);
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function update(Request $request){
+        try{
+
             $transaction = $this->transaction;
             $transaction->fill($request->all());
 
@@ -111,68 +216,56 @@ use Yajra\DataTables\Facades\DataTables;
                 $transaction = $transaction::find($request->id);
             }
 
-            foreach ($transactions as $key => $value) {
-                $transaction = new Transaction();
+            $transaction->order_number = $transactions[0]['order_number'];
+            $transaction->tracking_number = $transactions[0]['tracking_number'];
+            $transaction->sku_id = $transactions[0]['sku_id'];
+            $transaction->qty = $transactions[0]['qty'];
+            $transaction->unit_price = $transactions[0]['unit_price'];
+            $transaction->postal_code = $transactions[0]['postal_code'];
+            $transaction->order_date = $request->order_date;
+            $transaction->process_order_date = $request->process_order_date;
+            $transaction->group_id = $request->group_id;
+            $transaction->payment_method_id = $request->payment_method_id;
+            $transaction->total =  $transactions[0]['qty'] *  $transactions[0]['unit_price'];
 
+            if($request->sales_channel_id != null){
                 $transaction->sales_channel_id = $request->sales_channel_id;
-                $transaction->order_number = $value['order_number'];
-                $transaction->tracking_number = $value['tracking_number'];
-                $transaction->sku_id = $value['sku_id'];
-                $transaction->qty = $value['qty'];
-                $transaction->unit_price = $value['unit_price'];
-                $transaction->order_date =  $request->order_date;
-                $transaction->process_order_date =  $request->process_order_date;
-                $transaction->group_id =  $request->group_id;
-                $transaction->payment_method_id =  $request->payment_method_id;
-                $transaction->postal_code =  $value['postal_code'];
-                $transaction->total =  $value['qty'] *  $value['unit_price'];
-
-                // admin charge
-                if($request->sales_channel_id != null){
-                    $salesChannel =  SalesChannel::find($request->sales_channel_id);
-                    $adminCharge = $salesChannel->admin_charge;
-                   
-                    if($adminCharge!= null){
-                        // admin charge
-                        $transaction->admin_charge = intval(($value['qty'] *  $value['unit_price']) * ($adminCharge/100));
-                       
-                        // total bersih
-                        $transaction->total_net = intval($transaction->total - ($transaction->total * ($adminCharge/100)));
-                    }
-                }
+                $salesChannel =  SalesChannel::find($request->sales_channel_id);
+                $adminCharge = $salesChannel->admin_charge;
+            
+                if($adminCharge!= null){
+                    // admin charge
+                    $transaction->admin_charge = intval(($transactions[0]['qty'] *  $transactions[0]['unit_price']) * ($adminCharge/100));
                 
-                // discount
-                $unitPrice = $value['unit_price'];
-                if($value['sku_id'] != null){
-                    // find barcode price
-                    $product = Product::find($value['sku_id']);
-                    // calculate discount
-                    $discount =(1 -  $unitPrice / $product->price) * 100 ;
-                    
-                    $transaction->discount =  $discount;
+                    // total bersih
+                    $transaction->total_net = intval($transaction->total - ($transaction->total * ($adminCharge/100)));
                 }
-
-                $transaction->save();
+            
             }
 
+            // discount
+            $unitPrice = $transactions[0]['unit_price'];
+            if($transactions[0]['sku_id'] != null){
+                // find barcode price
+                $product = Product::find($transactions[0]['sku_id']);
+                // calculate discount
+                $discount =(1 -  $unitPrice / $product->price) * 100 ;
+                $transaction->discount =  $discount;
+            }
+
+           
+            $transaction->save();
             return response()->json([
                 'status' => 200,
                 'message' => true,
                 'data' => $transaction
             ]); 
 
-       }catch(Exception $ex){
-        Log::error($ex->getMessage());
-        return false;
-    }
-    }
 
-    public function delete(Request $request){
-        return true;
-    }
-
-    public function detail(Request $request){
-        return true;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
     }
 
  }

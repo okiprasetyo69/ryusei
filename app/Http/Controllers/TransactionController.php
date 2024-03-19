@@ -12,6 +12,8 @@ use Exception;
 use Illuminate\Support\Facades\Log;
 
 use App\Models\Transaction;
+use App\Models\SalesChannel;
+use App\Models\PaymentMethod;
 use App\Services\Interfaces\TransactionService;
 
 class TransactionController extends Controller
@@ -37,7 +39,10 @@ class TransactionController extends Controller
     }
 
     public function edit(Request $request){
-        return view("transaction.edit");
+        $transaction = Transaction::with('product')->find($request->id);
+        $saleschannel = SalesChannel::all();
+        $paymentmethod = PaymentMethod::all();
+        return view("transaction.edit",  compact('transaction', 'saleschannel', 'paymentmethod'));
     }
 
     // API
@@ -116,4 +121,31 @@ class TransactionController extends Controller
         $transaction = $this->service->detail($request);
         return $transaction;
     }   
+
+    public function update(Request $request){
+        $validator = Validator::make(
+            $request->all(), [
+                'sales_channel_id' => 'required',
+                'order_date' => 'required',
+                'process_order_date' => 'required',
+                'group_id' => 'required',
+                'payment_method_id' => 'required',
+                'transactions' => 'required',
+            ]
+        );
+
+        if($validator->fails()){
+            return response()->json([
+                'data' => null,
+                'message' => $validator->errors()->first(),
+                'status' => 422
+            ]);
+        }
+
+        $transaction = $this->service->update($request);
+
+        if($transaction) {
+            return $transaction;
+        }
+    }
 }

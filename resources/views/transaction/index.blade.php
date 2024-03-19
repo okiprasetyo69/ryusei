@@ -35,76 +35,69 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="row mt-4">
-                            <div class="col-md-2">
-                                <label> <strong><span>Tipe Pencarian : </span></strong> </label>
-                            </div>
-                            <div class="col-md-2">
-                                <label> <strong><span>Tanggal Order : </span></strong> </label>
-                            </div>
-                            <div class="col-md-2">
-                                <label> <strong><span>Tanggal Proses Order : </span></strong> </label>
-                            </div>
-                            <div class="col-md-2">
-                                <label> <strong><span>Sales Channel : </span></strong> </label>
-                            </div>
-                            <div class="col-md-2">
-                                <label> <strong><span>Kloter : </span></strong> </label>
-                            </div>
-                            <div class="col-md-2">
-                                <label> <strong><span>Tipe Pembayaran : </span></strong> </label>
-                            </div>
-                        </div>
                         <div class="row mt-2">
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <select name="search_type" id="search_type" class="form-control">
-                                        <option value=""> - Pilih Tipe -</option>
-                                        <option value="1"> Nomor Order </option>
-                                        <option value="2"> Tracking Number </option>
-                                        <option value="3"> Kode SKU </option>
-                                    </select>
+                            <div class="col-md-4"> 
+                                <div class="col mt-2">
+                                    <label> <strong><span> Pencarian : </span></strong> </label>
+                                    <div class="form-group">
+                                        <select name="search_type" id="search_type" class="form-control">
+                                            <option value=""> - Pilih Tipe -</option>
+                                            <option value="1"> Nomor Order </option>
+                                            <option value="2"> Tracking Number </option>
+                                            <option value="3"> Kode SKU </option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mt-2">
+                                        <input type="text" name="filter_name" class="form-control" id="filter_name" placeholder="Masukkan kata kunci" autofocus/>
+                                    </div>
                                 </div>
-                                <div class="form-group mt-4">
-                                <input type="text" name="filter_name" class="form-control" id="filter_name" placeholder="Masukkan kata kunci" autofocus/>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <input type="text" class="form-control" id="start_date">
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <input type="text" class="form-control" id="end_date">
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <select name="sales_channel_id" class="form-control" id="sales_channel_id"> 
-                                        <option value=""> - Pilih Channel - </option>
-                                    </select>
+                                <div class="col mt-2">
+                                    <label> <strong><span>Sales Channel : </span></strong> </label>
+                                    <div class="form-group">
+                                        <select name="sales_channel_id" class="form-control" id="sales_channel_id"> 
+                                            <option value=""> - Pilih Channel - </option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <select name="kloter" class="form-control" id="kloter"> 
-                                        <option value=""> - Pilih Kloter - </option>
-                                        <option value="1">Kloter-1 </option>
-                                        <option value="2">Kloter-2 </option>
-                                        <option value="3">Kloter-3 </option>
-                                    </select>
+                            <div class="col-md-4"> 
+                                <div class="col mt-2">
+                                    <label> <strong><span>Kloter : </span></strong> </label>
+                                    <div class="form-group">
+                                        <select name="kloter" class="form-control" id="kloter"> 
+                                            <option value=""> - Pilih Kloter - </option>
+                                            <option value="1">Kloter-1 </option>
+                                            <option value="2">Kloter-2 </option>
+                                            <option value="3">Kloter-3 </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col mt-2">
+                                    <label> <strong><span>Tipe Pembayaran : </span></strong> </label>
+                                    <div class="form-group">
+                                        <select name="payment_method_id" class="form-control" id="payment_method_id"> 
+                                            <option value=""> - Pilih Pembayaran - </option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <select name="payment_method_id" class="form-control" id="payment_method_id"> 
-                                        <option value=""> - Pilih Pembayaran - </option>
-                                    </select>
+                            <div class="col-md-4">
+                                <div class="col mt-2"> 
+                                    <label> <strong><span>Tanggal Order : </span></strong> </label>
+                                    <div class="form-group">
+                                            <input type="text" class="form-control" id="order_date">
+                                        </div>
+                                    </div>
+                                    <label class="mt-2"> <strong><span>Tanggal Proses Order : </span></strong> </label>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="process_order_date">
+                                    </div>
                                 </div>
+                            </div>
+                            <div class="col-md-4 mt-2">
+                                <button type="button" class="btn btn-sm btn-success rounded-pill float-right" id="btn-search"><i class="bi bi-search"></i> Cari </button>
                             </div>
                         </div>
-                      
                         
                     </div>
                 </div>
@@ -146,12 +139,6 @@
                                                 <th scope="col">Customer Code</th>
                                                 <th scope="col">Tgl Order</th>
                                                 <th scope="col">No Order</th>
-                                                <th scope="col">Bundle / Satuan</th>
-                                                <th scope="col">1 / > 1</th>
-                                                <th scope="col">HPP</th>
-                                                <th scope="col">Total HPP</th>
-                                                <th scope="col">Order Status</th>
-                                                <th scope="col">Order Status Sales Channel</th>
                                                 <th scope="col">Aksi</th>
                                             </tr>
                                         </thead>
@@ -178,6 +165,8 @@
     var order_number
     var tracking_number
     var sku_code
+    var sales_channel_id
+    var payment_method_id
 
     $(document).ready(function () {
         var now = new Date();
@@ -191,17 +180,17 @@
         var today = now.getFullYear() + '-' + month + '-' + day;
        
 
-        $( "#start_date" ).datepicker({
+        $( "#order_date" ).datepicker({
             format: 'yyyy-mm-dd',
             defaultDate: new Date(),
         });
-        $('#start_date').val(today);
+        $('#order_date').val(today);
 
-        $("#end_date" ).datepicker({
+        $("#process_order_date" ).datepicker({
             format: 'yyyy-mm-dd',
             defaultDate: new Date(),
         });
-        $('#end_date').val(today);
+        $('#process_order_date').val(today);
 
         $("#filter_name").hide()
 
@@ -216,27 +205,50 @@
             if(value == 1){
                 $("#filter_name").show()
                 $("#filter_name").attr('placeholder','Masukkan nomor order').focus();
+
+                $("#filter_name").on("keyup press", function(e){
+                    e.preventDefault()
+                    order_number = $("#filter_name").val()
+                    getTransaction(order_number)
+                })
+              
             }
 
             if(value == 2){
                 $("#filter_name").show()
                 $("#filter_name").attr('placeholder','Masukkan tracking number').focus();
+                $("#filter_name").on("keyup press", function(e){
+                    e.preventDefault()
+                    tracking_number = $("#filter_name").val()
+                    getTransaction(order_number=null, tracking_number)
+                })
             }
             if(value == 3){
                 $("#filter_name").show()
                 $("#filter_name").attr('placeholder','Masukkan Kode SKU').focus();
+                $("#filter_name").on("keyup press", function(e){
+                    e.preventDefault()
+                    sku_code = $("#filter_name").val()
+                    getTransaction(order_number=null, tracking_number=null, sku_code)
+                })
             }
         });
 
+        $("#btn-search").on("click", function(e){
+            e.preventDefault()
+            order_date = $( "#order_date" ).val()
+            process_order_date = $( "#process_order_date" ).val()
+            sales_channel_id = $("#sales_channel_id option:selected").val()
+            payment_method_id = $("#payment_method_id option:selected").val()
+            getTransaction(order_number=order_number, tracking_number=tracking_number, sku_code= sku_code, order_date = order_date, process_order_date=process_order_date, sales_channel_id=sales_channel_id, payment_method_id=payment_method_id)
+        })
 
-
-
-        getTransaction()
+        getTransaction(order_number=null, tracking_number=null, sku_code= null, order_date = order_date, process_order_date=process_order_date, sales_channel_id=null, payment_method_id=null)
         getPaymentMethod()
         getSalesChannel()
     });
 
-    function getTransaction(){
+    function getTransaction(order_number=null, tracking_number=null, sku_code= null, order_date = null, process_order_date=null, sales_channel_id=null, payment_method_id=null){
         table = $("#table-transaction").DataTable({
             "fixedColumns": true,
             "fixedColumns": {
@@ -356,24 +368,7 @@
                 {
                     data: null,
                 },
-                {
-                    data: null,
-                },
-                {
-                    data: null,
-                },
-                {
-                    data: null,
-                },
-                {
-                    data: null,
-                },
-                {
-                    data: null,
-                },
-                {
-                    data: null,
-                }
+
             ],
             "columnDefs": [
                 {
@@ -608,7 +603,8 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html("Customer Name");
+                        var customer_name = rowData.channel.name
+                        $(td).html(customer_name);
                     },
                 },
                 {
@@ -616,7 +612,8 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html("Customer Code");
+                        var customer_code = rowData.channel.code
+                        $(td).html(customer_code);
                     },
                 },
                 {
@@ -640,56 +637,7 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html("-");
-                    },
-                },
-                {
-                    targets: 29,
-                    searchable: false,
-                    orderable: false,
-                    createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html("-");
-                    },
-                },
-                {
-                    targets: 30,
-                    searchable: false,
-                    orderable: false,
-                    createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html("-");
-                    },
-                },
-                {
-                    targets: 31,
-                    searchable: false,
-                    orderable: false,
-                    createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html("-");
-                    },
-                },
-                {
-                    targets: 32,
-                    searchable: false,
-                    orderable: false,
-                    createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html("-");
-                    },
-                },
-                {
-                    targets: 33,
-                    searchable: false,
-                    orderable: false,
-                    createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html("-");
-                    },
-                },
-               
-                {
-                    targets: 34,
-                    searchable: false,
-                    orderable: false,
-                    createdCell: function (td, cellData, rowData, row, col) {
-                        var html = "<button type='button' class='btn btn-sm btn-warning' onclick='detail("+rowData.id+")' > Ubah </button> <button type='button' class='btn btn-sm btn-danger' onclick='confirm("+rowData.id+")'> Hapus </button>"
+                        var html = "<a class='btn btn-sm btn-warning' href='/transaction/edit/"+rowData.id+" '> Ubah </a> <button type='button' class='btn btn-sm btn-danger' onclick='confirm("+rowData.id+")'> Hapus </button>"
                         $(td).html(html);
                     },
                 },
@@ -701,7 +649,13 @@
                         _token: "{{ csrf_token() }}",
                         limit: length,
                         page: pages,
-                       // name: name
+                        order_number : order_number,
+                        tracking_number : tracking_number,
+                        sku: sku_code,
+                        order_date : order_date,
+                        process_order_date : process_order_date,
+                        sales_channel_id : sales_channel_id,
+                        payment_method_id: payment_method_id
                     }, 
                     function(res) {
                         callback({
@@ -750,6 +704,50 @@
         });
     }
 
+    function confirm(id){
+        $.confirm({
+            title: 'Pesan ',
+            content: 'Apa anda yakin akan menghapus data ini ?',
+            buttons: {
+                Ya: {
+                    btnClass: 'btn-red any-other-class',
+                    action: function(){
+                        remove(id)
+                    }
+                },
+                Batal: {
+                    btnClass: 'btn-secondary',
+                },
+            }
+        });
+    }
+
+    function remove(id){
+        $.ajax({
+            type: "POST",
+            url: "/api/transaction/delete",
+            data: {
+                id : id,
+            },
+            dataType: "JSON",
+            success: function (response) {
+                if(response.status == 200){
+                    $.confirm({
+                        title: 'Pesan',
+                        content: 'Data kategori berhasil dihapus !',
+                        buttons: {
+                            Ya: {
+                                btnClass: 'btn-success any-other-class',
+                                action: function(){
+                                    getTransaction()
+                                }
+                            },
+                        }
+                    });
+                }
+            }
+        });
+    }
 
 </script>
 
