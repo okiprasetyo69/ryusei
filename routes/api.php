@@ -76,7 +76,10 @@ Route::controller(ProductController::class)->group(function() {
 // Manage Sales Channel
 Route::controller(SalesChannelController::class)->group(function() {
     Route::get('/sales-channel', 'getSalesChannel')->name('sales.channel.data');
-    
+    Route::get('/sales-channel/datatable', 'getSalesChannelDatatable')->name('sales.channel.data-table');
+    Route::post('/sales-channel/create', 'create')->name('sales.channel.create');
+    Route::post('/sales-channel/detail', 'detail')->name('sales.channel.detail');
+    Route::post('/sales-channel/delete', 'delete')->name('sales.channel.delete');
 });
 
 // Manage Payment Method

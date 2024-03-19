@@ -8,6 +8,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ListCategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\SalesChannelController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,6 +44,11 @@ Route::controller(CategoryController::class)->group(function() {
 // Category List Menu
 Route::controller(ListCategoryController::class)->group(function() {
     Route::get('/category/list', 'index')->name('category.list');
+});
+
+// Sales Channel Menu
+Route::controller(SalesChannelController::class)->group(function() {
+    Route::get('/sales-channel', 'salesChannelPage')->name('sales-channel');
 });
 
 // Product Menu

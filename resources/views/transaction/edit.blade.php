@@ -18,7 +18,7 @@
                     <a href="/transaction">Transaksi Penjualan</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="/transaction/add">Tambah</a>
+                    <a href="/transaction/edit/{{ $transaction->id}}">Ubah</a>
                 </li>
             </ol>
         </nav>
