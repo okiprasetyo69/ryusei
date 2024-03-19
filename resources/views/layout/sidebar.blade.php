@@ -130,7 +130,7 @@
         </a>
       </li>
       <li>
-        <a href="#">
+        <a href="/sales-channel">
           <i class="bi bi-circle"></i><span>Kontak Pelanggan</span>
         </a>
       </li>
@@ -145,7 +145,7 @@
         </a>
       </li>
       <li>
-        <a href="/sales-channel">
+        <a href="#">
           <i class="bi bi-circle"></i><span>Pengaturan</span>
         </a>
       </li>

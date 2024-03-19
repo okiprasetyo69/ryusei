@@ -64,7 +64,7 @@
                                 <div class="col mt-2">
                                     <label> <strong><span>Kloter : </span></strong> </label>
                                     <div class="form-group">
-                                        <select name="kloter" class="form-control" id="kloter"> 
+                                        <select name="group_id" class="form-control" id="group_id"> 
                                             <option value=""> - Pilih Kloter - </option>
                                             <option value="1">Kloter-1 </option>
                                             <option value="2">Kloter-2 </option>
@@ -167,6 +167,7 @@
     var sku_code
     var sales_channel_id
     var payment_method_id
+    var group_id
 
     $(document).ready(function () {
         var now = new Date();
@@ -240,15 +241,16 @@
             process_order_date = $( "#process_order_date" ).val()
             sales_channel_id = $("#sales_channel_id option:selected").val()
             payment_method_id = $("#payment_method_id option:selected").val()
-            getTransaction(order_number=order_number, tracking_number=tracking_number, sku_code= sku_code, order_date = order_date, process_order_date=process_order_date, sales_channel_id=sales_channel_id, payment_method_id=payment_method_id)
+            group_id = $("#group_id option:selected").val()
+            getTransaction(order_number=order_number, tracking_number=tracking_number, sku_code= sku_code, order_date = order_date, process_order_date=process_order_date, sales_channel_id=sales_channel_id, payment_method_id=payment_method_id, group_id)
         })
 
-        getTransaction(order_number=null, tracking_number=null, sku_code= null, order_date = order_date, process_order_date=process_order_date, sales_channel_id=null, payment_method_id=null)
+        getTransaction(order_number=null, tracking_number=null, sku_code= null, order_date = order_date, process_order_date=process_order_date, sales_channel_id=null, payment_method_id=null, group_id=null)
         getPaymentMethod()
         getSalesChannel()
     });
 
-    function getTransaction(order_number=null, tracking_number=null, sku_code= null, order_date = null, process_order_date=null, sales_channel_id=null, payment_method_id=null){
+    function getTransaction(order_number=null, tracking_number=null, sku_code= null, order_date = null, process_order_date=null, sales_channel_id=null, payment_method_id=null, group_id=null){
         table = $("#table-transaction").DataTable({
             "fixedColumns": true,
             "fixedColumns": {
@@ -655,7 +657,8 @@
                         order_date : order_date,
                         process_order_date : process_order_date,
                         sales_channel_id : sales_channel_id,
-                        payment_method_id: payment_method_id
+                        payment_method_id: payment_method_id,
+                        group_id : group_id
                     }, 
                     function(res) {
                         callback({
@@ -697,7 +700,7 @@
                 var option = ""
                 $("#sales_channel_id").html()
                 $.each(data, function (i, val) { 
-                    option += "<option value="+val.id+"> "+val.name+" </option>"
+                    option += "<option value="+val.id+"> "+val.name+" - "+val.year+" </option>"
                 });
                 $("#sales_channel_id").append(option)
             }

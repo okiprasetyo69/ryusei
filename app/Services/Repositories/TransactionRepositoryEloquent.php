@@ -78,10 +78,6 @@ use Yajra\DataTables\Facades\DataTables;
                 $transaction->where("group_id",  $request->group_id);
             }
 
-            if($request->group_id != null ){
-                $transaction->where("group_id",  $request->group_id);
-            }
-
             if($request->payment_method_id != null ){
                 $transaction->where("payment_method_id",  $request->payment_method_id);
             }
