@@ -42,7 +42,9 @@ class TransactionController extends Controller
         $transaction = Transaction::with('product')->find($request->id);
         $saleschannel = SalesChannel::all();
         $paymentmethod = PaymentMethod::all();
-        return view("transaction.edit",  compact('transaction', 'saleschannel', 'paymentmethod'));
+        $admincharge = SalesChannel::where("id", $transaction->sales_channel_id)->first();
+
+        return view("transaction.edit",  compact('transaction', 'saleschannel', 'paymentmethod', 'admincharge'));
     }
 
     // API

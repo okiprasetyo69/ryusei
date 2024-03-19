@@ -56,6 +56,9 @@
                                                 <select name="sales_channel_id" id="sales_channel_id" class="form-control"> 
                                                     <option value=""> - Pilih Sales Channel - </option>
                                                 </select>
+                                                <label class="mt-2"> 
+                                                    Admin :  <span class="badge bg-success" id="admin_charge"></span>
+                                                </label>
                                             </li>
                                             <li class="list-group-item">
                                                 <label class="text-center"> Kloter :  </label>
@@ -173,7 +176,16 @@
             $(this).parent('td').parent('tr').remove(); 
         })
 
-
+        $("#sales_channel_id").change(function(e){
+            e.preventDefault()
+            var selectedOption = $(this).find('option:selected');
+            var dataId = selectedOption.data('id');
+            if(dataId == null){
+                dataId = 0
+            }
+            $("#admin_charge").text(dataId + " %")
+        })
+        
         // insert
         $("#frm-add-transaction").on("submit", function(e){
             e.preventDefault()
@@ -284,8 +296,9 @@
                 var data = response.data
                 var option = ""
                 $("#sales_channel_id").html()
+                $("#admin_charge").html()
                 $.each(data, function (i, val) { 
-                    option += "<option value="+val.id+"> "+val.name+" </option>"
+                    option += "<option value="+val.id+" data-id="+val.admin_charge+"> "+val.name+" - "+val.year+"</option>"
                 });
                 $("#sales_channel_id").append(option)
             }

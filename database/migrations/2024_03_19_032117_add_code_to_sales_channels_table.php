@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('sales_channels', function (Blueprint $table) {
             $table->string('code')->nullable();
+            $table->integer('year')->nullable();
         });
     }
 
@@ -23,6 +24,7 @@ return new class extends Migration
     {
         Schema::table('sales_channels', function (Blueprint $table) {
             $table->dropColumn('code');
+            $table->dropColumn('year');
         });
     }
 };

@@ -57,9 +57,12 @@
                                                 <select name="sales_channel_id" id="sales_channel_id" class="form-control"> 
                                                     <option value="" > - Pilih Sales Channel - </option>
                                                     @foreach ($saleschannel as $item)
-                                                        <option value="{{ $item->id }}" {{ $item->id == $transaction->sales_channel_id ? "selected" : "" }}> {{ $item->name }} </option>
+                                                        <option value="{{ $item->id }}" data-id="{{$item->admin_charge }}" {{ $item->id == $transaction->sales_channel_id ? "selected" : "" }}> {{ $item->name }} - {{ $item->year}}</option>
                                                     @endforeach
                                                 </select>
+                                                <label class="mt-2"> 
+                                                    Admin :  <span class="badge bg-success" id="admin_charge"> {{ $admincharge->admin_charge ? $admincharge->admin_charge : 0}} %</span>
+                                                </label>
                                             </li>
                                             <li class="list-group-item">
                                                 <label class="text-center"> Kloter :  </label>
@@ -162,7 +165,6 @@
         var today = now.getFullYear() + '-' + month + '-' + day;
 
         // passing data current
-
         $("#id").val(transaction.id)
         $("#order_date").val(transaction.order_date)
         $("#process_order_date").val(transaction.process_order_date)
@@ -187,6 +189,16 @@
             $(this).parent('td').parent('tr').remove(); 
         })
 
+        // on change admin charge
+        $("#sales_channel_id").change(function(e){
+            e.preventDefault()
+            var selectedOption = $(this).find('option:selected');
+            var dataId = selectedOption.data('id');
+            if(dataId == ""){
+                dataId = 0
+            }
+            $("#admin_charge").text(dataId + " %")
+        })
 
         // insert
         $("#frm-add-transaction").on("submit", function(e){

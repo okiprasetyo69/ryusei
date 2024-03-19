@@ -16,6 +16,7 @@ class SalesChannel extends Model
     protected $fillable = [
         'name',
         'admin_charge',
-        'code'
+        'code',
+        'year'
     ];
 }
