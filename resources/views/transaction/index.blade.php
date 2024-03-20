@@ -3,6 +3,7 @@
 @section('title','Transaksi')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/fixedcolumns/5.0.0/css/fixedColumns.dataTables.css" rel="stylesheet" />
 <style> 
     th, td { white-space: nowrap; }
     div.dataTables_wrapper {
@@ -249,6 +250,7 @@
         loadTransaction(null, null, null, order_date, process_order_date, null, null, null)
         getPaymentMethod()
         getSalesChannel()
+      
     });
 
     function loadTransaction(order_number=null, tracking_number=null, sku_code= null, order_date = null, process_order_date=null, sales_channel_id=null, payment_method_id=null, group_id=null){
@@ -1153,6 +1155,8 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.js"></script>
+<script src="https://cdn.datatables.net/fixedcolumns/5.0.0/js/fixedColumns.dataTables.js"></script>
+<script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
 @endsection
 @section('pagespecificscripts')
    
