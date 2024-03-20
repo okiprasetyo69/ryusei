@@ -189,7 +189,7 @@ use Illuminate\Support\Str;
 
     public function listProduct(Request $request){
         try{
-            $product = $this->product::where("code", $request->code)->get();
+            $product = $this->product::with('sizes')->where("code", $request->code)->get();
             return response()->json([
                 'status' => 200,
                 'message' => true,
@@ -215,7 +215,7 @@ use Illuminate\Support\Str;
             // convert json string to array
             $products = json_decode($request->products, true);
             $product = $product::where("code", $request->code)->get();
-
+           
             if($request->status != null){
                 if($request->status == 1){
                     $status = 1;
@@ -273,7 +273,6 @@ use Illuminate\Support\Str;
                     "id" => $value->id,
                     "products" => $products[$key]
                 ]);
-               
             }
            
             // set value product detail
@@ -283,7 +282,6 @@ use Illuminate\Support\Str;
                 $productDetail->article =$value['products']['article'];
                 $productDetail->size = $value['products']['size'];
                 $productDetail->price = $value['products']['price'];
-                
                 $productDetail->save();
             }
             

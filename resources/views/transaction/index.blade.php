@@ -210,9 +210,8 @@
                 $("#filter_name").on("keyup press", function(e){
                     e.preventDefault()
                     order_number = $("#filter_name").val()
-                    getTransaction(order_number)
+                    loadTransaction(order_number)
                 })
-              
             }
 
             if(value == 2){
@@ -221,7 +220,7 @@
                 $("#filter_name").on("keyup press", function(e){
                     e.preventDefault()
                     tracking_number = $("#filter_name").val()
-                    getTransaction(order_number=null, tracking_number)
+                    loadTransaction(null, tracking_number)
                 })
             }
             if(value == 3){
@@ -230,7 +229,7 @@
                 $("#filter_name").on("keyup press", function(e){
                     e.preventDefault()
                     sku_code = $("#filter_name").val()
-                    getTransaction(order_number=null, tracking_number=null, sku_code)
+                    loadTransaction(null, null, sku_code)
                 })
             }
         });
@@ -242,14 +241,411 @@
             sales_channel_id = $("#sales_channel_id option:selected").val()
             payment_method_id = $("#payment_method_id option:selected").val()
             group_id = $("#group_id option:selected").val()
-            getTransaction(order_number=order_number, tracking_number=tracking_number, sku_code= sku_code, order_date = order_date, process_order_date=process_order_date, sales_channel_id=sales_channel_id, payment_method_id=payment_method_id, group_id)
+            loadTransaction(order_number=order_number, tracking_number=tracking_number, sku_code= sku_code, order_date = order_date, process_order_date=process_order_date, sales_channel_id=sales_channel_id, payment_method_id=payment_method_id, group_id)
         })
 
-        getTransaction(order_number=null, tracking_number=null, sku_code= null, order_date = order_date, process_order_date=process_order_date, sales_channel_id=null, payment_method_id=null, group_id=null)
+        order_date =  $('#order_date').val()
+        process_order_date = $('#process_order_date').val()
+        loadTransaction(null, null, null, order_date, process_order_date, null, null, null)
         getPaymentMethod()
         getSalesChannel()
     });
 
+    function loadTransaction(order_number=null, tracking_number=null, sku_code= null, order_date = null, process_order_date=null, sales_channel_id=null, payment_method_id=null, group_id=null){
+        if (table != null) {
+            table.destroy();
+        }
+
+        table = $("#table-transaction").DataTable({
+            lengthChange: false,
+            searching: false,
+            destroy: true,
+            processing: true,
+            serverSide: true,
+            bAutoWidth: true,
+            scrollCollapse : true,
+            ajax:{
+                url :  '/api/transaction',
+                type: "GET",
+                data: {
+                    // page : 1,
+                    // limit : 10,
+                    order_number : order_number,
+                    tracking_number : tracking_number,
+                    sku: sku_code,
+                    order_date : order_date,
+                    process_order_date : process_order_date,
+                    sales_channel_id : sales_channel_id,
+                    payment_method_id: payment_method_id,
+                    group_id : group_id
+                }
+            },
+            columns: [
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+                {
+                    data: null,
+                },
+
+            ],
+            columnDefs: [
+                {
+                    targets: 0,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).addClass("text-center");
+                        $(td).html(table.page.info().start + row + 1);
+                    },
+                },
+                {
+                    targets: 1,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        //console.log(rowData.channel.name)
+                        $(td).html(rowData.channel.name);
+                    },
+                },
+                {
+                    targets: 2,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.order_number);
+                    },
+                },
+                {
+                    targets: 3,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.tracking_number);
+                    },
+                },
+                {
+                    targets: 4,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.product.sku);
+                    },
+                },
+                {
+                    targets: 5,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.qty);
+                    },
+                },
+                {
+                    targets: 6,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.unit_price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }));
+                    },
+                },
+                {
+                    targets: 7,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.product.name);
+                    },
+                },
+                {
+                    targets: 8,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.product.sizes.name);
+                    },
+                },
+                {
+                    targets: 9,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.order_date);
+                    },
+                },
+                {
+                    targets: 10,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.process_order_date);
+                    },
+                },
+                {
+                    targets: 11,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var group = ""
+                        if(rowData.group_id == 1){
+                            group = "Kloter - 1"
+                        }
+
+                        if(rowData.group_id == 2){
+                            group = "Kloter - 2"
+                        }
+
+                        if(rowData.group_id == 3){
+                            group = "Kloter - 3"
+                        }
+
+                        $(td).html(group);
+                    },
+                },
+                {
+                    targets: 12,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.payment.name);
+                    },
+                },
+                {
+                    targets: 13,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var postal_code = rowData.postal_code
+                        if(rowData.postal_code == ""){
+                           postal_code = "-"
+                        } else {
+                            postal_code = rowData.postal_code
+                        }
+                        $(td).html(postal_code);
+                    },
+                },
+                {
+                    targets: 14,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var status = ""
+                        if(rowData.product.status == 1){
+                            status = "Ready"
+                        }
+
+                        if(rowData.product.status == 0){
+                            status = "Not Ready"
+                        }
+                        $(td).html(status);
+                    },
+                },
+                {
+                    targets: 15,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        
+                        $(td).html(rowData.total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }));
+                    },
+                },
+                {
+                    targets: 16,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                    
+                        $(td).html(rowData.channel.admin_charge + "%");
+                    },
+                },
+                {
+                    targets: 17,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.admin_charge.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }));
+                    },
+                },
+                {
+                    targets: 18,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.total_net.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }))
+                    },
+                },
+                {
+                    targets: 19,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var sku_ok = ""
+                        if(rowData.product.sku != ""){
+                            sku_ok = "Yes"
+                        }
+                        $(td).html(sku_ok);
+                    },
+                },
+                {
+                    targets: 20,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.product.category.name);
+                    },
+                },
+                {
+                    targets: 21,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.product.price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }));
+                    },
+                },
+                {
+                    targets: 22,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.discount + "%");
+                    },
+                },
+                {
+                    targets: 23,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html("Kota");
+                    },
+                },
+                {
+                    targets: 24,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var customer_name = rowData.channel.name
+                        $(td).html(customer_name);
+                    },
+                },
+                {
+                    targets: 25,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var customer_code = rowData.channel.code
+                        $(td).html(customer_code);
+                    },
+                },
+                {
+                    targets: 26,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.order_date);
+                    },
+                },
+                {
+                    targets: 27,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.order_number);
+                    },
+                },
+                {
+                    targets: 28,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var html = "<a class='btn btn-sm btn-warning' href='/transaction/edit/"+rowData.id+" '> Ubah </a> <button type='button' class='btn btn-sm btn-danger' onclick='confirm("+rowData.id+")'> Hapus </button>"
+                        $(td).html(html);
+                    },
+                },
+            ]
+        })
+    }
+
+    // Deprecated Function
     function getTransaction(order_number=null, tracking_number=null, sku_code= null, order_date = null, process_order_date=null, sales_channel_id=null, payment_method_id=null, group_id=null){
         table = $("#table-transaction").DataTable({
             "fixedColumns": true,
@@ -670,6 +1066,7 @@
             },
         })
     }
+    // end deprecated function
 
     function getPaymentMethod(){
         $.ajax({

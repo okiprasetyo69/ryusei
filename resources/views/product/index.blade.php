@@ -2,32 +2,7 @@
 @extends('layout.home')
 @section('title','Dashboard')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">+
-<style> 
-.pagination {
-    margin-top: 20px;
-}
 
-.pagination ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-
-.pagination ul li {
-    display: inline;
-    margin-right: 5px;
-    padding: 5px 10px;
-    background-color: #B3F461;
-    color: #fff;
-    border-radius: 3px;
-    cursor: pointer;
-}
-
-.pagination ul li.disabled {
-    cursor: not-allowed;
-    background-color: #ccc;
-}
-</style>
 @section('content')
 
 <main id="main" class="main">
@@ -131,18 +106,29 @@
                                                 <li><button type="button" class="dropdown-item" onclick="confirmDelete({{$item->id}})">Hapus</button></li>
                                             </ul>
                                         </div>
-                                        <img class="card-img-top" src="{{ asset('/uploads/product/'. $item->image_path ) }}">
+                                        <img class="card-img-top text-center" src="{{ asset('/uploads/product/'. $item->image_path ) }}" style="height: 200px; width: 200px" />
                                         <div class="card-body">
                                             <h5 class="card-title text-center">{{ $item->article }}</h5>
                                         </div>
                                         <ul class="list-group list-group-flush">
-                                           
-                                            <li class="list-group-item">Kode SKU : {{ $item->sku }} </li>
-                                            <li class="list-group-item text-center">{{ $item->name }} </li>
-                                            <li class="list-group-item">Ukuran : {{ $item->sizes->name }}</li>
-                                            <li class="list-group-item">Harga : Rp. {{ number_format($item->price, 0, ',', '.')}}</li>
-                                            <li class="list-group-item">{{ $item->status == 1 ? "Ready" : "Not Ready"}}</li>
-                                            <li class="list-group-item"> Kategori : {{ $item->category->name }}</li>
+                                            <li class="list-group-item">
+                                                <h3 class="card-title text-center"> SKU : {{ $item->sku }}  </h3>
+                                            </li>
+                                            <li class="list-group-item text-center">
+                                                <p class="fst-italic fw-bold"> {{ $item->name }} </p>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <p class="text-center fw-bold"> Size : {{ $item->sizes->name }} </p>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <p class="text-center fw-bold">  Harga : Rp. {{ number_format($item->price, 0, ',', '.')}} </p>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <p class="text-center fw-bold"> Status : {{ $item->status == 1 ? "Ready" : "Not Ready"}} </p>
+                                            </li>
+                                            <li class="list-group-item"> 
+                                                <p class="text-center fw-bold"> Kategori : {{ $item->category->name }} </p>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
@@ -151,23 +137,7 @@
                         <div class="row mt-2">
                             <div class="col-md-4"></div>
                             <div class="col-md-4 text-center">
-                                <div class="pagination">
-                                    <ul>
-                                        <!-- Previous Page Link -->
-                                        @if ($data->onFirstPage())
-                                            <li class="disabled">Previous</li>
-                                        @else
-                                            <li><a href="{{ $data->previousPageUrl() }}">Previous</a></li>
-                                        @endif
-
-                                        <!-- Next Page Link -->
-                                        @if ($data->hasMorePages())
-                                            <li><a href="{{ $data->nextPageUrl() }}">Next</a></li>
-                                        @else
-                                            <li class="disabled">Next</li>
-                                        @endif
-                                    </ul>
-                                </div>
+                                {!! $data->links() !!}
                             </div>
                             <div class="col-md-4"></div>                     
                         </div>

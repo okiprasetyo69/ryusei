@@ -133,7 +133,7 @@
     var category_list_id
     $(document).ready(function () {
         
-        getSalesChannel()
+        loadSalesChannel()
 
         // Open Modal
         $(".btn-add").click(function(e){
@@ -157,7 +157,7 @@
         $("#filter_name").on("keyup", function(e){
             e.preventDefault()
             name = $("#filter_name").val()
-            getSalesChannel(name)
+            loadSalesChannel(name)
         })
 
         // Store data
@@ -217,7 +217,7 @@
                                 Ya: {
                                     btnClass: 'btn-success any-other-class',
                                     action: function(){
-                                        getSalesChannel()
+                                        loadSalesChannel()
                                         $("#salesChannelModal").modal("hide")
                                     }
                                 },
@@ -230,6 +230,109 @@
 
     });
 
+    function loadSalesChannel(name = null){
+        if (table != null) {
+            table.destroy();
+        }
+        table = $("#table-sales-channel").DataTable({
+            lengthChange: false,
+                searching: false,
+                destroy: true,
+                processing: true,
+                serverSide: true,
+                bAutoWidth: true,
+                scrollCollapse : true,
+                ajax:{
+                    url :  '/api/sales-channel/datatable',
+                    type: "GET",
+                    data: {
+                        name: name,
+                        // page : 1,
+                        // limit : 10
+                    }
+                },
+                columns: [
+                    {
+                        data: null,
+                        width: "5%",
+                    },
+                    {
+                        data: null,
+                    
+                    },
+                    {
+                        data: null,
+                    },
+                    {
+                        data: null,
+                    },
+                    {
+                        data: null,
+                    },
+                    {
+                        data: null,
+                    },
+                ],
+                "columnDefs": [
+                {
+                    targets: 0,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).addClass("text-center");
+                        $(td).html(table.page.info().start + row + 1);
+                    },
+                },
+                {
+                    targets: 1,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.code);
+                    },
+                },
+                {
+                    targets: 2,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.name);
+                    },
+                },
+                {
+                    targets: 3,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var admin_charge = 0
+                        if(rowData.admin_charge != null){
+                            admin_charge = rowData.admin_charge
+                        }
+                        $(td).html(admin_charge);
+                    },
+                },
+                {
+                    targets: 4,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.year);
+                    },
+                },
+                {
+                    targets: 5,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var html = "<button type='button' class='btn btn-sm btn-warning' onclick='detail("+rowData.id+")' > Ubah </button> <button type='button' class='btn btn-sm btn-danger' onclick='confirm("+rowData.id+")'> Hapus </button>"
+                        $(td).html(html);
+                    },
+                },
+            ],
+        })
+    }
+
+    // Deprecated function
     function getSalesChannel(name = null){
         if (table != null) {
             table.destroy();
@@ -357,6 +460,7 @@
             },
         })
     }
+    // End deprecated
 
     function detail(id){
         $.ajax({

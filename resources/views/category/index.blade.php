@@ -111,7 +111,8 @@
     var category_list_id
     $(document).ready(function () {
         
-        getCategory()
+        //getCategory()
+        loadCategory()
 
         // Open Modal
         $(".btn-add").click(function(e){
@@ -132,7 +133,7 @@
         $("#filter_name").on("keyup", function(e){
             e.preventDefault()
             name = $("#filter_name").val()
-            getCategory(name)
+            loadCategory(name)
         })
 
         // Store data
@@ -166,7 +167,7 @@
                                 Ya: {
                                     btnClass: 'btn-success any-other-class',
                                     action: function(){
-                                        getCategory()
+                                        loadCategory()
                                     }
                                 },
                             }
@@ -178,6 +179,50 @@
 
     });
 
+    function loadCategory(name = null){
+        if (table != null) {
+            table.destroy();
+        }
+
+        table =  $("#table-category").DataTable(
+           {
+                lengthChange: false,
+                searching: false,
+                destroy: true,
+                processing: true,
+                serverSide: true,
+                bAutoWidth: true,
+                scrollCollapse : true,
+                ajax:{
+                    url :  '/api/category',
+                    type: "GET",
+                    data: {
+                        name: name,
+                        // page : 1,
+                        // limit : 10
+                    }
+                },
+                columns: [
+                    { data: 'id', name: 'id',  width: "5%",},
+                    { data: 'name', name: 'name', width: "80%", },
+                    { data: null },
+                ],
+                columnDefs: [
+                    {
+                        targets: 2,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var html = "<button type='button' class='btn btn-sm btn-warning' onclick='detail("+rowData.id+")' > Ubah </button> <button type='button' class='btn btn-sm btn-danger' onclick='confirm("+rowData.id+")'> Hapus </button>"
+                            $(td).html(html);
+                        },
+                    },
+                ]
+           }
+        )
+    }
+
+    // Deprecated function
     function getCategory(name = null){
         if (table != null) {
             table.destroy();
@@ -268,7 +313,8 @@
             },
         })
     }
-
+    // end deprecated function
+    
     function detail(id){
         $.ajax({
             type: "POST",
@@ -323,7 +369,7 @@
                             Ya: {
                                 btnClass: 'btn-success any-other-class',
                                 action: function(){
-                                    getCategory()
+                                    loadCategory()
                                 }
                             },
                         }

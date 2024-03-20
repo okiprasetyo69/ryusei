@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\Pagination\Paginator;
 
 use App\Services\Interfaces\UserService;
 use App\Services\Interfaces\RoleService;
@@ -84,6 +85,6 @@ class AppServiceProvider extends ServiceProvider implements DeferrableProvider
      */
     public function boot(): void
     {
-        //
+        Paginator::useBootstrap();
     }
 }

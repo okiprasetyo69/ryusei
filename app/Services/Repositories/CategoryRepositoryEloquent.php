@@ -13,8 +13,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
-
-
 /**
  * Class CategoryRepositoryEloquent.
  * 
@@ -41,6 +39,12 @@ use Yajra\DataTables\Facades\DataTables;
         try{
             
             $category = Category::orderBy('name', 'ASC');
+
+            if( ($request->limit != null) && $request->page != null){
+                $offset = ($request->page - 1) * $request->limit;
+
+                $category->offset($offset)->limit($request->limit);
+            }
           
             if($request->name != null){
                 $category->where("name", "like", "%" . $request->name. "%");
@@ -50,6 +54,8 @@ use Yajra\DataTables\Facades\DataTables;
 
             $datatables = Datatables::of($category);
             return $datatables->make( true );
+
+          
         }
         catch(Exception $ex){
             Log::error($ex->getMessage());
