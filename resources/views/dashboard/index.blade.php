@@ -234,6 +234,7 @@
             this_year = year
             totalSoldWithQty(null, null,null,null,this_year)
         })
+
         // --------------------------------------------------------------- //
         $("#filter-today-best-channel").on("click", function(e){
             e.preventDefault()
@@ -252,6 +253,7 @@
             this_year = year
             bestStoreChannelSeller(null, null,null,null,this_year)
         })
+
         // --------------------------------------------------------------- //
         $("#filter-today-most-product").on("click", function(e){
             e.preventDefault()
@@ -270,6 +272,7 @@
             this_year = year
             bestProductSeller(null, null,null,null,this_year)
         })
+
         // --------------------------------------------------------------- //
         $("#filter-today-chart").on("click", function(e){
             e.preventDefault()
@@ -286,6 +289,8 @@
             this_year = year
             filterChart(null, null,null,null,this_year)
         })
+        // --------------------------------------------------------------- //
+        
     });
 
     function totalSoldWithQty(start_date = null, end_date = null, today=null, this_month=null, this_year=null){

@@ -193,6 +193,23 @@
                 serverSide: true,
                 bAutoWidth: true,
                 scrollCollapse : true,
+                language: {
+                emptyTable: "Data tidak tersedia",
+                zeroRecords: "Tidak ada data yang ditemukan",
+                infoFiltered: "",
+                infoEmpty: "",
+                paginate: {
+                    previous: "‹",
+                    next: "›",
+                },
+                info: "Menampilkan _START_ dari _END_ dari _TOTAL_ Kategori",
+                aria: {
+                        paginate: {
+                            previous: "Previous",
+                            next: "Next",
+                        },
+                    },
+                },
                 ajax:{
                     url :  '/api/category',
                     type: "GET",

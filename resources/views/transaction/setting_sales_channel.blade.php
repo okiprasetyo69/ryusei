@@ -242,6 +242,23 @@
                 serverSide: true,
                 bAutoWidth: true,
                 scrollCollapse : true,
+                language: {
+                emptyTable: "Data tidak tersedia",
+                zeroRecords: "Tidak ada data yang ditemukan",
+                infoFiltered: "",
+                infoEmpty: "",
+                paginate: {
+                    previous: "‹",
+                    next: "›",
+                },
+                info: "Menampilkan _START_ dari _END_ dari _TOTAL_ Sales Channel",
+                aria: {
+                        paginate: {
+                            previous: "Previous",
+                            next: "Next",
+                        },
+                    },
+                },
                 ajax:{
                     url :  '/api/sales-channel/datatable',
                     type: "GET",
