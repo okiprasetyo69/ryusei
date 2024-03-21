@@ -26,208 +26,33 @@
           <!-- Sales Card -->
           <div class="col-xxl-4 col-md-6">
             <div class="card info-card sales-card">
-
                 <div class="filter">
-                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                    <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                </ul>
-                </div>
-
-                <div class="card-body">
-                <h5 class="card-title">Penjualan <span> | Rp. </span></h5>
-
-                <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                    <i class="bi bi-cart"></i>
+                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                        <li class="dropdown-header text-start">
+                            <h6>Filter</h6>
+                        </li>
+                        <li><a class="dropdown-item" href="#" id="filter-today">Today</a></li>
+                        <li><a class="dropdown-item" href="#" id="filter-month">This Month</a></li>
+                        <li><a class="dropdown-item" href="#" id="filter-year">This Year</a></li>
+                    </ul>
                     </div>
-                    <div class="ps-3">
-                    <h6>145</h6>
-                    <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
 
+                    <div class="card-body">
+                    <h5 class="card-title">Penjualan <span id="total_sold">  </span></h5>
+
+                    <div class="d-flex align-items-center">
+                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                            <i class="bi bi-cart"></i>
+                        </div>
+                        <div class="ps-3">
+                            <h6 id="qty">-</h6>
+                        </div>
                     </div>
                 </div>
-                </div>
-
             </div>
           </div>
           <!-- End Sales Card -->
-
-          <!-- Discount Card -->
-          <div class="col-xxl-4 col-md-6">
-            <div class="card info-card revenue-card">
-                <div class="filter">
-                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                    <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                </ul>
-                </div>
-                <div class="card-body">
-                <h5 class="card-title">Diskon <span> | Rp. </span></h5>
-                <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                    <i class="bi bi-currency-dollar"></i>
-                    </div>
-                    <div class="ps-3">
-                    <h6>$3,264</h6>
-                    <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span>
-
-                    </div>
-                </div>
-                </div>
-            </div>
-          </div>
-          <!-- End Discount Card -->
-
-          <!-- Retur Card -->
-          <div class="col-xxl-4 col-xl-12">
-            <div class="card info-card customers-card">
-                <div class="filter">
-                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                    <h6>Filter</h6>
-                    </li>
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                </ul>
-                </div>
-                <div class="card-body">
-                <h5 class="card-title">Retur <span> | Rp .</span></h5>
-
-                <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                    <i class="bi bi-people"></i>
-                    </div>
-                    <div class="ps-3">
-                    <h6>1244</h6>
-                    <span class="text-danger small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
-
-                    </div>
-                </div>
-
-                </div>
-            </div>
-
-          </div>
-          <!-- End Retur Card -->
-
-          <!-- Omset Card -->
-          <div class="col-xxl-4 col-md-6">
-            <div class="card info-card sales-card">
-
-                <div class="filter">
-                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                    <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                </ul>
-                </div>
-
-                <div class="card-body">
-                <h5 class="card-title">Penjualan Bersih <span> | Rp. </span></h5>
-
-                <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                    <i class="bi bi-shop-window"></i>
-                    </div>
-                    <div class="ps-3">
-                    <h6>145</h6>
-                    <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
-
-                    </div>
-                </div>
-                </div>
-
-            </div>
-          </div>
-          <!-- End Omset Card -->
-
-          <!-- Modal Card -->
-          <div class="col-xxl-4 col-md-6">
-            <div class="card info-card sales-card">
-
-                <div class="filter">
-                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                    <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                </ul>
-                </div>
-
-                <div class="card-body">
-                <h5 class="card-title">Modal <span> | Rp. </span></h5>
-
-                <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                    <i class="bi bi-alexa"></i>
-                    </div>
-                    <div class="ps-3">
-                    <h6>145</h6>
-                    <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
-
-                    </div>
-                </div>
-                </div>
-
-            </div>
-          </div>
-          <!-- End Modal Card -->
-
-          <!-- Keuntungan Card -->
-          <div class="col-xxl-4 col-xl-12">
-            <div class="card info-card customers-card">
-                <div class="filter">
-                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                    <h6>Filter</h6>
-                    </li>
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                </ul>
-                </div>
-                <div class="card-body">
-                <h5 class="card-title">Keuntungan <span> | Rp .</span></h5>
-
-                <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                    <i class="bi bi-cash-stack"></i>
-                    </div>
-                    <div class="ps-3">
-                    <h6>1244</h6>
-                    <span class="text-danger small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
-
-                    </div>
-                </div>
-                </div>
-            </div>
-          </div>
-          <!-- End Retur Card -->
 
           <!-- Reports -->
           <div class="col-12">
@@ -240,69 +65,21 @@
                     <h6>Filter</h6>
                     </li>
 
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                    <li><a class="dropdown-item" href="#" id="filter-today-chart">Today</a></li>
+                    <li><a class="dropdown-item" href="#" id="filter-month-chart">This Month</a></li>
+                    <li><a class="dropdown-item" href="#" id="filter-year-chart">This Year</a></li>
                 </ul>
                 </div>
 
                 <div class="card-body">
-                <h5 class="card-title">Reports <span>/Today</span></h5>
+                    <h5 class="card-title">Performance</h5>
+                    <div>
+                        <canvas id="performanceStoreChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 445px;" width="445" height="250" class="chartjs-render-monitor"></canvas>
+                    </div>
+                    <div class="col-md-12 mt-2">
+                        <div id="actualData"> </div>
+                    </div>
 
-                <div id="reportsChart"></div>
-
-                <script>
-                    document.addEventListener("DOMContentLoaded", () => {
-                    new ApexCharts(document.querySelector("#reportsChart"), {
-                        series: [{
-                        name: 'Sales',
-                        data: [31, 40, 28, 51, 42, 82, 56],
-                        }, {
-                        name: 'Revenue',
-                        data: [11, 32, 45, 32, 34, 52, 41]
-                        }, {
-                        name: 'Customers',
-                        data: [15, 11, 32, 18, 9, 24, 11]
-                        }],
-                        chart: {
-                        height: 350,
-                        type: 'area',
-                        toolbar: {
-                            show: false
-                        },
-                        },
-                        markers: {
-                        size: 4
-                        },
-                        colors: ['#4154f1', '#2eca6a', '#ff771d'],
-                        fill: {
-                        type: "gradient",
-                        gradient: {
-                            shadeIntensity: 1,
-                            opacityFrom: 0.3,
-                            opacityTo: 0.4,
-                            stops: [0, 90, 100]
-                        }
-                        },
-                        dataLabels: {
-                        enabled: false
-                        },
-                        stroke: {
-                        curve: 'smooth',
-                        width: 2
-                        },
-                        xaxis: {
-                        type: 'datetime',
-                        categories: ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z", "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
-                        },
-                        tooltip: {
-                        x: {
-                            format: 'dd/MM/yy HH:mm'
-                        },
-                        }
-                    }).render();
-                    });
-                </script>
                 </div>
             </div>
           </div>
@@ -316,28 +93,24 @@
                 <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                     <li class="dropdown-header text-start">
-                    <h6>Filter</h6>
+                        <h6>Filter</h6>
                     </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                    <li><a class="dropdown-item" href="#" id="filter-today-best-channel">Today</a></li>
+                    <li><a class="dropdown-item" href="#" id="filter-month-best-channel">This Month</a></li>
+                    <li><a class="dropdown-item" href="#" id="filter-year-best-channel">This Year</a></li>
                 </ul>
                 </div>
 
                 <div class="card-body">
                 <h5 class="card-title">Toko Terbaik <span>| Today</span></h5>
 
-                <table class="table table-borderless datatable">
+                <table class="table table-striped" id="table-best-store">
                     <thead>
-                    <tr>
+                    <tr class="text-center">
                         <th scope="col">#</th>
                         <th scope="col">Sumber</th>
                         <th scope="col">Penjualan Bersih</th>
-                        <th scope="col">Retur</th>
-                        <th scope="col">Keuntungan</th>
                         <th scope="col">Qty Terjual</th>
-                        <th scope="col">Penjualan per Hari</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -361,22 +134,21 @@
                     <h6>Filter</h6>
                     </li>
 
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                    <li><a class="dropdown-item" href="#" id="filter-today-most-product">Today</a></li>
+                    <li><a class="dropdown-item" href="#" id="filter-month-most-product">This Month</a></li>
+                    <li><a class="dropdown-item" href="#" id="filter-year-most-product">This Year</a></li>
                 </ul>
                 </div>
 
                 <div class="card-body pb-0">
-                <h5 class="card-title">Produk Paling Laku <span>| Today</span></h5>
+                <h5 class="card-title">Produk Paling Laku</h5>
 
-                <table class="table table-borderless">
+                <table class="table table-striped" id="table-most-product">
                     <thead>
-                    <tr>
+                    <tr class="text-center">
                         <th scope="col">Rank</th>
                         <th scope="col">Product</th>
                         <th scope="col">Qty Terjual</th>
-                        <th scope="col">Penjualan Per Hari</th>
                         <th scope="col">Total Penjualan</th>
                     </tr>
                     </thead>
@@ -398,74 +170,21 @@
       <!-- Ratio Selling -->
       <div class="card">
           <div class="filter">
-          <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-              <li class="dropdown-header text-start">
-              <h6>Filter</h6>
-              </li>
+            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                <li class="dropdown-header text-start">
+                <h6>Filter</h6>
+                </li>
 
-              <li><a class="dropdown-item" href="#">Today</a></li>
-              <li><a class="dropdown-item" href="#">This Month</a></li>
-              <li><a class="dropdown-item" href="#">This Year</a></li>
-          </ul>
-          </div>
+                <li><a class="dropdown-item" href="#">Today</a></li>
+                <li><a class="dropdown-item" href="#">This Month</a></li>
+                <li><a class="dropdown-item" href="#">This Year</a></li>
+            </ul>
+            </div>
 
-          <div class="card-body pb-0">
-          <h5 class="card-title">Rasio Penjualan <span>| Today</span></h5>
-
-          <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
-
-          <script>
-              document.addEventListener("DOMContentLoaded", () => {
-              echarts.init(document.querySelector("#trafficChart")).setOption({
-                  tooltip: {
-                  trigger: 'item'
-                  },
-                  legend: {
-                  top: '5%',
-                  left: 'center'
-                  },
-                  series: [{
-                  name: 'Access From',
-                  type: 'pie',
-                  radius: ['40%', '70%'],
-                  avoidLabelOverlap: false,
-                  label: {
-                      show: false,
-                      position: 'center'
-                  },
-                  emphasis: {
-                      label: {
-                      show: true,
-                      fontSize: '18',
-                      fontWeight: 'bold'
-                      }
-                  },
-                  labelLine: {
-                      show: false
-                  },
-                  data: [{
-                      value: 1048,
-                      name: 'Penjualan'
-                      },
-                      {
-                      value: 735,
-                      name: 'Retur'
-                      },
-                      {
-                      value: 580,
-                      name: 'All'
-                      },
-                      {
-                      value: 484,
-                      name: 'Inv'
-                      },
-                     
-                  ]
-                  }]
-              });
-              });
-          </script>
+            <div class="card-body pb-0">
+            <h5 class="card-title">Apapun <span>| Today</span></h5>
+            <div id="trafficChart" style="min-height: 400px;" class=""></div>
 
           </div>
       </div><!-- End Website Traffic -->
@@ -477,6 +196,284 @@
 
 </main><!-- End #main -->
 
+<script type="text/javascript">
+
+    var today = new Date();
+    var day = String(today.getDate()).padStart(2, '0'); // Hari
+    var month = String(today.getMonth() + 1).padStart(2, '0'); // Bulan (ingat bahwa bulan dimulai dari 0)
+    var year = today.getFullYear(); // Tahun
+    // Format tanggal dalam bentuk string YYYY-MM-DD
+    var formattedDate = year + '-' + month + '-' + day;
+    var now
+    var currentMonth
+    var this_year
+    var myChart
+    $(document).ready(function () {
+      
+        totalSoldWithQty()
+        bestStoreChannelSeller()
+        bestProductSeller()
+        loadChart()
+       
+        // filter
+        // --------------------------------------------------------------- //
+        $("#filter-today").on("click", function(e){
+            e.preventDefault()
+            now = formattedDate
+            totalSoldWithQty(null, null,now,null,null)
+        })
+
+        $("#filter-month").on("click", function(e){
+            e.preventDefault()
+            currentMonth = today.getMonth() + 1
+            totalSoldWithQty(null, null,null,currentMonth,null)
+        })
+
+        $("#filter-year").on("click", function(e){
+            e.preventDefault()
+            this_year = year
+            totalSoldWithQty(null, null,null,null,this_year)
+        })
+        // --------------------------------------------------------------- //
+        $("#filter-today-best-channel").on("click", function(e){
+            e.preventDefault()
+            now = formattedDate
+            bestStoreChannelSeller(null, null,now,null,null)
+        })
+        
+        $("#filter-month-best-channel").on("click", function(e){
+            e.preventDefault()
+            currentMonth = today.getMonth() + 1
+            bestStoreChannelSeller(null, null,null,currentMonth,null)
+        })
+
+        $("#filter-year-best-channel").on("click", function(e){
+            e.preventDefault()
+            this_year = year
+            bestStoreChannelSeller(null, null,null,null,this_year)
+        })
+        // --------------------------------------------------------------- //
+        $("#filter-today-most-product").on("click", function(e){
+            e.preventDefault()
+            now = formattedDate
+            bestProductSeller(null, null,now,null,null)
+        })
+
+        $("#filter-month-most-product").on("click", function(e){
+            e.preventDefault()
+            currentMonth = today.getMonth() + 1
+            bestProductSeller(null, null,null,currentMonth,null)
+        })
+
+        $("#filter-year-most-product").on("click", function(e){
+            e.preventDefault()
+            this_year = year
+            bestProductSeller(null, null,null,null,this_year)
+        })
+        // --------------------------------------------------------------- //
+        $("#filter-today-chart").on("click", function(e){
+            e.preventDefault()
+            now = formattedDate
+            filterChart(null, null,now,null,null)
+        })
+        $("#filter-month-chart").on("click", function(e){
+            e.preventDefault()
+            currentMonth = today.getMonth() + 1
+            filterChart(null, null,null,currentMonth,null)
+        })
+        $("#filter-year-chart").on("click", function(e){
+            e.preventDefault()
+            this_year = year
+            filterChart(null, null,null,null,this_year)
+        })
+    });
+
+    function totalSoldWithQty(start_date = null, end_date = null, today=null, this_month=null, this_year=null){
+        $.ajax({
+            type: "GET",
+            url: "/api/analytics/total-qty",
+            data: {
+                start_date : start_date,
+                end_date : end_date,
+                today : today,
+                this_month : this_month,
+                this_year : this_year,
+            },
+            dataType: "JSON",
+            success: function (response) {
+                var data = response.data
+                let formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' });
+                var total_sold =  formatter.format(data.total_sold);
+                if(data != null){
+                    $("#total_sold").text("| " + total_sold)
+                    $("#qty").text(data.qty + " item")
+                }
+
+            }
+        });
+    }
+
+    function bestStoreChannelSeller(start_date = null, end_date = null, today=null, this_month=null, this_year=null){
+        $.ajax({
+            type: "GET",
+            url: "/api/analytics/best-store",
+            data: {
+                start_date : start_date,
+                end_date : end_date,
+                today : today,
+                this_month : this_month,
+                this_year : this_year,
+            },
+            dataType: "JSON",
+            success: function (response) {
+                var data = response.data
+                var row = ""
+                var number = 1
+                let formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' });
+                var total_sell =  0
+                $("#table-best-store").find("tr:gt(0)").remove();
+                $.each(data, function (i, val) {
+                    total_sell = formatter.format(val.total_sell)
+                    row += "<tr class='text-center'><td>"+ (number++) +"</td> <td>"+val.name+"</td><td> "+total_sell+" </td><td>"+val.total_qty+"</td></tr>"
+                });
+                $("#table-best-store > tbody:last-child").append(row); 
+            }
+        });
+    }
+
+    function bestProductSeller(start_date = null, end_date = null, today=null, this_month=null, this_year=null){
+        $.ajax({
+            type: "GET",
+            url: "/api/analytics/best-product",
+            data: {
+                start_date : start_date,
+                end_date : end_date,
+                today : today,
+                this_month : this_month,
+                this_year : this_year,
+            },
+            dataType: "JSON",
+            success: function (response) {
+                var data = response.data
+                var row = ""
+                var number = 1
+                let formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' });
+                var total_sell =  0
+                $("#table-most-product").find("tr:gt(0)").remove();
+                $.each(data, function (i, val) {
+                    total_sell = formatter.format(val.total_sell)
+                    row += "<tr class='text-center'><td>"+ (number++) +"</td> <td>"+val.article+"</td><td>"+val.total_qty+"</td><td> "+total_sell+" </td></tr>"
+                });
+                $("#table-most-product > tbody:last-child").append(row); 
+            }
+        });
+    }
+
+    function loadChart(start_date = null, end_date = null, today=null, this_month=null, this_year=null){
+        $.ajax({
+            type: "GET",
+            url: "/api/analytics/chart-performance",
+            data: {
+                start_date : start_date,
+                end_date : end_date,
+                today : today,
+                this_month : this_month,
+                this_year : this_year,
+            },
+            dataType: "JSON",
+            success: function (response) {
+                var data = response.data.data
+                var labels = response.data.labels
+                let formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' })
+                var htmlTags = ""
+                $("#actualData").html("")
+                if(data.length === labels.length){
+                   for(var i = 0; i < data.length; i++){
+                        htmlTags = "<div class='col-md-2 d-inline text-success'>| "+labels[i]+" : "+ formatter.format(data[i])+" | </div>"
+                        $("#actualData").append(htmlTags)
+                   }
+                }else{
+                    console.log("array length not same")
+                }
+
+                data = {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Performnace Channel',
+                        backgroundColor: 'rgb(255, 99, 132)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        data: data,
+                    }]
+                }
+                config = {
+                    type: 'bar',
+                    data: data,
+                    options: {}
+                }
+
+                var ctx =  document.getElementById('performanceStoreChart').getContext('2d')
+                myChart = new Chart(
+                    ctx,
+                    config
+                );
+            }
+        });
+    }
+
+    function filterChart(start_date = null, end_date = null, today=null, this_month=null, this_year=null){
+        $.ajax({
+            type: "GET",
+            url: "/api/analytics/chart-performance",
+            data: {
+                start_date : start_date,
+                end_date : end_date,
+                today : today,
+                this_month : this_month,
+                this_year : this_year,
+            },
+            dataType: "JSON",
+            success: function (response) {
+                var data = response.data.data
+                var labels = response.data.labels
+                let formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' })
+                var htmlTags = ""
+                $("#actualData").html("")
+                if(data.length === labels.length){
+                   for(var i = 0; i < data.length; i++){
+                        htmlTags = "<div class='col-md-2 d-inline text-success'>| "+labels[i]+" : "+ formatter.format(data[i])+" | </div>"
+                        $("#actualData").append(htmlTags)
+                   }
+                }else{
+                    console.log("array length not same")
+                }
+
+                data = {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Performnace Channel',
+                        backgroundColor: 'rgb(255, 99, 132)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        data: data,
+                    }]
+                }
+                config = {
+                    type: 'bar',
+                    data: data,
+                    options: {}
+                }
+
+                var newContext = document.getElementById('performanceStoreChart').getContext('2d')
+                if(myChart) myChart.destroy();
+
+                myChart = new Chart(
+                    newContext,
+                    config
+                );
+            }
+        });
+    }
+             
+</script>
 @endsection
 
 @section('pagespecificscripts')

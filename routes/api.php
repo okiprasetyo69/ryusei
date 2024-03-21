@@ -11,6 +11,7 @@ use App\Http\Controllers\SizeController;
 use App\Http\Controllers\SalesChannelController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -95,4 +96,12 @@ Route::controller(TransactionController::class)->group(function() {
     Route::post('/transaction/update', 'update')->name('transaction.update');
     Route::post('/transaction/delete', 'delete')->name('transaction.delete');
     Route::post('/transaction/detail', 'detail')->name('transaction.detail');
+});
+
+// Dashboard
+Route::controller(DashboardController::class)->group(function() {
+    Route::get('/analytics/total-qty', 'totalQty')->name('analytics.total_qty');
+    Route::get('/analytics/best-store', 'bestSellingChannelStore')->name('analytics.best_store');
+    Route::get('/analytics/best-product', 'bestSellingProduct')->name('analytics.best_product');
+    Route::get('/analytics/chart-performance', 'getChartSelling')->name('analytics.chart_performance');
 });
