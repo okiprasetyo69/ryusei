@@ -18,7 +18,7 @@ services:
     networks:
       - ryusei-network
     logging:
-      driver: journald
+      # driver: journald
       options:
         tag: mytag
 
@@ -29,11 +29,15 @@ services:
     ports:
       - 3306:3306
     environment:
-      MYSQL_ROOT_PASSWORD: "root"
+      # MYSQL_ROOT_PASSWORD: "root"
+      # MYSQL_USER: "dev"
+      # MYSQL_PASSWORD: "FhgVoFuOrWspc3TgBIA2K4dZGuJTPwSYBoLnNckcaxy"
+      # MYSQL_DATABASE: "ryusei"
+      # MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_DATABASE: "ryusei"
       MYSQL_USER: "dev"
       MYSQL_PASSWORD: "FhgVoFuOrWspc3TgBIA2K4dZGuJTPwSYBoLnNckcaxy"
-      MYSQL_DATABASE: "ryusei"
-      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_ROOT_PASSWORD: "root"
     volumes:
       - "db-data:/var/lib/mysql"
     networks:
