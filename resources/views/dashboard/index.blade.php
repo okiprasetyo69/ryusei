@@ -1,7 +1,7 @@
 
 @extends('layout.home')
 @section('title','Dashboard')
-
+<link href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.css" rel="stylesheet" />
 @section('content')
 
 <main id="main" class="main">
@@ -17,181 +17,205 @@
 </div><!-- End Page Title -->
 
 <section class="section dashboard">
-<div class="row">
+    
+    <div class="card"> 
+        <div class="card-body "> 
+            <div class="row">
+                <div class="col-md-5"> 
+                    <label class="card-title text-center"> Tanggal Awal Order</label>
+                </div>
+                <div class="col-md-5">
+                    <label class="card-title text-center"> Tanggal Akhir Order</label>
+                </div>
+                <div class="col-md-2"> </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5">
+                    <input type="text" class="form-control" name="start_date" id="start_date" />
+                </div>
+                <div class="col-md-5">
+                    <input type="text" class="form-control" name="end_date" id="end_date" />
+                </div>
+                <div class="col-md-2"> 
+                    <button type="button" class="btn btn-md btn-success rounded-pill" id="btn-search"><i class="bi bi-search"></i> Cari </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Left side columns -->
+        <div class="col-lg-8">
+            <div class="row">
+                <!-- Sales Card -->
+                <div class="col-xxl-4 col-md-6">
+                    <div class="card info-card sales-card">
+                        <div class="filter">
+                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                <li class="dropdown-header text-start">
+                                    <h6>Filter</h6>
+                                </li>
+                                <li><a class="dropdown-item" href="#" id="filter-today">Today</a></li>
+                                <li><a class="dropdown-item" href="#" id="filter-month">This Month</a></li>
+                                <li><a class="dropdown-item" href="#" id="filter-year">This Year</a></li>
+                            </ul>
+                        </div>
 
-    <!-- Left side columns -->
-    <div class="col-lg-8">
-      <div class="row">
+                            <div class="card-body">
+                            <h5 class="card-title">Penjualan <span id="total_sold">  </span></h5>
 
-          <!-- Sales Card -->
-          <div class="col-xxl-4 col-md-6">
-            <div class="card info-card sales-card">
+                        <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-cart"></i>
+                                </div>
+                                <div class="ps-3">
+                                    <h6 id="qty">-</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Sales Card -->
+
+                <!-- Reports -->
+                <div class="col-12">
+                    <div class="card">
+
+                        <div class="filter">
+                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                            <li class="dropdown-header text-start">
+                            <h6>Filter</h6>
+                            </li>
+
+                            <li><a class="dropdown-item" href="#" id="filter-today-chart">Today</a></li>
+                            <li><a class="dropdown-item" href="#" id="filter-month-chart">This Month</a></li>
+                            <li><a class="dropdown-item" href="#" id="filter-year-chart">This Year</a></li>
+                        </ul>
+                        </div>
+
+                        <div class="card-body">
+                            <h5 class="card-title">Performance Sales Channel</h5>
+                            <div>
+                                <canvas id="performanceStoreChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 445px;" width="445" height="250" class="chartjs-render-monitor"></canvas>
+                            </div>
+                            <div class="col-md-12 mt-2">
+                                <div id="actualData"> </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- End Reports -->
+
+                <!-- Recent Sales -->
+                <div class="col-12">
+                    <div class="card recent-sales overflow-auto">
+
+                        <div class="filter">
+                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                            <li class="dropdown-header text-start">
+                                <h6>Filter</h6>
+                            </li>
+                            <li><a class="dropdown-item" href="#" id="filter-today-best-channel">Today</a></li>
+                            <li><a class="dropdown-item" href="#" id="filter-month-best-channel">This Month</a></li>
+                            <li><a class="dropdown-item" href="#" id="filter-year-best-channel">This Year</a></li>
+                        </ul>
+                        </div>
+
+                        <div class="card-body">
+                            <h5 class="card-title">Toko Terbaik <span>| Today</span></h5>
+
+                            <table class="table table-striped" id="table-best-store">
+                                <thead>
+                                <tr class="text-center">
+                                    <th scope="col">#</th>
+                                    <th scope="col">Sumber</th>
+                                    <th scope="col">Penjualan Bersih</th>
+                                    <th scope="col">Qty Terjual</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                    </div>
+                </div><!-- End Recent Sales -->
+
+                <!-- Top Selling -->
+                <div class="col-12">
+                    <div class="card top-selling overflow-auto">
+
+                        <div class="filter">
+                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                            <li class="dropdown-header text-start">
+                            <h6>Filter</h6>
+                            </li>
+
+                            <li><a class="dropdown-item" href="#" id="filter-today-most-product">Today</a></li>
+                            <li><a class="dropdown-item" href="#" id="filter-month-most-product">This Month</a></li>
+                            <li><a class="dropdown-item" href="#" id="filter-year-most-product">This Year</a></li>
+                        </ul>
+                        </div>
+
+                        <div class="card-body pb-0">
+                        <h5 class="card-title">Produk Paling Laku</h5>
+
+                        <table class="table table-striped" id="table-most-product">
+                            <thead>
+                            <tr class="text-center">
+                                <th scope="col">Rank</th>
+                                <th scope="col">Product</th>
+                                <th scope="col">Qty Terjual</th>
+                                <th scope="col">Total Penjualan</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            
+                            </tbody>
+                        </table>
+
+                        </div>
+
+                    </div>
+                </div><!-- End Top Selling -->
+
+            </div>
+        </div><!-- End Left side columns -->
+
+        <!-- Right side columns -->
+        <div class="col-lg-4">
+            <!-- Ratio Selling -->
+            <div class="card">
                 <div class="filter">
                     <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                         <li class="dropdown-header text-start">
-                            <h6>Filter</h6>
+                        <h6>Filter</h6>
                         </li>
-                        <li><a class="dropdown-item" href="#" id="filter-today">Today</a></li>
-                        <li><a class="dropdown-item" href="#" id="filter-month">This Month</a></li>
-                        <li><a class="dropdown-item" href="#" id="filter-year">This Year</a></li>
+
+                        <li><a class="dropdown-item" href="#">Today</a></li>
+                        <li><a class="dropdown-item" href="#">This Month</a></li>
+                        <li><a class="dropdown-item" href="#">This Year</a></li>
                     </ul>
                     </div>
 
-                    <div class="card-body">
-                    <h5 class="card-title">Penjualan <span id="total_sold">  </span></h5>
-
-                    <div class="d-flex align-items-center">
-                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                            <i class="bi bi-cart"></i>
-                        </div>
-                        <div class="ps-3">
-                            <h6 id="qty">-</h6>
-                        </div>
-                    </div>
-                </div>
-            </div>
-          </div>
-          <!-- End Sales Card -->
-
-          <!-- Reports -->
-          <div class="col-12">
-            <div class="card">
-
-                <div class="filter">
-                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                    <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#" id="filter-today-chart">Today</a></li>
-                    <li><a class="dropdown-item" href="#" id="filter-month-chart">This Month</a></li>
-                    <li><a class="dropdown-item" href="#" id="filter-year-chart">This Year</a></li>
-                </ul>
-                </div>
-
-                <div class="card-body">
-                    <h5 class="card-title">Performance</h5>
-                    <div>
-                        <canvas id="performanceStoreChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 445px;" width="445" height="250" class="chartjs-render-monitor"></canvas>
-                    </div>
-                    <div class="col-md-12 mt-2">
-                        <div id="actualData"> </div>
-                    </div>
+                    <div class="card-body pb-0">
+                        <h5 class="card-title">Apapun <span>| Today</span></h5>
+                    <div id="trafficChart" style="min-height: 400px;" class=""></div>
 
                 </div>
-            </div>
-          </div>
-          <!-- End Reports -->
+            </div><!-- End Website Traffic -->
+        
+        </div><!-- End Right side columns -->
 
-          <!-- Recent Sales -->
-          <div class="col-12">
-            <div class="card recent-sales overflow-auto">
-
-                <div class="filter">
-                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                        <h6>Filter</h6>
-                    </li>
-                    <li><a class="dropdown-item" href="#" id="filter-today-best-channel">Today</a></li>
-                    <li><a class="dropdown-item" href="#" id="filter-month-best-channel">This Month</a></li>
-                    <li><a class="dropdown-item" href="#" id="filter-year-best-channel">This Year</a></li>
-                </ul>
-                </div>
-
-                <div class="card-body">
-                <h5 class="card-title">Toko Terbaik <span>| Today</span></h5>
-
-                <table class="table table-striped" id="table-best-store">
-                    <thead>
-                    <tr class="text-center">
-                        <th scope="col">#</th>
-                        <th scope="col">Sumber</th>
-                        <th scope="col">Penjualan Bersih</th>
-                        <th scope="col">Qty Terjual</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    
-                    </tbody>
-                </table>
-
-                </div>
-
-            </div>
-          </div><!-- End Recent Sales -->
-
-          <!-- Top Selling -->
-          <div class="col-12">
-            <div class="card top-selling overflow-auto">
-
-                <div class="filter">
-                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                    <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#" id="filter-today-most-product">Today</a></li>
-                    <li><a class="dropdown-item" href="#" id="filter-month-most-product">This Month</a></li>
-                    <li><a class="dropdown-item" href="#" id="filter-year-most-product">This Year</a></li>
-                </ul>
-                </div>
-
-                <div class="card-body pb-0">
-                <h5 class="card-title">Produk Paling Laku</h5>
-
-                <table class="table table-striped" id="table-most-product">
-                    <thead>
-                    <tr class="text-center">
-                        <th scope="col">Rank</th>
-                        <th scope="col">Product</th>
-                        <th scope="col">Qty Terjual</th>
-                        <th scope="col">Total Penjualan</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    
-                    </tbody>
-                </table>
-
-                </div>
-
-            </div>
-          </div><!-- End Top Selling -->
-
-      </div>
-    </div><!-- End Left side columns -->
-
-    <!-- Right side columns -->
-    <div class="col-lg-4">
-      <!-- Ratio Selling -->
-      <div class="card">
-          <div class="filter">
-            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                <li class="dropdown-header text-start">
-                <h6>Filter</h6>
-                </li>
-
-                <li><a class="dropdown-item" href="#">Today</a></li>
-                <li><a class="dropdown-item" href="#">This Month</a></li>
-                <li><a class="dropdown-item" href="#">This Year</a></li>
-            </ul>
-            </div>
-
-            <div class="card-body pb-0">
-            <h5 class="card-title">Apapun <span>| Today</span></h5>
-            <div id="trafficChart" style="min-height: 400px;" class=""></div>
-
-          </div>
-      </div><!-- End Website Traffic -->
-    
-    </div><!-- End Right side columns -->
-
-</div>
+    </div>
 </section>
 
 </main><!-- End #main -->
@@ -208,14 +232,35 @@
     var currentMonth
     var this_year
     var myChart
+    var start_date, end_date
     $(document).ready(function () {
       
         totalSoldWithQty()
         bestStoreChannelSeller()
         bestProductSeller()
         loadChart()
+
+        $("#start_date").datepicker({
+            format: 'yyyy-mm-dd',
+            defaultDate: new Date(),
+        });
+
+        $("#end_date").datepicker({
+            format: 'yyyy-mm-dd',
+            defaultDate: new Date(),
+        });
        
         // filter
+        $("#btn-search").on("click", function(e){
+            e.preventDefault()
+            start_date =  $("#start_date").val()
+            end_date = $("#end_date").val()
+
+            totalSoldWithQty(start_date, end_date, null, null, null)
+            bestStoreChannelSeller(start_date, end_date, null, null, null)
+            bestProductSeller(start_date, end_date, null, null, null)
+            filterChart(start_date, end_date, null, null, null)
+        })
         // --------------------------------------------------------------- //
         $("#filter-today").on("click", function(e){
             e.preventDefault()
@@ -308,10 +353,18 @@
             success: function (response) {
                 var data = response.data
                 let formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' });
-                var total_sold =  formatter.format(data.total_sold);
+                var total_sold = 0
+                var qty = 0
+                if(data.total_sold != null){
+                    total_sold =  formatter.format(data.total_sold)
+                }
+                if(data.qty != null){
+                    qty = data.qty
+                }
+
                 if(data != null){
                     $("#total_sold").text("| " + total_sold)
-                    $("#qty").text(data.qty + " item")
+                    $("#qty").text(qty + " item")
                 }
 
             }
@@ -404,7 +457,7 @@
                 data = {
                     labels: labels,
                     datasets: [{
-                        label: 'Performnace Channel',
+                        label: 'Performance Channel',
                         backgroundColor: 'rgb(255, 99, 132)',
                         borderColor: 'rgb(255, 99, 132)',
                         data: data,
@@ -455,7 +508,7 @@
                 data = {
                     labels: labels,
                     datasets: [{
-                        label: 'Performnace Channel',
+                        label: 'Performance Channel',
                         backgroundColor: 'rgb(255, 99, 132)',
                         borderColor: 'rgb(255, 99, 132)',
                         data: data,
@@ -479,6 +532,7 @@
     }
              
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.js"></script>
 @endsection
 
 @section('pagespecificscripts')

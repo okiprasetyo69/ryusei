@@ -117,7 +117,7 @@
           </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-md btn-success">Simpan</button>
+        <button type="submit" class="btn btn-md btn-success">Simpan</button>
         <button type="button" class="btn btn-md btn-secondary" data-dismiss="modal" id="btn-close">Batal</button>
       </div>
       </form>
@@ -134,16 +134,15 @@
 
       $(document).ready(function(){
 
-            datatable()
-
+            loadUserData()
             // show modal
             $(".btn-add").click(function (e) { 
                 e.preventDefault();
                 getRole()
-                $("#id").val()
-                $("#name").val()
-                $("#email").val()
-                $("#phone").val()
+                $("#id").val("")
+                $("#name").val("")
+                $("#email").val("")
+                $("#phone").val("")
                 $(".title-modal").text("Tambah pengguna")
                 $("#userModal").modal("show")
             });
@@ -157,20 +156,208 @@
             // filter
             $("#filter_name").keyup(function (e) { 
                 name =  $("#filter_name").val()
-                datatable(name)
+                loadUserData(name)
             });
 
             $("#filter_email").keyup(function (e) { 
                 email =  $("#filter_email").val()
-                datatable(name, email)
+                loadUserData(name, email)
             });
 
             $("#filter_phone").keyup(function (e) { 
                 phone =  $("#filter_phone").val()
-                datatable(name, email, phone)
+                loadUserData(name, email, phone)
             });
+
+            // insert user
+            $("#frm-user").on("submit", function(e){
+                e.preventDefault()
+                if($("#name").val() == ""){
+                    $.alert({
+                        title: 'Pesan!',
+                        content: 'Nama pengguna tidak boleh kosong !',
+                    });
+                    return 
+                }
+                if($("#email").val() == ""){
+                    $.alert({
+                        title: 'Pesan!',
+                        content: 'Email pengguna tidak boleh kosong !',
+                    });
+                    return 
+                }
+                if($("#phone").val() == ""){
+                    $.alert({
+                        title: 'Pesan!',
+                        content: 'Kontak pengguna tidak boleh kosong !',
+                    });
+                    return 
+                }
+                if($("#role_id").val() == ""){
+                    $.alert({
+                        title: 'Pesan!',
+                        content: 'Role pengguna tidak boleh kosong !',
+                    });
+                    return 
+                }
+              
+                $.ajax({
+                    type: "POST",
+                    url: "/api/user/update",
+                    data: {
+                        id : $("#id").val(),
+                        name : $("#name").val(),
+                        email : $("#email").val(),
+                        phone : $("#phone").val(),
+                        role_id : $("#role_id option:selected").val(),
+                        password : $("#password").val(),
+                    },
+                    dataType: "JSON",
+                    success: function (response) {
+                        if(response.status == 200){
+                            $("#userModal").modal("hide")
+                            $.confirm({
+                                title: 'Pesan ',
+                                content: 'Data pengguna berhasil diperbarui !',
+                                buttons: {
+                                    Ya: {
+                                        btnClass: 'btn-success any-other-class',
+                                        action: function(){
+                                            loadUserData()
+                                        }
+                                    },
+                                }
+                            });
+                        }
+                    }
+                });
+            })
       })
 
+      function loadUserData(name=null, email=null, phone=null){
+            if (table != null) {
+                table.destroy();
+            }
+
+            table =  $("#table-user").DataTable({
+                lengthChange: false,
+                searching: false,
+                destroy: true,
+                processing: true,
+                serverSide: true,
+                bAutoWidth: true,
+                scrollCollapse : true,
+                language: {
+                emptyTable: "Data tidak tersedia",
+                zeroRecords: "Tidak ada data yang ditemukan",
+                infoFiltered: "",
+                infoEmpty: "",
+                paginate: {
+                    previous: "‹",
+                    next: "›",
+                },
+                info: "Menampilkan _START_ dari _END_ dari _TOTAL_ Pengguna",
+                aria: {
+                        paginate: {
+                            previous: "Previous",
+                            next: "Next",
+                        },
+                    },
+                },
+                ajax:{
+                    url :  '/api/user',
+                    type: "GET",
+                    data: {
+                        name: name,
+                        email: email,
+                        phone: phone,
+                        // page : 1,
+                        // limit : 10
+                    }
+                },
+                columns: [
+                    {
+                        data: null,
+                        width: "5%",
+                    },
+                    {
+                        data: null,
+                    },
+                    {
+                        data: null,
+                    },
+                    {
+                        data: null,
+                    },
+                    {
+                        data: null,
+                    },
+                    {
+                        data: null,
+                    },
+                ],
+                columnDefs: [
+                    {
+                        targets: 0,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).addClass("text-center");
+                            $(td).html(table.page.info().start + row + 1);
+                        },
+                    },
+                    {
+                        targets: 1,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html(rowData.name);
+                        },
+                    },
+                    {
+                        targets: 2,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html(rowData.email);
+                        },
+                    },
+                    {
+                        targets: 3,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html(rowData.phone);
+                        },
+                    },
+                    {
+                        targets: 4,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html(rowData.role.name);
+                        },
+                    },
+                    {
+                        targets: 5,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var role_name = rowData.role.name
+                            var html = ""
+                            var disabled = ""
+                            if(role_name == "Super Admin"){
+                                disabled = "disabled"
+                            } 
+                            html = "<button type='button' class='btn btn-sm btn-warning' onclick='detail("+rowData.id+")' "+disabled+"> Ubah </button> <button type='button' class='btn btn-sm btn-danger' onclick='confirm("+rowData.id+")' "+disabled+"> Hapus </button>"
+                            $(td).html(html);
+                        },
+                    },
+                ],
+            })
+      }
+
+      // Deprecated function
       function datatable(name=null, email=null, phone=null){
         if (table != null) {
             table.destroy();
@@ -296,6 +483,7 @@
             },
         })
       }
+      // end deprecated function
 
       function detail(id=null){
         $.ajax({
@@ -350,7 +538,7 @@
                         len = response['data'].length
                         for(i = 0; i < len; i++) {
                             var selected = ""
-                            var id = response['data'][i].name
+                            var id = response['data'][i].id
                             var name = response['data'][i].name
                             if(id == role_id){
                                 selected = "selected"
@@ -364,7 +552,30 @@
       }
 
       function remove(id){ 
-        console.log(id)
+            $.ajax({
+                type: "POST",
+                url: "/api/user/delete",
+                data: {
+                    id : id,
+                },
+                dataType: "JSON",
+                success: function (response) {
+                    if(response.status == 200){
+                        $.confirm({
+                            title: 'Pesan',
+                            content: 'Data pengguna berhasil dihapus !',
+                            buttons: {
+                                Ya: {
+                                    btnClass: 'btn-success any-other-class',
+                                    action: function(){
+                                        loadUserData()
+                                    }
+                                },
+                            }
+                        });
+                    }
+                }
+            });
       }
 </script>
 

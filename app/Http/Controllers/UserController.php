@@ -52,7 +52,7 @@ class UserController extends Controller
             $user->fill($request->all());
 
             $validator = Validator::make($request->all(), [
-                'email' => 'required|email|unique:users',
+                'email' => 'required|email',
                 'password' => 'required',
                 'phone' => 'required',
                 'role_id' => 'required'
@@ -66,8 +66,39 @@ class UserController extends Controller
                 ]);
             }
 
-            if($this->service->create($request)) {
-                $user = User::all();
+            $user = $this->service->create($request);
+            if($user){
+                return $user;
+            }
+
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    // update user
+    public function update(Request $request){
+        try{
+            $user = new User();
+            $user->fill($request->all());
+
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|email',
+                'phone' => 'required',
+                'role_id' => 'required'
+            ]);
+
+            if($validator->fails()){
+                return response()->json([
+                    'data' => null,
+                    'message' => $validator->errors(),
+                    'status' => 422
+                ]);
+            }
+
+            $user = $this->service->update($request);
+            if($user){
                 return $user;
             }
 
@@ -96,6 +127,31 @@ class UserController extends Controller
             }
 
             return $this->service->detail($request);
+        }
+        catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function delete(Request $request){
+        try{
+            $user = new User();
+            $user->fill($request->all());
+
+            $validator = Validator::make($request->all(), [
+                'id' => 'required',
+            ]);
+
+            if($validator->fails()){
+                return response()->json([
+                    'data' => null,
+                    'message' => $validator->errors(),
+                    'status' => 422
+                ]);
+            }
+
+            return $this->service->delete($request);
         }
         catch(Exception $ex){
             Log::error($ex->getMessage());

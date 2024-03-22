@@ -32,6 +32,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::controller(UserController::class)->group(function() {
     Route::get('/user', 'getUser')->name('user.data');
     Route::post('/user/create', 'create')->name('user.create');
+    Route::post('/user/update', 'update')->name('user.update');
     Route::post('/user/delete', 'delete')->name('user.delete');
     Route::post('/user/detail', 'detail')->name('user.detail');
 });

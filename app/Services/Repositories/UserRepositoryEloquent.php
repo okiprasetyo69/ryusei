@@ -80,18 +80,38 @@ use Yajra\DataTables\Facades\DataTables;
             $user->save();
 
             return response()->json([
-                    'status' => 200,
-                    'message' => true,
-                    'data' => $user
-                ]); 
+                'status' => 200,
+                'message' => true,
+                'data' => $user
+            ]); 
 
         }catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;
-         }
+        }
     }
 
-    public function delete(Request $request){}
+    public function delete(Request $request){
+        try{
+            $user = $this->user::where("id", $request->id)->first();
+            if($user == null){
+                return response()->json([
+                    'data' => null,
+                    'message' => 'Data not found',
+                    'status' => 400
+                ]);
+            }
+
+            $user->delete();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Success delete user.',
+            ]);
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
 
     public function detail(Request $request){
         try{
@@ -116,4 +136,39 @@ use Yajra\DataTables\Facades\DataTables;
             return false;
          }
     }
+
+    public function update(Request $request){
+
+        try{
+            $user = $this->user;
+            $user->fill($request->all());
+
+            if($request->id != null){
+                $user = $user::find($request->id);
+            }
+        
+            $password = "";
+            if($request->password != null){
+                $password = bcrypt($request->password);
+                $user->password = $password;
+            }
+
+            $user->email = $request->email;
+            $user->phone = $request->phone;
+            $user->role_id = $request->role_id;
+
+            $user->save();
+
+            return response()->json([
+                'status' => 200,
+                'message' => true,
+                'data' => $user
+            ]); 
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+        
+    }
+    
  }

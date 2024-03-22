@@ -52,4 +52,12 @@ use Illuminate\Http\Request;
 
      public function detail(Request $request);
 
+      /**
+     * @author Oki Prasetyo <oki.prasetyo45@gmail.com>
+     * @since   2024.03.22
+     * Function for handle requests update user.
+     * 
+     * @param Illuminate\Support\Facades\Request
+     */
+    public function update(Request $request);
  }
