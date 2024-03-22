@@ -404,8 +404,13 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        //console.log(rowData.channel.name)
-                        $(td).html(rowData.channel.name);
+                        var channel = ""
+                        if(rowData.channel == null){
+                            channel = "-"
+                        } else {
+                            channel = rowData.channel.name
+                        }
+                        $(td).html(channel);
                     },
                 },
                 {
@@ -553,8 +558,13 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                    
-                        $(td).html(rowData.channel.admin_charge + "%");
+                        var admin_charge = 0
+                        if(rowData.channel == null){
+                            admin_charge = 0
+                        } else {
+                            admin_charge = rowData.channel.admin_charge
+                        }
+                        $(td).html(admin_charge + "%");
                     },
                 },
                 {
@@ -614,7 +624,13 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html("Kota");
+                        var city = ""
+                        if(rowData.postalcode == null){
+                            city = "-"
+                        } else {
+                            city = rowData.postalcode.city
+                        }
+                        $(td).html(city);
                     },
                 },
                 {
@@ -622,7 +638,12 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        var customer_name = rowData.channel.name
+                        var customer_name = ""
+                        if(rowData.channel == null){
+                            customer_name = "-"
+                        } else {
+                            customer_name = rowData.channel.name
+                        }
                         $(td).html(customer_name);
                     },
                 },
@@ -631,7 +652,12 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        var customer_code = rowData.channel.code
+                        var customer_code = ""
+                        if( rowData.channel == null){
+                            customer_code = "-"
+                        } else {
+                            customer_code =  rowData.channel.code
+                        }
                         $(td).html(customer_code);
                     },
                 },

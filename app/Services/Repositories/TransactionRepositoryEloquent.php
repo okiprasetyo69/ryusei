@@ -40,7 +40,7 @@ use Yajra\DataTables\Facades\DataTables;
     public function getTransaction(Request $request){
         try{
 
-            $transaction = $this->transaction::with('channel', 'product', 'payment', 'product.category', 'product.sizes');
+            $transaction = $this->transaction::with('channel', 'product', 'payment', 'product.category', 'product.sizes', 'postalcode');
 
             if( ($request->limit != null) && $request->page != null){
                 $offset = ($request->page - 1) * $request->limit;

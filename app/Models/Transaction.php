@@ -32,15 +32,19 @@ class Transaction extends Model
         'discount'
     ];
 
-    public function channel(){
-        return $this->belongsTo(SalesChannel::class, 'sales_channel_id','id');
-    }
-
     public function product(){
         return $this->belongsTo(Product::class, 'sku_id','id');
     }
 
     public function payment(){
         return $this->belongsTo(PaymentMethod::class, 'payment_method_id','id');
+    }
+
+    public function channel(){
+        return $this->belongsTo(SalesChannel::class, 'sales_channel_id','id');
+    }
+
+    public function postalcode(){
+        return $this->belongsTo(Locality::class, 'postal_code','postal_code');
     }
 }
