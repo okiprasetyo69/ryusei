@@ -12,6 +12,7 @@ use App\Http\Controllers\SalesChannelController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LocalityController;
 
 /*
 |--------------------------------------------------------------------------
@@ -84,10 +85,19 @@ Route::controller(SalesChannelController::class)->group(function() {
     Route::post('/sales-channel/delete', 'delete')->name('sales.channel.delete');
 });
 
+// Manage Locality
+Route::controller(LocalityController::class)->group(function() {
+    Route::get('/locality-list', 'getLocality')->name('locality.data');
+    Route::post('/locality-list/create', 'create')->name('locality.create');
+    Route::post('/locality-list/update', 'update')->name('locality.update');
+    Route::post('/locality-list/delete', 'delete')->name('locality.delete');
+    Route::post('/locality-list/detail', 'detail')->name('locality.detail');
+});
+
+
 // Manage Payment Method
 Route::controller(PaymentMethodController::class)->group(function() {
     Route::get('/payment-method', 'getPaymentMethod')->name('payment.method.data');
-    
 });
 
 // Manage Transaction

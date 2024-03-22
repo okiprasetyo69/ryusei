@@ -9,7 +9,7 @@ use App\Http\Controllers\ListCategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\SalesChannelController;
-
+use App\Http\Controllers\LocalityController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -49,6 +49,11 @@ Route::controller(ListCategoryController::class)->group(function() {
 // Sales Channel Menu
 Route::controller(SalesChannelController::class)->group(function() {
     Route::get('/sales-channel', 'salesChannelPage')->name('sales-channel');
+});
+
+// Locality Menu
+Route::controller(LocalityController::class)->group(function() {
+    Route::get('/city-list', 'cityPage')->name('city-list');
 });
 
 // Product Menu

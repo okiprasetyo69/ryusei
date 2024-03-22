@@ -11,31 +11,31 @@ use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Support\Facades\Log;
 
-use App\Models\CategoryList;
-use App\Services\Interfaces\CategoryListService;
+use App\Models\Locality;
+use App\Services\Interfaces\LocalityService;
 
-class ListCategoryController extends Controller
+class LocalityController extends Controller
 {
     /**
-     * @var CategoryList
+     * @var Locality
     */
     
-    private CategoryListService $service;
+    private LocalityService $service;
 
-    public function __construct(CategoryListService $service) 
+    public function __construct(LocalityService $service) 
     {
         $this->service = $service;
     }
 
-    public function index(Request $request){
-        return view("category_list.index");
+    public function cityPage(Request $request){
+        return view("transaction.city");
     }
 
-    public function getListCategory(Request $request){
+    public function getLocality(Request $request){
         try{
-            $categoryList = $this->service->getListCategory($request);
-            if($categoryList != null){
-                return $categoryList;
+            $locality = $this->service->getLocality($request);
+            if($locality != null){
+                return $locality;
             }
             return false;
         }catch(Exception $ex){
@@ -47,7 +47,11 @@ class ListCategoryController extends Controller
     public function create(Request $request){
         $validator = Validator::make(
             $request->all(), [
-                'list_name' => 'required',
+                'postal_code' => 'required',
+                'village' => 'required',
+                'district' => 'required',
+                'city' => 'required',
+                'province' => 'required',
             ]
         );
 
@@ -59,10 +63,10 @@ class ListCategoryController extends Controller
             ]);
         }
 
-        $listCategory = $this->service->create($request);
+        $locality = $this->service->create($request);
 
-        if($listCategory) {
-            return $listCategory;
+        if($locality) {
+            return $locality;
         }
     }
 
@@ -79,9 +83,9 @@ class ListCategoryController extends Controller
             ]);
         }
 
-        $categoryList = $this->service->delete($request);
-        if($categoryList) {
-            return $categoryList;
+        $locality = $this->service->delete($request);
+        if($locality) {
+            return $locality;
         }
     }
 
@@ -98,7 +102,7 @@ class ListCategoryController extends Controller
             ]);
         }
 
-        $listCategory = $this->service->detail($request);
-        return $listCategory;
+        $locality = $this->service->detail($request);
+        return $locality;
     }
 }

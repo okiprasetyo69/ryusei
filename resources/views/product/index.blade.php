@@ -137,7 +137,7 @@
                         <div class="row mt-2">
                             <div class="col-md-4"></div>
                             <div class="col-md-4 text-center">
-                                {!! $data->links() !!}
+                                {!! $data->appends(request()->all())->links() !!}
                             </div>
                             <div class="col-md-4"></div>                     
                         </div>

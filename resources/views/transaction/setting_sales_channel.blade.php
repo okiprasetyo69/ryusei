@@ -11,14 +11,14 @@
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="#">Penjualan</a>
+                    <a href="#">Kontak Pelanggan</a>
                 </li>
                 <li class="breadcrumb-item active">
                     <a href="/sales-channel">Sales Channel</a>
                 </li>
-                <!-- <li class="breadcrumb-item">
-                    <a href="#">List Kategori</a>
-                </li> -->
+                <li class="breadcrumb-item">
+                    <a href="/city-list">List Kota</a>
+                </li>
             </ol>
         </nav>
     </div><!-- End Page Title -->

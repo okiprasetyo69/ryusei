@@ -10,7 +10,7 @@
 <h1>Dashboard</h1>
 <nav>
     <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+    <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
     <li class="breadcrumb-item active">Dashboard</li>
     </ol>
 </nav>
@@ -31,13 +31,18 @@
             </div>
             <div class="row">
                 <div class="col-md-5">
-                    <input type="text" class="form-control" name="start_date" id="start_date" />
+                    <input type="text" class="form-control" name="start_date" id="start_date" placeholder="Klik tanggal"/>
                 </div>
                 <div class="col-md-5">
-                    <input type="text" class="form-control" name="end_date" id="end_date" />
+                    <input type="text" class="form-control" name="end_date" id="end_date" placeholder="Klik tanggal"/>
                 </div>
                 <div class="col-md-2"> 
                     <button type="button" class="btn btn-md btn-success rounded-pill" id="btn-search"><i class="bi bi-search"></i> Cari </button>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-4">
+                    <h5 class="card-title" id="description"> </h5>
                 </div>
             </div>
         </div>
@@ -126,7 +131,7 @@
                         </div>
 
                         <div class="card-body">
-                            <h5 class="card-title">Toko Terbaik <span>| Today</span></h5>
+                            <h5 class="card-title">Toko Terbaik</h5>
 
                             <table class="table table-striped" id="table-best-store">
                                 <thead>
@@ -260,6 +265,9 @@
             bestStoreChannelSeller(start_date, end_date, null, null, null)
             bestProductSeller(start_date, end_date, null, null, null)
             filterChart(start_date, end_date, null, null, null)
+
+            var description = "Periode " + start_date + " sampai dengan " + end_date
+            $("#description").html(description)
         })
         // --------------------------------------------------------------- //
         $("#filter-today").on("click", function(e){

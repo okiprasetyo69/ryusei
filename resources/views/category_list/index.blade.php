@@ -119,7 +119,7 @@
     var category_id
     $(document).ready(function () {
         
-        getListCategory()
+        loadListCategory()
         getCategory()
         // Open Modal
         $(".btn-add").click(function(e){
@@ -140,7 +140,7 @@
         $("#filter_name").on("keyup", function(e){
             e.preventDefault()
             list_name = $("#filter_name").val()
-            getListCategory(list_name)
+            loadListCategory(list_name)
         })
         // Store data
         $("#frm-list-category").on("submit", function(e){
@@ -173,7 +173,7 @@
                                 Ya: {
                                     btnClass: 'btn-success any-other-class',
                                     action: function(){
-                                        getListCategory()
+                                        loadListCategory()
                                     }
                                 },
                             }
@@ -185,6 +185,110 @@
 
     });
 
+    function loadListCategory(name = null){
+        if (table != null) {
+            table.destroy();
+        }
+
+        table =  $("#table-list-category").DataTable(
+           {
+                lengthChange: false,
+                searching: false,
+                destroy: true,
+                processing: true,
+                serverSide: true,
+                bAutoWidth: true,
+                scrollCollapse : true,
+                language: {
+                emptyTable: "Data tidak tersedia",
+                zeroRecords: "Tidak ada data yang ditemukan",
+                infoFiltered: "",
+                infoEmpty: "",
+                paginate: {
+                    previous: "‹",
+                    next: "›",
+                },
+                info: "Menampilkan _START_ dari _END_ dari _TOTAL_ List Kategori",
+                aria: {
+                        paginate: {
+                            previous: "Previous",
+                            next: "Next",
+                        },
+                    },
+                },
+                ajax:{
+                    url :  '/api/category/list',
+                    type: "GET",
+                    data: {
+                        list_name: list_name
+                        // page : 1,
+                        // limit : 10
+                    }
+                },
+                columns: [
+                    {
+                        data: null,
+                        width: "5%",
+                    },
+                    {
+                        data: null,
+                        width: "20%",
+                    },
+                    {
+                        data: null,
+                        width: "50%",
+                    },
+                    {
+                        data: null,
+                    },
+                ],
+                columnDefs: [
+                    {
+                    targets: 0,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).addClass("text-center");
+                        $(td).html(table.page.info().start + row + 1);
+                    },
+                    },
+                    {
+                        targets: 1,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html(rowData.list_name);
+                        },
+                    },
+                    {
+                        targets: 2,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var category = ""
+                            //console.log(rowData.category)
+                            if(rowData.category == null){
+                                $(td).html("-");
+                            }else {
+                                $(td).html(rowData.category.name);
+                            }
+                        },
+                    },
+                    {
+                        targets: 3,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var html = "<button type='button' class='btn btn-sm btn-warning' onclick='detail("+rowData.id+")' > Ubah </button> <button type='button' class='btn btn-sm btn-danger' onclick='confirm("+rowData.id+")'> Hapus </button>"
+                            $(td).html(html);
+                        },
+                    },
+                ]
+           }
+        )
+    }
+
+    // Deprecated function
     function getListCategory(name = null){
         if (table != null) {
             table.destroy();
@@ -293,6 +397,7 @@
             },
         })
     }
+    // End deprecated
 
     function detail(id){
         $.ajax({
@@ -304,6 +409,8 @@
             dataType: "JSON",
             success: function (response) {
                 var data = response.data
+                console.log(data)
+                getCategory(data.category_id)
                 $("#categoryListModal").modal("show")
                 $(".modal-title").text("Ubah List Kategori")
                 $("#btn-save").text("Ubah")
@@ -348,7 +455,7 @@
                             Ya: {
                                 btnClass: 'btn-success any-other-class',
                                 action: function(){
-                                    getListCategory()
+                                    loadListCategory()
                                 }
                             },
                         }
@@ -358,7 +465,7 @@
         });
     }
 
-    function getCategory(){
+    function getCategory(category_id=null){
         $.ajax({
             type: "GET",
             url: "/api/category",
