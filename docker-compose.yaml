@@ -56,5 +56,5 @@ volumes:
   cache-data:
     driver: local
 networks:
-  qlope-network:
+  ryusei-network:
     driver: bridge
