@@ -39,6 +39,11 @@
                                                 <i class="bi bi-plus-circle"></i> Tambah
                                             </button>
                                         </div>
+                                        <div class="col-md-4 pull-right"> 
+                                            <button type="button" class="btn btn-md btn-success" id="btn-import" data-bs-toggle="modal" data-bs-target="#basicModal">
+                                                <i class="bi bi-file-earmark-excel-fill"></i> Import
+                                            </button>
+                                        </div>
                                     </div>
                                     <div class="row mt-4">
                                         <div class="col-md-6">
@@ -121,6 +126,27 @@
 </main>
 <!-- End #main -->
 
+     <!-- Basic Modal -->
+    <div class="modal fade" id="basicModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                      <h5 class="modal-title">Import File Xlsx</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h5> Pastikan File Sesuai Format </h5>
+                    <input type="file" name="file_import_product" class="form-control mt-2">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Import</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                </div>
+            </div>
+        </div>
+    </div><!-- End Basic Modal-->
+
+
 <script type="text/javascript"> 
     var category_id
     var image_path
@@ -137,7 +163,7 @@
         $("#btn-add").on("click", function(e){
             e.preventDefault()
             let count = $('#table-add-product tr').length
-            let row = "<tr><td>"+count+"</td> <td><select class='form-select size' name='size[]' id='size-"+count+"' data-id="+count+"><option value=''>- Pilih Size - </option><option value='1'>S</option><option value='2'>M</option><option value='3'>L</option><option value='4'>XL</option><option value='5'>XXL</option><option value='6'>3XL</option></select></td> <td><input type='text' class='form-control sku' name='code[]' id='sku' placeholder='Kode SKU'></td> <td><input type='text' class='form-control article' name='article[]' id='article' placeholder='Nama Artikel'></td> <td><input type='number' min='0' class='form-control price' name='price' id='price' placeholder='Harga'></td> <td><button type='button' class='btn btn-sm btn-danger delete-row'><i class='bi bi-trash' aria-hidden='true'></i></button> </td></tr>"
+            let row = "<tr><td>"+count+"</td> <td><select class='form-select size' name='size[]' id='size-"+count+"' data-id="+count+"></select></td> <td><input type='text' class='form-control sku' name='code[]' id='sku' placeholder='Kode SKU'></td> <td><input type='text' class='form-control article' name='article[]' id='article' placeholder='Nama Artikel'></td> <td><input type='number' min='0' class='form-control price' name='price' id='price' placeholder='Harga'></td> <td><button type='button' class='btn btn-sm btn-danger delete-row'><i class='bi bi-trash' aria-hidden='true'></i></button> </td></tr>"
             var dataId = $(this).attr("data-id")
           
             getSize(dataId)

@@ -80,7 +80,12 @@
                                 </div>
                                 <div class="col-md-10 mt-2">
                                     <div class="col-md-12">
-                                        <div class="table-responsive">
+                                        <div class="col-md-4 pull-right"> 
+                                            <button type="button" class="btn btn-md btn-success" id="btn-import" data-bs-toggle="modal" data-bs-target="#basicModal">
+                                                <i class="bi bi-file-earmark-excel-fill"></i> Import
+                                            </button>
+                                        </div>
+                                        <div class="table-responsive mt-4">
                                             <table class="table table-striped" id="table-add-transaction" style="width:100%">
                                                 <thead>
                                                     <tr class="text-center">
@@ -120,6 +125,26 @@
     </section>
 </main>
 <!-- End #main -->
+
+ <!-- Basic Modal -->
+    <div class="modal fade" id="basicModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                      <h5 class="modal-title">Import File Xlsx</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h5> Pastikan File Sesuai Format </h5>
+                    <input type="file" name="file_import_product" class="form-control mt-2">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Import</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                </div>
+            </div>
+        </div>
+    </div><!-- End Basic Modal-->
 
 <script type="text/javascript"> 
 

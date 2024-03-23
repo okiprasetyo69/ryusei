@@ -123,6 +123,7 @@
             $("#id").val("")
             $("#name").val("")
         })
+        
         // Close Modal
         $("#btn-close").click(function(e){
             e.preventDefault()
