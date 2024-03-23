@@ -307,7 +307,7 @@
                         <td>`+count+`</td>
                         <td><input type="text" name="order_number[]" class="form-control order_number" id="order_number" value=`+transaction.order_number+` /></td>    
                         <td><input type="text" name="tracking_number[]" class="form-control tracking_number" id="tracking_number" value=`+transaction.tracking_number+`></td>    
-                        <td ><select name="sku_id[]" class="form-control sku_id" id="sku_id" style="width:100%;"><option value=""> - Pilih SKU-  </option></select></td>    
+                        <td ><select name="sku_id[]" class="form-control sku_id" id="sku_id-`+count+`" style="width:100%;"><option value=""> - Pilih SKU-  </option></select></td>    
                         <td><input type="number" min="1" name="qty[]" class="form-control qty" id="qty" value=`+transaction.qty+` /></td>    
                         <td><input type="number" min="1" name="unit_price[]" class="form-control unit_price" id="unit_price" value=`+transaction.unit_price+` /></td>    
                         <td><input type="text" name="postal_code[]" class="form-control postal_code" id="postal_code" value="`+ transaction.postal_code + `" /></td>    

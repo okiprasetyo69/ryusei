@@ -259,7 +259,11 @@
             });
         })
 
-     
+       $("#table-add-product").on("click", '.size', function(){
+            var id = $(this).attr('data-id')
+            changeSize(id)
+       })
+
     });
 
     function readURL(input) {
@@ -315,10 +319,9 @@
                 $("#table-add-product").find("tr:gt(0)").remove()
                 $.each(data, function (i, val) { 
                     var size = val.sizes
-                    row += "<tr><td>"+ (count++) +"</td> <td><select class='form-select size' name='size[]' id='size' data-id="+size.id+"><option value="+size.id+"> "+size.name+" </option></select></td> <td><input type='text' class='form-control sku' name='sku[]' id='sku' value='"+val.sku+"' placeholder='Kode SKU'></td> <td><input type='text' class='form-control article' name='article[]' value='"+val.article+"' id='article' placeholder='Nama Artikel'></td> <td><input type='number' min='0' value='"+val.price+"' class='form-control price' name='price' id='price' placeholder='Harga'></td> <td><button type='button' class='btn btn-sm btn-danger delete-row' onclick='confirmDelete("+val.id+")'><i class='bi bi-trash' aria-hidden='true'></i></button> </td></tr>"
+                    row += "<tr><td>"+ (count++) +"</td> <td><select class='form-select size' name='size[]' id='size-"+size.id+"' data-id="+size.id+"><option value="+size.id+"> "+size.name+" </option></select></td> <td><input type='text' class='form-control sku' name='sku[]' id='sku' value='"+val.sku+"' placeholder='Kode SKU'></td> <td><input type='text' class='form-control article' name='article[]' value='"+val.article+"' id='article' placeholder='Nama Artikel'></td> <td><input type='number' min='0' value='"+val.price+"' class='form-control price' name='price' id='price' placeholder='Harga'></td> <td><button type='button' class='btn btn-sm btn-danger delete-row' onclick='confirmDelete("+val.id+")'><i class='bi bi-trash' aria-hidden='true'></i></button> </td></tr>"
                 });
                 $("#table-add-product > tbody:last-child").append(row);
-                getSize()
             }
        });
     }
@@ -369,14 +372,14 @@
     }
 
     function getSize(size = null){
-        //console.log(size)
+
         $.ajax({
             type: "GET",
             url: "/api/size",
             data: "data",
             dataType: "JSON",
             success: function (response) {
-                $(".size").html("");
+                //$("#size").html();
                 var len = 0;
                 var option = ""
                 if(response['data'] != null) {
@@ -385,14 +388,41 @@
                         var selected = ""
                         var id = response['data'][i].id
                         var name = response['data'][i].name
-                        // console.log(id, size)
+
                         if(id == size ){
                             selected = "selected"
                         }
                         option = "<option value='"+id+"' "+selected+">"+ name +"</option>"
-                        $(".size").append(option);
+                        // $(".size").append(option)
+                        $('#size-'+id+'').append(option)
                     }
                 }
+                
+            }
+        });
+    }
+
+    function changeSize(idRow=null){
+        $.ajax({
+            type: "GET",
+            url: "/api/size",
+            data: "data",
+            dataType: "JSON",
+            success: function (response) {
+                $("#size").html();
+                var len = 0;
+                var option = ""
+                if(response['data'] != null) {
+                    len = response['data'].length
+                    for(i = 0; i < len; i++) {
+                        var selected = ""
+                        var id = response['data'][i].id
+                        var name = response['data'][i].name
+                        option = "<option value='"+id+"'>"+ name +"</option>"
+                        $('#size-'+idRow+'').append(option)
+                    }
+                }
+                
             }
         });
     }

@@ -159,13 +159,13 @@
                         <td>`+count+`</td>
                         <td><input type="text" name="order_number[]" class="form-control order_number" id="order_number"/></td>    
                         <td><input type="text" name="tracking_number[]" class="form-control tracking_number" id="tracking_number"/></td>    
-                        <td ><select name="sku_id[]" class="form-control sku_id" id="sku_id" style="width:100%;"><option value=""> - Pilih Kode SKU -  </option></select></td>    
+                        <td ><select name="sku_id[]" class="form-control sku_id" id="sku_id-`+count+`" data-id="`+count+`" style="width:100%;"><option value=""> - Pilih Kode SKU -  </option></select></td>    
                         <td><input type="number" min="1" name="qty[]" class="form-control qty" id="qty"/></td>    
                         <td><input type="number" min="1" name="unit_price[]" class="form-control unit_price" id="unit_price"/></td>    
                         <td><input type="text" name="postal_code[]" class="form-control postal_code" id="postal_code"/></td>    
                         <td><button type='button' class='btn btn-md btn-danger delete-row'><i class='bi bi-trash' aria-hidden='true'></i></button></td>    
-                               
                     </tr>`
+            //var dataId = $(this).attr("id")
             $('#tbody').append(row);
             getSkuCode()
         })
@@ -323,7 +323,8 @@
         });
     }
 
-    function getSkuCode(){
+    function getSkuCode(dataId=null){
+    
         let sku_id = $('.sku_id').val()
         $(".sku_id").select2({
             ajax: {
