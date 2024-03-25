@@ -99,6 +99,10 @@ Route::controller(LocalityController::class)->group(function() {
     Route::post('/locality-list/delete', 'delete')->name('locality.delete');
     Route::post('/locality-list/detail', 'detail')->name('locality.detail');
     Route::post('/locality-list/import-postalcode', 'importPostalCode')->name('locality.import.postalcode');
+    Route::get('/locality-list/province', 'getProvince')->name('locality.province');
+    Route::get('/locality-list/city', 'getCity')->name('locality.city');
+    Route::get('/locality-list/district', 'getDistrict')->name('locality.district');
+    Route::get('/locality-list/village', 'getVillage')->name('locality.village');
 });
 
 

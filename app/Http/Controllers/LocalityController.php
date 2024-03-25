@@ -137,4 +137,101 @@ class LocalityController extends Controller
             return false;
        }
     }
+
+    public function getProvince(Request $request){
+        try{
+            $locality = $this->service->getProvince($request);
+            if($locality != null){
+                return $locality;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function getCity(Request $request){
+        try{
+            $validator = Validator::make(
+                $request->all(), [
+                    'province' => 'required',
+                ]
+            );
+    
+            if($validator->fails()){
+                return response()->json([
+                    'data' => null,
+                    'message' => $validator->errors()->first(),
+                    'status' => 422
+                ]);
+            }
+
+            $locality = $this->service->getCity($request);
+            if($locality != null){
+                return $locality;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function getDistrict(Request $request){
+        try{
+            $validator = Validator::make(
+                $request->all(), [
+                    'province' => 'required',
+                    'city' => 'required',
+                ]
+            );
+    
+            if($validator->fails()){
+                return response()->json([
+                    'data' => null,
+                    'message' => $validator->errors()->first(),
+                    'status' => 422
+                ]);
+            }
+
+            $locality = $this->service->getDistrict($request);
+            if($locality != null){
+                return $locality;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function getVillage(Request $request){
+        try{
+            $validator = Validator::make(
+                $request->all(), [
+                    'province' => 'required',
+                    'city' => 'required',
+                    'district' => 'required',
+                ]
+            );
+    
+            if($validator->fails()){
+                return response()->json([
+                    'data' => null,
+                    'message' => $validator->errors()->first(),
+                    'status' => 422
+                ]);
+            }
+
+            $locality = $this->service->getVillage($request);
+            if($locality != null){
+                return $locality;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
 }

@@ -143,4 +143,99 @@ class LocalityRepositoryEloquent implements LocalityService {
             return false;
         }
    }
+
+   public function getProvince(Request $request){
+        try{
+            $locality = $this->locality::select("province as province_name", "province")->groupBy("province");
+            $locality = $locality->get();
+
+            return response()->json([
+                'status' => 200,
+                'message' => true,
+                'data' => $locality
+            ]); 
+
+        } catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+   }
+
+   public function getCity(Request $request){
+        try{
+            $locality = $this->locality::select("city as city_name", "city");
+            
+            if($request->province != null){
+                $locality->where("province", $request->province);
+            }
+            $locality = $locality->groupBy("city")->get();
+
+            return response()->json([
+                'status' => 200,
+                'message' => true,
+                'data' => $locality
+            ]); 
+
+        } catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+   }
+
+   public function getDistrict(Request $request){
+        try{
+            $locality = $this->locality::select("district as district_name", "district");
+            
+            if($request->province != null){
+                $locality->where("province", $request->province);
+            }
+
+            if($request->city != null){
+                $locality->where("city", $request->city);
+            }
+
+            $locality = $locality->groupBy("district")->get();
+
+            return response()->json([
+                'status' => 200,
+                'message' => true,
+                'data' => $locality
+            ]); 
+
+        } catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+   }
+
+   public function getVillage(Request $request){
+    try{
+
+        $locality = $this->locality::select("*");
+        
+        if($request->province != null){
+            $locality->where("province", $request->province);
+        }
+
+        if($request->city != null){
+            $locality->where("city", $request->city);
+        }
+
+        if($request->district != null){
+            $locality->where("district", $request->district);
+        }
+
+        $locality = $locality->get();
+
+        return response()->json([
+            'status' => 200,
+            'message' => true,
+            'data' => $locality
+        ]); 
+
+    } catch(Exception $ex){
+        Log::error($ex->getMessage());
+        return false;
+    }
+}
 }
