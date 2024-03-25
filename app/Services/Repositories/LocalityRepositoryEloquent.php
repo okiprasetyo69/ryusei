@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
+use Excel;
+use App\Imports\ImportLocality;
 /**
  * Class LocalityRepositoryEloquent.
  * 
@@ -117,5 +119,28 @@ class LocalityRepositoryEloquent implements LocalityService {
            Log::error($ex->getMessage());
            return false;
        }
+   }
+
+   public function importPostalCode(Request $request){
+        try{
+            $locality = $this->locality;
+
+            if ($request->hasFile('file_import_postal_code')) {
+                //GET FILE
+                $file = $request->file('file_import_postal_code'); 
+                //IMPORT FILE 
+                $import = Excel::import(new ImportLocality, $file);
+                if($import){
+                    return response()->json([
+                        'status' => 200,
+                        'message' => true,
+                        'data' => $locality
+                    ]); 
+                }
+            }  
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
    }
 }

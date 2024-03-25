@@ -16,7 +16,7 @@ class CategoryTableSeeder extends Seeder
         $size = [
             [
                 'id' => 1,
-                'name' => 'Aksesorris'
+                'name' => 'Aksesoris'
             ],
             [
                 'id' => 2,

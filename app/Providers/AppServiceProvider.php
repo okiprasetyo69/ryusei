@@ -17,6 +17,7 @@ use App\Services\Interfaces\PaymentMethodService;
 use App\Services\Interfaces\TransactionService;
 use App\Services\Interfaces\DashboardService;
 use App\Services\Interfaces\LocalityService;
+use App\Services\Interfaces\ImportProductService;
 
 use App\Services\Repositories\UserRepositoryEloquent;
 use App\Services\Repositories\RoleRepositoryEloquent;
@@ -29,6 +30,8 @@ use App\Services\Repositories\PaymentMethodRepositoryEloquent;
 use App\Services\Repositories\TransactionRepositoryEloquent;
 use App\Services\Repositories\DashboardRepositoryEloquent;
 use App\Services\Repositories\LocalityRepositoryEloquent;
+use App\Services\Repositories\ImportProductRepositoryEloquent;
+
 
 class AppServiceProvider extends ServiceProvider implements DeferrableProvider
 {
@@ -50,6 +53,7 @@ class AppServiceProvider extends ServiceProvider implements DeferrableProvider
         TransactionService::class => TransactionRepositoryEloquent::class,
         DashboardService::class => DashboardRepositoryEloquent::class,
         LocalityService::class => LocalityRepositoryEloquent::class,
+        ImportProductService::class => ImportProductRepositoryEloquent::class,
     ];
 
     /**
@@ -75,6 +79,7 @@ class AppServiceProvider extends ServiceProvider implements DeferrableProvider
             TransactionService::class,
             DashboardService::class,
             LocalityService::class,
+            ImportProductService::class,
         ];
     }
 

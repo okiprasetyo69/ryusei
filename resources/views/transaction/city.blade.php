@@ -19,6 +19,9 @@
                 <li class="breadcrumb-item active">
                     <a href="/city-list">List Kota</a>
                 </li>
+                <li class="breadcrumb-item active">
+                    <a href="/city-list/import">Tambah Masal List Kota</a>
+                </li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -28,16 +31,54 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="row mt-2">
-                            <label> <strong><span>Pencarian Kota: </span></strong> </label>
+                        <div class="row mt-4"> 
+                            <div class="col-md-3">
+                                <label> <strong><span> Pilih Provinsi </span></strong> </label>
+                            </div>
+                            <div class="col-md-3">
+                                <label> <strong><span> Pilih Kota </span></strong> </label>
+                            </div>
+                            <div class="col-md-3">
+                                <label> <strong><span> Pilih Kecamatan </span></strong> </label>
+                            </div>
+                            <div class="col-md-3">
+                                <label> <strong><span> Pilih Kelurahan </span></strong> </label>
+                            </div>
                         </div>
-                        <div class="row mt-2">
+                        <div class="row mt-2"> 
+                            <div class="col-md-3"> 
+                                <select name="filter_province" id="filter_province" class="form-control"> 
+                                  
+                                </select>
+                            </div>
+                            <div class="col-md-3"> 
+                                <select name="filter_city" id="filter_city" class="form-control"> 
+                                  
+                                </select>
+                            </div>
+                            <div class="col-md-3"> 
+                                <select name="filter_district" id="filter_district" class="form-control"> 
+                                  
+                                </select>
+                            </div>
+                            <div class="col-md-3"> 
+                                <select name="filter_village" id="filter_village" class="form-control"> 
+                                  
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-2">  
+                            <div class="col-md-4"> 
+                                <button type="button" class="btn btn-md btn-success" style="border-radius:50px;"><i class="bi bi-search"></i> Cari </button>
+                            </div>
+                        </div>
+                        <!-- <div class="row mt-2">
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <input type="text" name="filter_name" class="form-control" id="filter_name" placeholder="Masukkan kata kunci" autofocus/>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -46,7 +87,7 @@
                     <div class="card-body">
                         <div class="row mt-2"> 
                             <div class="col md-4">
-                                <button type="button" class="btn btn-primary rounded-pill btn-add" data-bs-toggle="modal" data-target="#cityListModal">
+                                <button type="button" class="btn btn-primary rounded-pill btn-add" data-bs-toggle="modal" data-bs-target="#cityListModal">
                                     <i class="bi bi-plus-circle"></i> Tambah
                                 </button>
                             </div>
@@ -81,12 +122,12 @@
 <!-- End #main -->
 
 <!-- Modal -->
-<div class="modal fade" id="cityListModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal fade" id="cityListModal" tabindex="-1">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title .modal-title" id="exampleModalLongTitle">Tambah Kode Pos</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -125,6 +166,7 @@
   </div>
 </div>
 
+
 <script type="text/javascript"> 
     var name
     var table
@@ -146,6 +188,7 @@
             $("#city").val("")
             $("#province").val("")
         })
+
         // Close Modal
         $("#btn-close").click(function(e){
             e.preventDefault()
@@ -156,7 +199,7 @@
         $("#filter_name").on("keyup", function(e){
             e.preventDefault()
             name = $("#filter_name").val()
-            // loadSalesChannel(name)
+            //loadPostalCode(name)
         })
 
         // Store data

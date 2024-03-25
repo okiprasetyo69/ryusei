@@ -50,4 +50,13 @@ use Illuminate\Http\Request;
      * @param Illuminate\Support\Facades\Request
      */
     public function detail(Request $request);
+
+     /**
+     * @author Oki Prasetyo <oki.prasetyo45@gmail.com>
+     * @since   2024.03.25
+     * Function for handle requests import postal code locality.
+     * 
+     * @param Illuminate\Support\Facades\Request
+     */
+    public function importPostalCode(Request $request);
  }

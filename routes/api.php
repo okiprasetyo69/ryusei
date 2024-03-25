@@ -13,6 +13,7 @@ use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LocalityController;
+use App\Http\Controllers\ImportProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,6 +77,11 @@ Route::controller(ProductController::class)->group(function() {
     Route::get('/product/list/select2', 'getProductSelect2')->name('product.list.select2');
 });
 
+// Manage Import Product
+Route::controller(ImportProductController::class)->group(function() {
+    Route::post('/import/product', 'importProduct')->name('import.product');
+});
+
 // Manage Sales Channel
 Route::controller(SalesChannelController::class)->group(function() {
     Route::get('/sales-channel', 'getSalesChannel')->name('sales.channel.data');
@@ -92,6 +98,7 @@ Route::controller(LocalityController::class)->group(function() {
     Route::post('/locality-list/update', 'update')->name('locality.update');
     Route::post('/locality-list/delete', 'delete')->name('locality.delete');
     Route::post('/locality-list/detail', 'detail')->name('locality.detail');
+    Route::post('/locality-list/import-postalcode', 'importPostalCode')->name('locality.import.postalcode');
 });
 
 

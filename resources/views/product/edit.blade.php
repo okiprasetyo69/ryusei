@@ -16,7 +16,7 @@
                     <a href="/product">Product</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="/product/edit/">Ubah</a>
+                    <a href="/product/edit/{{ $product->code}}">Ubah</a>
                 </li>
             </ol>
         </nav>
@@ -319,7 +319,7 @@
                 $("#table-add-product").find("tr:gt(0)").remove()
                 $.each(data, function (i, val) { 
                     var size = val.sizes
-                    row += "<tr><td>"+ (count++) +"</td> <td><select class='form-select size' name='size[]' id='size-"+size.id+"' data-id="+size.id+"><option value="+size.id+"> "+size.name+" </option></select></td> <td><input type='text' class='form-control sku' name='sku[]' id='sku' value='"+val.sku+"' placeholder='Kode SKU'></td> <td><input type='text' class='form-control article' name='article[]' value='"+val.article+"' id='article' placeholder='Nama Artikel'></td> <td><input type='number' min='0' value='"+val.price+"' class='form-control price' name='price' id='price' placeholder='Harga'></td> <td><button type='button' class='btn btn-sm btn-danger delete-row' onclick='confirmDelete("+val.id+")'><i class='bi bi-trash' aria-hidden='true'></i></button> </td></tr>"
+                    row += "<tr><td>"+ (count++) +"</td> <td><select class='form-select size' name='size[]' id='size-"+count+"' data-id="+count+"><option value="+size.id+"> "+size.name+" </option></select></td> <td><input type='text' class='form-control sku' name='sku[]' id='sku' value='"+val.sku+"' placeholder='Kode SKU'></td> <td><input type='text' class='form-control article' name='article[]' value='"+val.article+"' id='article' placeholder='Nama Artikel'></td> <td><input type='number' min='0' value='"+val.price+"' class='form-control price' name='price' id='price' placeholder='Harga'></td> <td><button type='button' class='btn btn-sm btn-danger delete-row' onclick='confirmDelete("+val.id+")'><i class='bi bi-trash' aria-hidden='true'></i></button> </td></tr>"
                 });
                 $("#table-add-product > tbody:last-child").append(row);
             }

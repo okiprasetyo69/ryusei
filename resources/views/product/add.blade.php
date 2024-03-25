@@ -38,7 +38,7 @@
                                             <button type="button" class="btn btn-md btn-primary" id="btn-add">
                                                 <i class="bi bi-plus-circle"></i> Tambah
                                             </button>
-                                            <button type="button" class="btn btn-md btn-success" id="btn-import" data-bs-toggle="modal" data-bs-target="#basicModal">
+                                            <button type="button" class="btn btn-md btn-success rounded-pill" id="btn-import" data-bs-toggle="modal" data-bs-target="#basicModal">
                                                 <i class="bi bi-file-earmark-excel-fill"></i> Import
                                             </button>
                                         </div>
@@ -124,9 +124,10 @@
 </main>
 <!-- End #main -->
 
-     <!-- Basic Modal -->
-    <div class="modal fade" id="basicModal" tabindex="-1">
-        <div class="modal-dialog">
+<!-- Basic Modal -->
+<div class="modal fade" id="basicModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form id="import-form-product" enctype="multipart/form-data">
             <div class="modal-content">
                 <div class="modal-header">
                       <h5 class="modal-title">Import File Xlsx</h5>
@@ -134,15 +135,17 @@
                 </div>
                 <div class="modal-body">
                     <h5> Pastikan File Sesuai Format </h5>
-                    <input type="file" name="file_import_product" class="form-control mt-2">
+                    <input type="file" name="file_import_product" id="file_import_product" class="form-control mt-2">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Import</button>
+                    <button type="submit" class="btn btn-primary" id="importBtn">Import</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                 </div>
             </div>
-        </div>
-    </div><!-- End Basic Modal-->
+        </form>
+    </div>
+</div>
+<!-- End Basic Modal-->
 
 
 <script type="text/javascript"> 
@@ -158,6 +161,8 @@
 
         // get category 
         getCategory()
+
+        // row dynamic form
         $("#btn-add").on("click", function(e){
             e.preventDefault()
             let count = $('#table-add-product tr').length
@@ -179,7 +184,7 @@
             readURL(this);
         });
 
-        // store product
+        // store data product
         $("#frm-add-product").on("submit", function(e){
             e.preventDefault()
 
@@ -232,7 +237,7 @@
                 processData: false,
                 cache: false,
                 success: function (response) {
-                    console.log(response)
+                    //console.log(response)
                     if(response.status == 200){
                         $.confirm({
                             title: 'Pesan ',
@@ -251,10 +256,62 @@
             });
         })
 
+        // on change dropdown row dynamic form
         $("#table-add-product").on("click", '.size', function(){
             var id = $(this).attr('data-id')
             getSize(id)
        })
+
+       // Import data by xlxs
+       $("#import-form-product").on("submit", function(e){
+            e.preventDefault()
+            
+             // Assign value
+             if($('#image_path').val() == ""){
+                image_path = null
+            } else{
+                image_path = $('#image_path')[0].files[0]
+            }
+
+            if($('input[name="status"]:checked').val() == 1){
+                status = 1
+            } else {
+                status = 0
+            }
+
+            var formData = new FormData($(this)[0]);
+            formData.append('category_id', $('#category_id option:selected').val())
+            formData.append('name', $('#name').val())
+            formData.append("status", status)
+            formData.append('image_path', image_path)
+            
+            $.ajax({
+                type: "POST",
+                url: "/api/import/product",
+                data: formData,
+                contentType: false,
+                processData: false,
+                cache: false,
+                success: function (response) {
+                    // console.log(response)
+                    if(response.status == 200){
+                        $.confirm({
+                            title: 'Pesan ',
+                            content: 'Data produk berhasil diperbarui !',
+                            buttons: {
+                                Ya: {
+                                    btnClass: 'btn-success any-other-class',
+                                    action: function(){
+                                        window.location.href = '/product'
+                                    }
+                                },
+                            }
+                        });
+                    }
+                }
+            });
+       })
+
     });
 
     function readURL(input) {
@@ -313,10 +370,10 @@
         });
     }
 
-
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.4/xlsx.full.min.js"></script>
 @endsection
 @section('pagespecificscripts')
    

@@ -31,6 +31,10 @@ class LocalityController extends Controller
         return view("transaction.city");
     }
 
+    public function importLocalityPage(Request $request){
+        return view("transaction.city_import");
+    }
+
     public function getLocality(Request $request){
         try{
             $locality = $this->service->getLocality($request);
@@ -104,5 +108,33 @@ class LocalityController extends Controller
 
         $locality = $this->service->detail($request);
         return $locality;
+    }
+
+    public function importPostalCode(Request $request){
+        try{
+            $validator = Validator::make(
+                $request->all(), [
+                    'file_import_postal_code' => 'required|mimes:xls,xlsx'
+                ]
+            );
+
+            if($validator->fails()){
+                return response()->json([
+                    'data' => null,
+                    'message' => $validator->errors()->first(),
+                    'status' => 422
+                ]);
+            }
+
+            $importPostalCode = $this->service->importPostalCode($request);
+
+            if($importPostalCode) {
+                return $importPostalCode;
+            }
+           
+       }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+       }
     }
 }

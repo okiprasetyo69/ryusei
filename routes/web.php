@@ -54,6 +54,7 @@ Route::controller(SalesChannelController::class)->group(function() {
 // Locality Menu
 Route::controller(LocalityController::class)->group(function() {
     Route::get('/city-list', 'cityPage')->name('city-list');
+    Route::get('/city-list/import', 'importLocalityPage')->name('city-list-import');
 });
 
 // Product Menu
