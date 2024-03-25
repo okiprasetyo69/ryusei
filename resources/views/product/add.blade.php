@@ -38,8 +38,6 @@
                                             <button type="button" class="btn btn-md btn-primary" id="btn-add">
                                                 <i class="bi bi-plus-circle"></i> Tambah
                                             </button>
-                                        </div>
-                                        <div class="col-md-4 pull-right"> 
                                             <button type="button" class="btn btn-md btn-success" id="btn-import" data-bs-toggle="modal" data-bs-target="#basicModal">
                                                 <i class="bi bi-file-earmark-excel-fill"></i> Import
                                             </button>
