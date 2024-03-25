@@ -302,7 +302,7 @@
                     previous: "‹",
                     next: "›",
                 },
-                info: "Menampilkan _START_ dari _END_ dari _TOTAL_ List Kode Pos",
+                info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ List Kode Pos",
                 aria: {
                         paginate: {
                             previous: "Previous",
