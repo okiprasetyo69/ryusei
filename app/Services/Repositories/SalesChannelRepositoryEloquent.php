@@ -41,7 +41,7 @@ use Yajra\DataTables\Facades\DataTables;
             $salesChannel = $this->salesChannel::orderBy('name', 'ASC');
           
             if($request->name != null){
-                $salesChannel->where("name", "like", "%" . $request->name. "%");
+                $salesChannel  = $salesChannel->where("name", "like", "%" . $request->name. "%");
             }
 
             $salesChannel = $salesChannel->get();
@@ -64,7 +64,7 @@ use Yajra\DataTables\Facades\DataTables;
             $salesChannel = $this->salesChannel::orderBy('id', 'ASC');
           
             if($request->name != null){
-                $salesChannel->where("name", "like", "%" . $request->name. "%");
+                $salesChannel  = $salesChannel->where("name", "like", "%" . $request->name. "%");
             }
 
             $salesChannel = $salesChannel->get();
