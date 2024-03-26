@@ -169,6 +169,9 @@
     var sales_channel_id
     var payment_method_id
     var group_id
+    var format
+    var convertOrderDate
+    var convertProcessOrderDate
 
     $(document).ready(function () {
         var now = new Date();
@@ -180,19 +183,21 @@
         if (day < 10) 
             day = "0" + day;
         var today = now.getFullYear() + '-' + month + '-' + day;
+        
+        var convertOrderDate = day + '-' + month.toLocaleString('default', { month: 'long' }) + '-' + now.getFullYear()
+        var convertProcessOrderDate = day + '-' + month.toLocaleString('default', { month: 'long' }) + '-' + now.getFullYear()
        
-
         $( "#order_date" ).datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'dd-mm-yyyy',
             defaultDate: new Date(),
         });
-        $('#order_date').val(today);
+        $('#order_date').val(convertOrderDate);
 
         $("#process_order_date" ).datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'dd-mm-yyyy',
             defaultDate: new Date(),
         });
-        $('#process_order_date').val(today);
+        $('#process_order_date').val(convertProcessOrderDate);
 
         $("#filter_name").hide()
 
@@ -242,11 +247,15 @@
             sales_channel_id = $("#sales_channel_id option:selected").val()
             payment_method_id = $("#payment_method_id option:selected").val()
             group_id = $("#group_id option:selected").val()
-            loadTransaction(order_number=order_number, tracking_number=tracking_number, sku_code= sku_code, order_date = order_date, process_order_date=process_order_date, sales_channel_id=sales_channel_id, payment_method_id=payment_method_id, group_id)
+
+            convertOrderDate = order_date.split("-").reverse().join("-")
+            convertProcessOrderDate = process_order_date.split("-").reverse().join("-")
+            
+            loadTransaction(order_number=order_number, tracking_number=tracking_number, sku_code= sku_code, order_date = convertOrderDate, process_order_date=convertProcessOrderDate, sales_channel_id=sales_channel_id, payment_method_id=payment_method_id, group_id)
         })
 
-        order_date =  $('#order_date').val()
-        process_order_date = $('#process_order_date').val()
+        order_date = today
+        process_order_date = today
         loadTransaction(null, null, null, order_date, process_order_date, null, null, null)
         getPaymentMethod()
         getSalesChannel()
@@ -474,7 +483,13 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html(rowData.order_date);
+                        order_date = rowData.order_date
+                        date = new Date(order_date)
+                        month = date.toLocaleString('default', { month: 'long' })
+                        year = date.getFullYear()
+                        format = date.getDate() + "-"+ month +"-"+ year
+
+                        $(td).html(format);
                     },
                 },
                 {
@@ -482,7 +497,13 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html(rowData.process_order_date);
+                        process_order_date = rowData.process_order_date
+                        date = new Date(order_date)
+                        month = date.toLocaleString('default', { month: 'long' })
+                        year = date.getFullYear()
+                        format = date.getDate() + "-"+ month +"-"+ year
+
+                        $(td).html(format);
                     },
                 },
                 {
@@ -666,7 +687,13 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html(rowData.order_date);
+                        order_date = rowData.order_date
+                        date = new Date(order_date)
+                        month = date.toLocaleString('default', { month: 'long' })
+                        year = date.getFullYear()
+                        format = date.getDate() + "-"+ month +"-"+ year
+
+                        $(td).html(format);
                     },
                 },
                 {

@@ -237,7 +237,7 @@
     var currentMonth
     var this_year
     var myChart
-    var start_date, end_date
+    var start_date, end_date , convertStartDate, convertEndDate
     $(document).ready(function () {
       
         totalSoldWithQty()
@@ -246,12 +246,12 @@
         loadChart()
 
         $("#start_date").datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'dd-mm-yyyy',
             defaultDate: new Date(),
         });
 
         $("#end_date").datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'dd-mm-yyyy',
             defaultDate: new Date(),
         });
        
@@ -261,12 +261,15 @@
             start_date =  $("#start_date").val()
             end_date = $("#end_date").val()
 
-            totalSoldWithQty(start_date, end_date, null, null, null)
-            bestStoreChannelSeller(start_date, end_date, null, null, null)
-            bestProductSeller(start_date, end_date, null, null, null)
-            filterChart(start_date, end_date, null, null, null)
+            convertStartDate = start_date.split("-").reverse().join("-")
+            convertEndDate = end_date.split("-").reverse().join("-")
 
-            var description = "Periode " + start_date + " sampai dengan " + end_date
+            totalSoldWithQty(convertStartDate, convertEndDate, null, null, null)
+            bestStoreChannelSeller(convertStartDate, convertEndDate, null, null, null)
+            bestProductSeller(convertStartDate, convertEndDate, null, null, null)
+            filterChart(convertStartDate, convertEndDate, null, null, null)
+
+            var description = "Periode " + convertStartDate + " sampai dengan " + convertEndDate
             $("#description").html(description)
         })
         // --------------------------------------------------------------- //

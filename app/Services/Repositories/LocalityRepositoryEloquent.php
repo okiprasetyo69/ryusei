@@ -41,12 +41,28 @@ class LocalityRepositoryEloquent implements LocalityService {
            
            $locality =  $this->locality;
          
-           if($request->city != null){
-               $locality->where("city", "like", "%" . $request->city. "%");
+           if($request->postal_code != null){
+                $locality = $locality->where("postal_code", "like", "%" . $request->postal_code. "%");
            }
+       
+            if($request->province != null){
+                $locality = $locality->where("province", $request->province);
+            }
+            
+            if($request->city != null){
+                $locality =  $locality->where("city", $request->city);
+            }
+
+            if($request->district != null){
+                $locality =  $locality->where("district", $request->district);
+            }
+
+            if($request->village != null){
+                $locality =  $locality->where("village", $request->village);
+            }
 
            $locality = $locality->get();
-
+        
            $datatables = Datatables::of($locality);
            return $datatables->make( true );
        }
@@ -146,7 +162,7 @@ class LocalityRepositoryEloquent implements LocalityService {
 
    public function getProvince(Request $request){
         try{
-            $locality = $this->locality::select("province as province_name", "province")->groupBy("province");
+            $locality = $this->locality::select("province as province_name", "province")->orderBy("province", "ASC")->groupBy("province");
             $locality = $locality->get();
 
             return response()->json([
@@ -194,7 +210,7 @@ class LocalityRepositoryEloquent implements LocalityService {
                 $locality->where("city", $request->city);
             }
 
-            $locality = $locality->groupBy("district")->get();
+            $locality = $locality->orderBy("district", "ASC")->groupBy("district")->get();
 
             return response()->json([
                 'status' => 200,
@@ -225,7 +241,7 @@ class LocalityRepositoryEloquent implements LocalityService {
             $locality->where("district", $request->district);
         }
 
-        $locality = $locality->get();
+        $locality = $locality->orderBy("village", "ASC")->get();
 
         return response()->json([
             'status' => 200,

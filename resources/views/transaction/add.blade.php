@@ -149,7 +149,9 @@
 </div><!-- End Basic Modal-->
 
 <script type="text/javascript"> 
-
+    
+    var convertOrderDate, convertProcessOrderDate, orderDate, processOrderDate
+     
     $(document).ready(function () {
         var now = new Date();
         var month = (now.getMonth() + 1);               
@@ -160,18 +162,21 @@
             day = "0" + day;
         var today = now.getFullYear() + '-' + month + '-' + day;
 
+        var convertOrderDate = day + '-' + month.toLocaleString('default', { month: 'long' }) + '-' + now.getFullYear()
+        var convertProcessOrderDate = day + '-' + month.toLocaleString('default', { month: 'long' }) + '-' + now.getFullYear()
+
         // Setup default date now and format date
-        $( "#order_date" ).datepicker({
+        $("#order_date").datepicker({
             format: 'yyyy-mm-dd',
             defaultDate: new Date(),
         });
-        $('#order_date').val(today);
+        $('#order_date').val(convertOrderDate);
 
         $("#process_order_date" ).datepicker({
             format: 'yyyy-mm-dd',
             defaultDate: new Date(),
         });
-        $('#process_order_date').val(today);
+        $('#process_order_date').val(convertProcessOrderDate);
 
         // load data
         getSalesChannel()
@@ -276,9 +281,18 @@
             var jsonTransactions = JSON.stringify(transactions);
 
             var formData = new FormData();
+
+            // Set Dat
+            orderDate = $('#order_date').val()
+            processOrderDate = $('#process_order_date').val()
+
+            // Convert date
+            convertOrderDate = orderDate.split("-").reverse().join("-")
+            convertProcessOrderDate = processOrderDate.split("-").reverse().join("-")
+            
             // set data
-            formData.append('order_date', $('#order_date').val())
-            formData.append('process_order_date', $('#process_order_date').val())
+            formData.append('order_date', convertOrderDate)
+            formData.append('process_order_date', convertProcessOrderDate)
             formData.append("sales_channel_id",  $('#sales_channel_id').val())
             formData.append("group_id",  $('#group_id').val())
             formData.append("payment_method_id",  $('#payment_method_id').val())

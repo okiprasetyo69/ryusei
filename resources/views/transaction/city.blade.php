@@ -48,12 +48,12 @@
                         <div class="row mt-2"> 
                             <div class="col-md-3"> 
                                 <select name="filter_province" id="filter_province" class="form-control"> 
-                                  
+                                    <option value=""> - Pilih Provinsi - </option>
                                 </select>
                             </div>
                             <div class="col-md-3"> 
                                 <select name="filter_city" id="filter_city" class="form-control"> 
-                                  
+                                    <option value=""> - Pilih Kota - </option>
                                 </select>
                             </div>
                             <div class="col-md-3"> 
@@ -67,18 +67,18 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="row mt-2">  
-                            <div class="col-md-4"> 
-                                <button type="button" class="btn btn-md btn-success" style="border-radius:50px;"><i class="bi bi-search"></i> Cari </button>
-                            </div>
-                        </div>
-                        <!-- <div class="row mt-2">
+                        <div class="row mt-2">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <input type="text" name="filter_name" class="form-control" id="filter_name" placeholder="Masukkan kata kunci" autofocus/>
+                                    <input type="text" name="filter_name" class="form-control" id="filter_name" placeholder="Masukkan kode pos" autofocus/>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
+                        <div class="row mt-2">  
+                            <div class="col-md-4"> 
+                                <button type="button" class="btn btn-md btn-success" style="border-radius:50px;" id="btn-search"><i class="bi bi-search"></i> Cari </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -168,12 +168,13 @@
 
 
 <script type="text/javascript"> 
-    var name
+    var postal_code
     var table
-
+    var province, district, village
     $(document).ready(function () {
         
         loadPostalCode()
+        getProvince()
 
         // Open Modal
         $(".btn-add").click(function(e){
@@ -198,8 +199,26 @@
         // filter category
         $("#filter_name").on("keyup", function(e){
             e.preventDefault()
-            name = $("#filter_name").val()
-            //loadPostalCode(name)
+            postal_code = $("#filter_name").val()
+            loadPostalCode(postal_code)
+        })
+
+        $("#filter_province").on("change", function(e){
+            e.preventDefault()
+            province = this.value
+            getCity(province)
+        })
+
+        $("#filter_city").on("change", function(e){
+            e.preventDefault()
+            district = this.value
+            getDistrict(province, district)
+        })
+
+        $("#filter_district").on("change", function(e){
+            e.preventDefault()
+            village = this.value
+            getVillage(province, district, village)
         })
 
         // Store data
@@ -279,9 +298,18 @@
             });
         })
 
+        $("#btn-search").on("click", function(e){
+            e.preventDefault()
+            province = $("#filter_province option:selected").val()
+            city = $("#filter_city option:selected").val()
+            district = $("#filter_district option:selected").val()
+            village = $("#filter_village option:selected").val()
+            console.log(province, city, district, village)
+            loadPostalCode(null, province, city, district, village)
+        })
     });
 
-    function loadPostalCode(name = null){
+    function loadPostalCode(postal_code = null, province=null, city=null, district=null, village=null){
         if (table != null) {
             table.destroy();
         }
@@ -314,7 +342,11 @@
                     url :  '/api/locality-list',
                     type: "GET",
                     data: {
-                        name: name,
+                        postal_code: postal_code,
+                        province : province,
+                        city: city,
+                        district : district,
+                        village : village
                         // page : 1,
                         // limit : 10
                     }
@@ -478,6 +510,87 @@
         });
     }
 
+    function getProvince(){
+        $.ajax({
+            type: "GET",
+            url: "/api/locality-list/province",
+            data: "data",
+            dataType: "JSON",
+            success: function (response) {
+                var data = response.data
+                $("#filter_province").html()
+                var option = ""
+                var province_name = ""
+                $.each(data, function (i, val) {
+                    option += "<option value='"+val.province_name+"'> "+val.province+" </option>"
+                });
+                $("#filter_province").append(option)
+            }
+        });
+    }
+
+    function getCity(province=null){
+        $.ajax({
+            type: "GET",
+            url: "/api/locality-list/city",
+            data: {
+                province : province
+            },
+            dataType: "JSON",
+            success: function (response) {
+                var data = response.data
+                $("#filter_city").html("")
+                var option = ""
+                $.each(data, function (i, val) {
+                    option += "<option value='"+val.city_name+"'> "+val.city+" </option>"
+                });
+                $("#filter_city").append(option)
+            }
+        });
+    }
+
+    function getDistrict(province=null, city=null){
+        $.ajax({
+            type: "GET",
+            url: "/api/locality-list/district",
+            data: {
+                province : province,
+                city: city,
+            },
+            dataType: "JSON",
+            success: function (response) {
+                var data = response.data
+                $("#filter_district").html("")
+                var option = ""
+                $.each(data, function (i, val) {
+                    option += "<option value='"+val.district_name+"'> "+val.district+" </option>"
+                });
+                $("#filter_district").append(option)
+            }
+        });
+    }
+
+    function getVillage(province=null, city=null, district=null){
+        $.ajax({
+            type: "GET",
+            url: "/api/locality-list/village",
+            data: {
+                province : province,
+                city: city,
+                district: district
+            },
+            dataType: "JSON",
+            success: function (response) {
+                var data = response.data
+                $("#filter_village").html("")
+                var option = ""
+                $.each(data, function (i, val) {
+                    option += "<option value='"+val.village+"'> "+val.village+" </option>"
+                });
+                $("#filter_village").append(option)
+            }
+        });
+    }
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
