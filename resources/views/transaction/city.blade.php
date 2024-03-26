@@ -58,12 +58,12 @@
                             </div>
                             <div class="col-md-3"> 
                                 <select name="filter_district" id="filter_district" class="form-control"> 
-                                  
+                                    <option value=""> - Pilih Kecamatan - </option>
                                 </select>
                             </div>
                             <div class="col-md-3"> 
                                 <select name="filter_village" id="filter_village" class="form-control"> 
-                                  
+                                    <option value=""> - Pilih Kelurahan - </option>
                                 </select>
                             </div>
                         </div>
