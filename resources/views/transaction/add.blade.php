@@ -282,7 +282,7 @@
 
             var formData = new FormData();
 
-            // Set Dat
+            // Set Date
             orderDate = $('#order_date').val()
             processOrderDate = $('#process_order_date').val()
 
@@ -355,8 +355,17 @@
             }
 
             var formData = new FormData($(this)[0]);
-            formData.append('order_date', $('#order_date').val())
-            formData.append('process_order_date', $('#process_order_date').val())
+            
+            // Set Date
+            orderDate = $('#order_date').val()
+            processOrderDate = $('#process_order_date').val()
+
+            // Convert date
+            convertOrderDate = orderDate.split("-").reverse().join("-")
+            convertProcessOrderDate = processOrderDate.split("-").reverse().join("-")
+
+            formData.append('order_date', convertOrderDate)
+            formData.append('process_order_date', convertProcessOrderDate)
             formData.append('sales_channel_id', $('#sales_channel_id option:selected').val())
             formData.append('group_id', $('#group_id option:selected').val())
             formData.append('payment_method_id', $('#payment_method_id option:selected').val())
