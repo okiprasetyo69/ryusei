@@ -118,6 +118,7 @@ Route::controller(TransactionController::class)->group(function() {
     Route::post('/transaction/update', 'update')->name('transaction.update');
     Route::post('/transaction/delete', 'delete')->name('transaction.delete');
     Route::post('/transaction/detail', 'detail')->name('transaction.detail');
+    Route::post('/import/transaction', 'importTransaction')->name('transaction.import');
 });
 
 // Dashboard

@@ -68,7 +68,7 @@ class ImportProductRepositoryEloquent implements ImportProductService {
         } catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;
-         }
+        }
         
     }
 }

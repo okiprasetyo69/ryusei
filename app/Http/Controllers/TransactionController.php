@@ -150,4 +150,32 @@ class TransactionController extends Controller
             return $transaction;
         }
     }
+
+    public function importTransaction(Request $request){
+        try{
+            $validator = Validator::make(
+                $request->all(), [
+                    'file_import_transaction' => 'required|mimes:xls,xlsx'
+                ]
+            );
+
+            if($validator->fails()){
+                return response()->json([
+                    'data' => null,
+                    'message' => $validator->errors()->first(),
+                    'status' => 422
+                ]);
+            }
+
+            $importTransaction = $this->service->importTransaction($request);
+
+            if($importTransaction) {
+                return $importTransaction;
+            }
+           
+       }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+       }
+    }
 }

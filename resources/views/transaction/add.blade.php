@@ -126,25 +126,27 @@
 </main>
 <!-- End #main -->
 
- <!-- Basic Modal -->
-    <div class="modal fade" id="basicModal" tabindex="-1">
-        <div class="modal-dialog">
+<!-- Basic Modal -->
+<div class="modal fade" id="basicModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form id="import-form-transaction" enctype="multipart/form-data">
             <div class="modal-content">
                 <div class="modal-header">
-                      <h5 class="modal-title">Import File Xlsx</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title">Import File Xlsx</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <h5> Pastikan File Sesuai Format </h5>
-                    <input type="file" name="file_import_product" class="form-control mt-2">
+                    <input type="file" name="file_import_transaction" class="form-control mt-2">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Import</button>
+                    <button type="submit" class="btn btn-primary" id="importBtn">Import</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                 </div>
             </div>
-        </div>
-    </div><!-- End Basic Modal-->
+        </form>
+    </div>
+</div><!-- End Basic Modal-->
 
 <script type="text/javascript"> 
 
@@ -201,6 +203,7 @@
             $(this).parent('td').parent('tr').remove(); 
         })
 
+        // filter
         $("#sales_channel_id").change(function(e){
             e.preventDefault()
             var selectedOption = $(this).find('option:selected');
@@ -291,6 +294,68 @@
                 cache: false,
                 success: function (response) {
                     console.log(response)
+                    if(response.status == 200){
+                        $.confirm({
+                            title: 'Pesan ',
+                            content: 'Data transaksi berhasil diperbarui !',
+                            buttons: {
+                                Ya: {
+                                    btnClass: 'btn-success any-other-class',
+                                    action: function(){
+                                        window.location.href = '/transaction'
+                                    }
+                                },
+                            }
+                        });
+                    }
+                }
+            });
+        })
+
+        // import file
+        $("#import-form-transaction").on("submit", function(e){
+            e.preventDefault()
+
+            if($('#sales_channel_id option:selected').val() == ""){
+                $.alert({
+                    title: 'Pesan !',
+                    content: 'Sales Channel tidak boleh kosong !',
+                });
+                return 
+            }
+
+            if($('#group_id option:selected').val() == ""){
+                $.alert({
+                    title: 'Pesan !',
+                    content: 'Kloter tidak boleh kosong !',
+                });
+                return 
+            }
+
+            if($('#payment_method_id option:selected').val() == ""){
+                $.alert({
+                    title: 'Pesan !',
+                    content: 'Metode Pembayaran tidak boleh kosong !',
+                });
+                return 
+            }
+
+            var formData = new FormData($(this)[0]);
+            formData.append('order_date', $('#order_date').val())
+            formData.append('process_order_date', $('#process_order_date').val())
+            formData.append('sales_channel_id', $('#sales_channel_id option:selected').val())
+            formData.append('group_id', $('#group_id option:selected').val())
+            formData.append('payment_method_id', $('#payment_method_id option:selected').val())
+
+            $.ajax({
+                type: "POST",
+                url: "/api/import/transaction",
+                data: formData,
+                contentType: false,
+                processData: false,
+                cache: false,
+                success: function (response) {
+
                     if(response.status == 200){
                         $.confirm({
                             title: 'Pesan ',

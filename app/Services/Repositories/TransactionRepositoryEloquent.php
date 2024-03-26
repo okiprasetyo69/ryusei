@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
+use Excel;
+use App\Imports\ImportTransaction;
+
 /**
  * Class TransactionRepositoryEloquent.
  * 
@@ -264,4 +267,28 @@ use Yajra\DataTables\Facades\DataTables;
         }
     }
 
+    public function importTransaction(Request $request){
+        try{
+            
+            $transaction = $this->transaction;
+
+            if ($request->hasFile('file_import_transaction')) {
+                //GET FILE
+                $file = $request->file('file_import_transaction'); 
+                //IMPORT FILE 
+                $import = Excel::import(new ImportTransaction($request->order_date, $request->process_order_date, $request->sales_channel_id, $request->group_id, $request->payment_method_id), $file);
+                if($import){
+                    return response()->json([
+                        'status' => 200,
+                        'message' => true,
+                        'data' => $transaction
+                    ]); 
+                }
+            }  
+
+        } catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
  }
