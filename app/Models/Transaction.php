@@ -29,7 +29,9 @@ class Transaction extends Model
         'total',
         'admin_charge',
         'total_net',
-        'discount'
+        'discount',
+        'percentage_admin_charge',
+        'year_admin_sales_channel'
     ];
 
     public function product(){

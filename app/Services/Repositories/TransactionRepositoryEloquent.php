@@ -130,14 +130,20 @@ use App\Imports\ImportTransaction;
                     if($request->sales_channel_id != null){
                         $salesChannel =  SalesChannel::find($request->sales_channel_id);
                         $adminCharge = $salesChannel->admin_charge;
-                    
+                        
                         if($adminCharge!= null){
                             // admin charge
                             $transaction->admin_charge = intval(($value['qty'] *  $value['unit_price']) * ($adminCharge/100));
                         
                             // total bersih
                             $transaction->total_net = intval($transaction->total - ($transaction->total * ($adminCharge/100)));
-                        }
+
+                            // percetage admin charge
+                            $transaction->percentage_admin_charge =  $salesChannel->admin_charge;
+
+                            // year admin charge from sales channel
+                            $transaction->year_admin_sales_channel = $salesChannel->year;
+                        }   
                     }
                     
                     // discount

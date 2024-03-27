@@ -52,6 +52,9 @@ class ImportTransaction implements ToModel, WithHeadingRow
     
             // find admin charge
             $salesChannel =  SalesChannel::where("id",  $sales_channel_id)->first();
+            $percentageAdminCharge =  $salesChannel->admin_charge;
+            $yearAdminSalesChannel = $salesChannel->year;
+
             $adminCharge =  intval(($row['qty'] *  $row['harga_sat']) * ($salesChannel->admin_charge/100));
 
             // calculate discount
@@ -78,6 +81,8 @@ class ImportTransaction implements ToModel, WithHeadingRow
                 'admin_charge' => $adminCharge,
                 'total_net' => $totalNet,
                 'discount' => $discount,
+                'percentage_admin_charge' =>  $percentageAdminCharge,
+                'year_admin_sales_channel' => $yearAdminSalesChannel,
             ]);
         } catch(Exception $ex){
             Log::error($ex->getMessage());

@@ -411,7 +411,7 @@
                 $("#sales_channel_id").html()
                 $("#admin_charge").html()
                 $.each(data, function (i, val) { 
-                    option += "<option value="+val.id+" data-id="+val.admin_charge+"> "+val.name+" - "+val.year+"</option>"
+                    option += "<option value="+val.id+" data-id="+val.admin_charge+"> "+val.name+" </option>"
                 });
                 $("#sales_channel_id").append(option)
             }

@@ -33,13 +33,13 @@
                                 <form action="#" id="frm-add-product" class="row g-3">
                                     @csrf
                                     <input type="hidden" name="code" id="code" class="form-control" />
-                                    <div class="row mt-4">
+                                    <!-- <div class="row mt-4">
                                         <div class="col-md-4">
                                             <button type="button" class="btn btn-md btn-primary" id="btn-add">
                                                 <i class="bi bi-plus-circle"></i> Tambah
                                             </button>
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <div class="row mt-4">
                                         <div class="col-md-6">
                                             <div class="form-floating">

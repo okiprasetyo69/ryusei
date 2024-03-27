@@ -580,11 +580,13 @@
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
                         var admin_charge = 0
-                        if(rowData.channel == null){
+
+                        if(rowData.percentage_admin_charge == null){
                             admin_charge = 0
                         } else {
-                            admin_charge = rowData.channel.admin_charge
+                            admin_charge = rowData.percentage_admin_charge
                         }
+                        
                         $(td).html(admin_charge + "%");
                     },
                 },
@@ -1169,7 +1171,7 @@
                 var option = ""
                 $("#sales_channel_id").html()
                 $.each(data, function (i, val) { 
-                    option += "<option value="+val.id+"> "+val.name+" - "+val.year+" </option>"
+                    option += "<option value="+val.id+"> "+val.name+" </option>"
                 });
                 $("#sales_channel_id").append(option)
             }
