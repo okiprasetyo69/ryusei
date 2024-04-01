@@ -65,12 +65,12 @@
                                                 </label>
                                             </li>
                                             <li class="list-group-item">
-                                                <label class="text-center"> Kloter :  </label>
+                                                <label class="text-center"> Keloter :  </label>
                                                 <select name="group_id" id="group_id" class="form-control"> 
                                                     <option value=""> - Pilih Kloter - </option>
-                                                    <option value="1" {{ $transaction->group_id == 1 ? "selected" : "" }} > Kloter-1 </option>
-                                                    <option value="2" {{ $transaction->group_id == 2 ? "selected" : "" }} > Kloter-2 </option>
-                                                    <option value="3" {{ $transaction->group_id == 3 ? "selected" : "" }} > Kloter-3 </option>
+                                                    <option value="1" {{ $transaction->group_id == 1 ? "selected" : "" }} > Keloter 1 </option>
+                                                    <option value="2" {{ $transaction->group_id == 2 ? "selected" : "" }} > Keloter 2 </option>
+                                                    <option value="3" {{ $transaction->group_id == 3 ? "selected" : "" }} > Keloter 3 </option>
                                                 </select>
                                             </li>
                                             <li class="list-group-item">

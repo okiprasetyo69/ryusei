@@ -269,7 +269,7 @@
             bestProductSeller(convertStartDate, convertEndDate, null, null, null)
             filterChart(convertStartDate, convertEndDate, null, null, null)
 
-            var description = "Periode " + convertStartDate + " sampai dengan " + convertEndDate
+            var description = "Periode " + start_date + " sampai dengan " + end_date
             $("#description").html(description)
         })
         // --------------------------------------------------------------- //

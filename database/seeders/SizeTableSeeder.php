@@ -126,6 +126,58 @@ class SizeTableSeeder extends Seeder
                 'id' => 28,
                 'name' => 'All Size',
             ],
+            [
+                'id' => 29,
+                'name' => 'A',
+            ],
+            [
+                'id' => 30,
+                'name' => 'B',
+            ],
+            [
+                'id' => 31,
+                'name' => 4,
+            ],
+            [
+                'id' => 32,
+                'name' => 5,
+            ],
+            [
+                'id' => 33,
+                'name' => 6,
+            ],
+            [
+                'id' => 34,
+                'name' => 7,
+            ],
+            [
+                'id' => 35,
+                'name' => 8,
+            ],
+            [
+                'id' => 36,
+                'name' => 9,
+            ],
+            [
+                'id' => 37,
+                'name' => 10,
+            ],
+            [
+                'id' => 38,
+                'name' => 11,
+            ],
+            [
+                'id' => 39,
+                'name' => 12,
+            ],
+            [
+                'id' => 40,
+                'name' => 13,
+            ],
+            [
+                'id' => 41,
+                'name' => 14,
+            ],
         ];
   
         foreach ($size as $key => $value) {

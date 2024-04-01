@@ -63,13 +63,13 @@
                             </div>
                             <div class="col-md-4"> 
                                 <div class="col mt-2">
-                                    <label> <strong><span>Kloter : </span></strong> </label>
+                                    <label> <strong><span>Keloter : </span></strong> </label>
                                     <div class="form-group">
                                         <select name="group_id" class="form-control" id="group_id"> 
                                             <option value=""> - Pilih Kloter - </option>
-                                            <option value="1">Kloter-1 </option>
-                                            <option value="2">Kloter-2 </option>
-                                            <option value="3">Kloter-3 </option>
+                                            <option value="1">Keloter 1 </option>
+                                            <option value="2">Keloter 2 </option>
+                                            <option value="3">Keloter 3 </option>
                                         </select>
                                     </div>
                                 </div>
@@ -268,7 +268,7 @@
         }
 
         table = $("#table-transaction").DataTable({
-            lengthChange: false,
+            // lengthChange: false,
             searching: false,
             destroy: true,
             processing: true,
@@ -513,15 +513,15 @@
                     createdCell: function (td, cellData, rowData, row, col) {
                         var group = ""
                         if(rowData.group_id == 1){
-                            group = "Kloter - 1"
+                            group = "KELOTER 1"
                         }
 
                         if(rowData.group_id == 2){
-                            group = "Kloter - 2"
+                            group = "KELOTER 2"
                         }
 
                         if(rowData.group_id == 3){
-                            group = "Kloter - 3"
+                            group = "KELOTER 3"
                         }
 
                         $(td).html(group);
@@ -940,15 +940,15 @@
                     createdCell: function (td, cellData, rowData, row, col) {
                         var group = ""
                         if(rowData.group_id == 1){
-                            group = "Kloter - 1"
+                            group = "KELOTER 1"
                         }
 
                         if(rowData.group_id == 2){
-                            group = "Kloter - 2"
+                            group = "KELOTER 2"
                         }
 
                         if(rowData.group_id == 3){
-                            group = "Kloter - 3"
+                            group = "KELOTER 3"
                         }
 
                         $(td).html(group);

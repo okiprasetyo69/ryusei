@@ -61,12 +61,12 @@
                                                 </label>
                                             </li>
                                             <li class="list-group-item">
-                                                <label class="text-center"> Kloter :  </label>
+                                                <label class="text-center"> Keloter :  </label>
                                                 <select name="group_id" id="group_id" class="form-control"> 
                                                     <option value=""> - Pilih Kloter - </option>
-                                                    <option value="1">Kloter-1 </option>
-                                                    <option value="2">Kloter-2 </option>
-                                                    <option value="3">Kloter-3 </option>
+                                                    <option value="1">Keloter 1 </option>
+                                                    <option value="2">Keloter 2 </option>
+                                                    <option value="3">Keloter 3 </option>
                                                 </select>
                                             </li>
                                             <li class="list-group-item">
@@ -150,7 +150,7 @@
 
 <script type="text/javascript"> 
     
-    var convertOrderDate, convertProcessOrderDate, orderDate, processOrderDate
+    var convertOrderDate, convertProcessOrderDate, orderDate, processOrderDate, sales_channel_id, order_date, process_order_date, group_id, payment_method_id
      
     $(document).ready(function () {
         var now = new Date();
@@ -167,16 +167,16 @@
 
         // Setup default date now and format date
         $("#order_date").datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'dd-mm-yyyy',
             defaultDate: new Date(),
         });
-        $('#order_date').val(convertOrderDate);
+        //$('#order_date').val(convertOrderDate);
 
         $("#process_order_date" ).datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'dd-mm-yyyy',
             defaultDate: new Date(),
         });
-        $('#process_order_date').val(convertProcessOrderDate);
+        //$('#process_order_date').val(convertProcessOrderDate);
 
         // load data
         getSalesChannel()
@@ -330,28 +330,57 @@
         $("#import-form-transaction").on("submit", function(e){
             e.preventDefault()
 
-            if($('#sales_channel_id option:selected').val() == ""){
-                $.alert({
-                    title: 'Pesan !',
-                    content: 'Sales Channel tidak boleh kosong !',
-                });
-                return 
+           // Validation form required
+        //    if($("#order_date").val() == ""){
+        //         $.alert({
+        //             title: 'Pesan !',
+        //             content: 'Tanggal Order tidak boleh kosong !',
+        //         });
+        //         return 
+        //     }
+
+        //     if($("#process_order_date").val() == ""){
+        //         $.alert({
+        //             title: 'Pesan !',
+        //             content: 'Tanggal Proses Order tidak boleh kosong !',
+        //         });
+        //         return 
+        //     }
+
+        //     if($("#sales_channel_id option:selected").val() == ""){
+        //         $.alert({
+        //             title: 'Pesan !',
+        //             content: 'Sales Channel tidak boleh kosong !',
+        //         });
+        //         return 
+        //     }
+
+        //     if($("#group_id option:selected").val() == ""){
+        //         $.alert({
+        //             title: 'Pesan !',
+        //             content: 'Kloter tidak boleh kosong !',
+        //         });
+        //         return 
+        //     }
+
+        //     if($("#payment_method_id option:selected").val() == ""){
+        //         $.alert({
+        //             title: 'Pesan !',
+        //             content: 'Metode Pembyaaran tidak boleh kosong !',
+        //         });
+        //         return 
+        //     }
+
+            if($('#sales_channel_id option:selected').val() != ""){
+                sales_channel_id = $('#sales_channel_id option:selected').val()
             }
 
-            if($('#group_id option:selected').val() == ""){
-                $.alert({
-                    title: 'Pesan !',
-                    content: 'Kloter tidak boleh kosong !',
-                });
-                return 
+            if($('#group_id option:selected').val() != ""){
+                group_id = $('#group_id option:selected').val()
             }
 
-            if($('#payment_method_id option:selected').val() == ""){
-                $.alert({
-                    title: 'Pesan !',
-                    content: 'Metode Pembayaran tidak boleh kosong !',
-                });
-                return 
+            if($('#payment_method_id option:selected').val() != ""){
+                payment_method_id = $('#payment_method_id option:selected').val()
             }
 
             var formData = new FormData($(this)[0]);
@@ -364,11 +393,17 @@
             convertOrderDate = orderDate.split("-").reverse().join("-")
             convertProcessOrderDate = processOrderDate.split("-").reverse().join("-")
 
+            // formData.append('order_date', convertOrderDate)
+            // formData.append('process_order_date', convertProcessOrderDate)
+            // formData.append('sales_channel_id', $("#sales_channel_id option:selected").val())
+            // formData.append('group_id', $('#group_id option:selected').val() )
+            // formData.append('payment_method_id', $('#payment_method_id option:selected').val())
+
             formData.append('order_date', convertOrderDate)
             formData.append('process_order_date', convertProcessOrderDate)
-            formData.append('sales_channel_id', $('#sales_channel_id option:selected').val())
-            formData.append('group_id', $('#group_id option:selected').val())
-            formData.append('payment_method_id', $('#payment_method_id option:selected').val())
+            formData.append('sales_channel_id', sales_channel_id)
+            formData.append('group_id',group_id)
+            formData.append('payment_method_id', payment_method_id)
 
             $.ajax({
                 type: "POST",
