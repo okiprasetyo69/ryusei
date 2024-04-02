@@ -15,6 +15,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LocalityController;
 use App\Http\Controllers\ImportProductController;
 
+use App\Http\Controllers\HomePageController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -28,6 +30,11 @@ use App\Http\Controllers\ImportProductController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+// Home Page
+Route::controller(HomePageController::class)->group(function() {
+    Route::get('/gsheet/data', 'getDataGSheet')->name('gsheet.data');
 });
 
 // Manage User
