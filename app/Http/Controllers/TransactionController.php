@@ -47,6 +47,11 @@ class TransactionController extends Controller
         return view("transaction.edit",  compact('transaction', 'saleschannel', 'paymentmethod', 'admincharge'));
     }
 
+    public function downloadFormatImportTransaksi(){
+        $path = public_path('/import/Format_Import_Transaksi.xlsx');
+        return response()->download($path);
+    }
+
     // API
     public function getTransaction(Request $request){
         try{

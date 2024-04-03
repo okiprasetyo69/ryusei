@@ -62,6 +62,7 @@ Route::controller(ProductController::class)->group(function() {
     Route::get('/product', 'index')->name('product');
     Route::get('/product/add', 'add')->name('product.add');
     Route::get('/product/edit/{code}', 'edit')->name('product.edit');
+    Route::get('/product/download/import', 'downloadFormatImportProduct')->name('product.download.import');
 });
 
 // Transaction Menu
@@ -69,4 +70,5 @@ Route::controller(TransactionController::class)->group(function() {
     Route::get('/transaction', 'index')->name('transaction');
     Route::get('/transaction/add', 'add')->name('transaction.add');
     Route::get('/transaction/edit/{id}', 'edit')->name('transaction.edit');
+    Route::get('/transaction/download/import', 'downloadFormatImportTransaksi')->name('transaction.download.import');
 });

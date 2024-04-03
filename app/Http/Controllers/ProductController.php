@@ -74,6 +74,11 @@ class ProductController extends Controller
         return view("product.edit",  compact('product', 'products', 'size'));
     }
 
+    public function downloadFormatImportProduct(){
+        $path = public_path('/import/Format_Import_Product.xlsx');
+        return response()->download($path);
+    }
+
     // Api data
     public function getProduct(Request $request){
         try{

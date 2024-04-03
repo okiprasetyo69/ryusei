@@ -134,8 +134,14 @@
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <h5> Pastikan File Sesuai Format </h5>
-                    <input type="file" name="file_import_product" id="file_import_product" class="form-control mt-2">
+                    <div class="col-md-12">  
+                        <h5> Pastikan File Sesuai Format </h5>
+                        <input type="file" name="file_import_product" id="file_import_product" class="form-control">
+                    </div>
+                    <div class="col-md-12 mt-2">  
+                        <button type="button" class="btn btn-md btn-dark" id="btn-download-format-import"><i class="bi bi-cloud-download-fill"></i></button>
+                        <label> <b> Download Format File </b></label>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary" id="importBtn">Import</button>
@@ -183,6 +189,12 @@
         $("#image_path").change(function(){
             readURL(this);
         });
+
+         // download format file
+         $("#btn-download-format-import").on("click", function(e){
+            e.preventDefault()
+            window.location.href = '/product/download/import'
+        })
 
         // store data product
         $("#frm-add-product").on("submit", function(e){

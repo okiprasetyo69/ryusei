@@ -136,8 +136,14 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <h5> Pastikan File Sesuai Format </h5>
-                    <input type="file" name="file_import_transaction" class="form-control mt-2">
+                    <div class="col-md-12"> 
+                        <h5> Pastikan File Sesuai Format </h5>
+                        <input type="file" name="file_import_transaction" class="form-control mt-2">
+                    </div>
+                    <div class="col-md-12 mt-2">  
+                        <button type="button" class="btn btn-md btn-dark" id="btn-download-format-import"><i class="bi bi-cloud-download-fill"></i></button>
+                        <label> <b> Download Format File </b></label>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary" id="importBtn">Import</button>
@@ -326,50 +332,14 @@
             });
         })
 
+        // download format file
+        $("#btn-download-format-import").on("click", function(e){
+            e.preventDefault()
+            window.location.href = '/transaction/download/import'
+        })
         // import file
         $("#import-form-transaction").on("submit", function(e){
             e.preventDefault()
-
-           // Validation form required
-        //    if($("#order_date").val() == ""){
-        //         $.alert({
-        //             title: 'Pesan !',
-        //             content: 'Tanggal Order tidak boleh kosong !',
-        //         });
-        //         return 
-        //     }
-
-        //     if($("#process_order_date").val() == ""){
-        //         $.alert({
-        //             title: 'Pesan !',
-        //             content: 'Tanggal Proses Order tidak boleh kosong !',
-        //         });
-        //         return 
-        //     }
-
-        //     if($("#sales_channel_id option:selected").val() == ""){
-        //         $.alert({
-        //             title: 'Pesan !',
-        //             content: 'Sales Channel tidak boleh kosong !',
-        //         });
-        //         return 
-        //     }
-
-        //     if($("#group_id option:selected").val() == ""){
-        //         $.alert({
-        //             title: 'Pesan !',
-        //             content: 'Kloter tidak boleh kosong !',
-        //         });
-        //         return 
-        //     }
-
-        //     if($("#payment_method_id option:selected").val() == ""){
-        //         $.alert({
-        //             title: 'Pesan !',
-        //             content: 'Metode Pembyaaran tidak boleh kosong !',
-        //         });
-        //         return 
-        //     }
 
             if($('#sales_channel_id option:selected').val() != ""){
                 sales_channel_id = $('#sales_channel_id option:selected').val()
@@ -392,12 +362,6 @@
             // Convert date
             convertOrderDate = orderDate.split("-").reverse().join("-")
             convertProcessOrderDate = processOrderDate.split("-").reverse().join("-")
-
-            // formData.append('order_date', convertOrderDate)
-            // formData.append('process_order_date', convertProcessOrderDate)
-            // formData.append('sales_channel_id', $("#sales_channel_id option:selected").val())
-            // formData.append('group_id', $('#group_id option:selected').val() )
-            // formData.append('payment_method_id', $('#payment_method_id option:selected').val())
 
             formData.append('order_date', convertOrderDate)
             formData.append('process_order_date', convertProcessOrderDate)
