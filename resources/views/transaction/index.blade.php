@@ -857,7 +857,7 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        //console.log(rowData.channel.name)
+                       
                         $(td).html(rowData.channel.name);
                     },
                 },

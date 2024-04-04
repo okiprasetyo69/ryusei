@@ -154,7 +154,7 @@
     let transaction = <?= $transaction ;?>
 
     $(document).ready(function () {
-       console.log(transaction)
+      
         var now = new Date();
         var month = (now.getMonth() + 1);               
         var day = now.getDate();
@@ -280,7 +280,7 @@
                 processData: false,
                 cache: false,
                 success: function (response) {
-                    console.log(response)
+                   
                     if(response.status == 200){
                         $.confirm({
                             title: 'Pesan ',
@@ -319,7 +319,7 @@
     }
 
     function getSalesChannel(sales_channel_id){
-        //console.log(sales_channel_id)
+       
         $.ajax({
             type: "GET",
             url: "/api/sales-channel",
@@ -367,14 +367,14 @@
                 dataType: "JSON",
                 type: "GET",
                 data: function (params) {
-                    //console.log(params)
+                   
                     return {
                         searchTerm: params.term,
                         id: sku_id,
                     };
                 },
                 processResults: function (response) {
-                    //console.log(response)
+                   
                     return {
                         results: response,
                     };
@@ -384,7 +384,7 @@
         })
         .on("select2:select", function (e) {
             var data = e.params.data;
-            // console.log(data)
+           
         });
     }
    

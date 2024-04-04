@@ -249,7 +249,6 @@
                 processData: false,
                 cache: false,
                 success: function (response) {
-                    //console.log(response)
                     if(response.status == 200){
                         $.confirm({
                             title: 'Pesan ',
@@ -305,7 +304,6 @@
                 processData: false,
                 cache: false,
                 success: function (response) {
-                    // console.log(response)
                     if(response.status == 200){
                         $.confirm({
                             title: 'Pesan ',

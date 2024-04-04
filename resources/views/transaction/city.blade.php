@@ -304,7 +304,7 @@
             city = $("#filter_city option:selected").val()
             district = $("#filter_district option:selected").val()
             village = $("#filter_village option:selected").val()
-            console.log(province, city, district, village)
+           
             loadPostalCode(null, province, city, district, village)
         })
     });

@@ -152,9 +152,6 @@
 <script type="text/javascript"> 
 
     $(document).ready(function () {
-        //loadProduct()
-        //getCategory()
-        //getSize()
         
     });
 
@@ -199,7 +196,6 @@
                     option += "<option value="+val.id+"> "+val.name+" </option>"
                 });
                 $("#size").append(option)
-                //console.log(response)
             }
         });
     }
@@ -222,7 +218,6 @@
     }
 
     function remove(id = null){
-        console.log("masuk sini : " + id)
         $.ajax({
             type: "POST",
             url: "/api/product/delete",
