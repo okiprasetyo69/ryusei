@@ -33,13 +33,13 @@
                                 <form action="#" id="frm-add-product" class="row g-3">
                                     @csrf
                                     <input type="hidden" name="code" id="code" class="form-control" />
-                                    <!-- <div class="row mt-4">
+                                    <div class="row mt-4">
                                         <div class="col-md-4">
                                             <button type="button" class="btn btn-md btn-primary" id="btn-add">
                                                 <i class="bi bi-plus-circle"></i> Tambah
                                             </button>
                                         </div>
-                                    </div> -->
+                                    </div>
                                     <div class="row mt-4">
                                         <div class="col-md-6">
                                             <div class="form-floating">
@@ -172,15 +172,17 @@
         $("#btn-add").on("click", function(e){
             e.preventDefault()
             let count = $('#table-add-product tr').length
-            let row = "<tr><td>"+count+"</td> <td><select class='form-select size' name='size[]' id='size' data-id="+count+"></select></td> <td><input type='text' class='form-control sku' name='code[]' id='sku' placeholder='Kode SKU'></td> <td><input type='text' class='form-control article' name='article[]' id='article' placeholder='Nama Artikel'></td> <td><input type='number' min='0' class='form-control price' name='price' id='price' placeholder='Harga'></td> <td><button type='button' class='btn btn-sm btn-danger delete-row' onclick='confirmDelete()'><i class='bi bi-trash' aria-hidden='true'></i></button> </td></tr>"
-            getSize()
+            let row = "<tr><td>"+count+"</td> <td><select class='form-select size' name='size[]' id='size-"+ (count + 1) +"' data-id="+(count+1)+"></select></td> <td><input type='text' class='form-control sku' name='code[]' id='sku' placeholder='Kode SKU'></td> <td><input type='text' class='form-control article' name='article[]' id='article' placeholder='Nama Artikel'></td> <td><input type='number' min='0' class='form-control price' name='price' id='price' placeholder='Harga'></td> <td><button type='button' class='btn btn-sm btn-danger delete-row' id='"+(count+1)+"'><i class='bi bi-trash' aria-hidden='true'></i></button> </td></tr>"
             $('#tbody').append(row);
+            var id = $(this).attr('data-id')
+            changeSize(id)
         })
 
          // remove row form table
          $("#tbody").on("click", '.delete-row',function(e){
             e.preventDefault()
-            $(this).parent('td').parent('tr').remove(); 
+            var rowId =  $(this).attr('id')
+            $("#"+rowId+"").parent('td').parent('tr').remove(); 
         })
     
         // store product
@@ -259,10 +261,10 @@
             });
         })
 
-       $("#table-add-product").on("click", '.size', function(){
-            var id = $(this).attr('data-id')
-            changeSize(id)
-       })
+        $("#table-add-product").on("click", '.size', function(){
+                var id = $(this).attr('data-id')
+                changeSize(id)
+        })
 
     });
 

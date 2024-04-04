@@ -215,7 +215,7 @@ use Illuminate\Support\Str;
             // convert json string to array
             $products = json_decode($request->products, true);
             $product = $product::where("code", $request->code)->get();
-           
+            
             if($request->status != null){
                 if($request->status == 1){
                     $status = 1;
@@ -224,7 +224,7 @@ use Illuminate\Support\Str;
                 }
             }
 
-             // done this code
+            // done this code
             if($request->code != null){
                 $code = $request->code;
 
@@ -252,38 +252,81 @@ use Illuminate\Support\Str;
                 $code =  Str::random(9);
             }
             
+            // Deprecated syntax
+            // append data product with same id
+            // foreach ($product as $key => $value) {
+            //     array_push($detailsProduct, [
+            //         "id" => $value->id,
+            //         "products" => $products[$key]
+            //     ]);
+            // }
+
+            foreach ($products as $key => $value) {
+                $id = null;
+
+                if(!empty($product[$key]["id"])){
+                    $id = $product[$key]["id"];
+                }
+                array_push($detailsProduct, [
+                    "id" => $id,
+                    "size" => $value['size'],
+                    "sku" => $value['sku'],
+                    "article" => $value['article'],
+                    "price" => $value['price'],
+                ]);
+            }
+
             // done this code 
             foreach ($product as $k => $val) {
-     
                 $productUpdate = Product::find($val->id);
-          
+
                 $productUpdate->code = $code;
                 $productUpdate->name = $request->name;
                 $productUpdate->status = $status;
                 $productUpdate->category_id = $request->category_id;
                 $productUpdate->image_path = $name;
-
+                $productUpdate->save();
                 // DB::connection()->enableQueryLog();
                 $productUpdate->save();
             }
-  
-            // append data product with same id
-            foreach ($product as $key => $value) {
-                array_push($detailsProduct, [
-                    "id" => $value->id,
-                    "products" => $products[$key]
-                ]);
+
+            for ($i=0; $i < count($detailsProduct) ; $i++) { 
+                $id = $detailsProduct[$i]['id'];
+
+                if( $id != null){
+                    $productDetail = Product::find($id);
+                    $productDetail->sku = $detailsProduct[$i]['sku'];
+                    $productDetail->article = $detailsProduct[$i]['article'];
+                    $productDetail->size = $detailsProduct[$i]['size'];
+                    $productDetail->price = $detailsProduct[$i]['price'];
+
+                    $productDetail->save();
+                } else {
+                    $product = new Product();
+                    $product->code = $code;
+                    $product->sku =  $detailsProduct[$i]['sku'];
+                    $product->article = $detailsProduct[$i]['article'];
+                    $product->name = $request->name;
+                    $product->size = $detailsProduct[$i]['size'];
+                    $product->price = $detailsProduct[$i]['price'];
+                    $product->status = $status;
+                    $product->category_id = $request->category_id;
+                    $product->image_path = $name;
+
+                    $product->save();
+                }
             }
-           
+            
+            // Deprecated syntax
             // set value product detail
-            foreach ($detailsProduct as $key => $value) {
-                $productDetail = Product::find($value['id']);
-                $productDetail->sku = $value['products']['sku'];
-                $productDetail->article =$value['products']['article'];
-                $productDetail->size = $value['products']['size'];
-                $productDetail->price = $value['products']['price'];
-                $productDetail->save();
-            }
+            // foreach ($detailsProduct as $key => $value) {
+            //     $productDetail = Product::find($value['id']);
+            //     $productDetail->sku = $value['products']['sku'];
+            //     $productDetail->article =$value['products']['article'];
+            //     $productDetail->size = $value['products']['size'];
+            //     $productDetail->price = $value['products']['price'];
+            //     //$productDetail->save();
+            // }
             
             return response()->json([
                 'status' => 200,
