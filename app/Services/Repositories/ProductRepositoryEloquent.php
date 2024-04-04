@@ -224,7 +224,7 @@ use Illuminate\Support\Str;
                 }
             }
 
-            // done this code
+            // check if have image file
             if($request->code != null){
                 $code = $request->code;
 
@@ -276,7 +276,7 @@ use Illuminate\Support\Str;
                 ]);
             }
 
-            // done this code 
+            // update product general
             foreach ($product as $k => $val) {
                 $productUpdate = Product::find($val->id);
 
@@ -290,10 +290,12 @@ use Illuminate\Support\Str;
                 $productUpdate->save();
             }
 
+            // UPSERT detail product
             for ($i=0; $i < count($detailsProduct) ; $i++) { 
                 $id = $detailsProduct[$i]['id'];
 
                 if( $id != null){
+                    // update product item
                     $productDetail = Product::find($id);
                     $productDetail->sku = $detailsProduct[$i]['sku'];
                     $productDetail->article = $detailsProduct[$i]['article'];
@@ -302,6 +304,7 @@ use Illuminate\Support\Str;
 
                     $productDetail->save();
                 } else {
+                    // add new product item per code
                     $product = new Product();
                     $product->code = $code;
                     $product->sku =  $detailsProduct[$i]['sku'];

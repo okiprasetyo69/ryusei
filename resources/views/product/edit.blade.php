@@ -143,7 +143,7 @@
         } 
         var APP_URL = {!! json_encode(url("/uploads/product/")) !!}
         var new_url = APP_URL + "/" + path
-     
+
         $("#code").val(product_detail.code)
         $("#name").val(product_detail.name)
         $("#article").val(product_detail.article)
@@ -219,9 +219,9 @@
 
             if($('input[name="status"]:checked').val() == 1){
                 status = 1
-           } else {
-                status = 0
-           }
+            } else {
+                    status = 0
+            }
 
             var jsonProducts = JSON.stringify(products);
          
@@ -232,8 +232,6 @@
             formData.append("products", jsonProducts)
             formData.append('category_id', $('#category_id option:selected').val())
             
-            console.log(status)
-            //console.log(formData)
             $.ajax({
                 type: "POST",
                 url: "/api/product/update",
@@ -242,7 +240,6 @@
                 processData: false,
                 cache: false,
                 success: function (response) {
-                    console.log(response)
                     if(response.status == 200){
                         $.confirm({
                             title: 'Pesan ',
