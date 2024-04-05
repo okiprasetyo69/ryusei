@@ -109,7 +109,7 @@
         </a>
       </li>
       <li>
-        <a href="#">
+        <a href="/warehouse">
           <i class="bi bi-circle"></i><span>Pengaturan</span>
         </a>
       </li>

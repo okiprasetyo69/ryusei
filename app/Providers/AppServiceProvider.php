@@ -18,6 +18,7 @@ use App\Services\Interfaces\TransactionService;
 use App\Services\Interfaces\DashboardService;
 use App\Services\Interfaces\LocalityService;
 use App\Services\Interfaces\ImportProductService;
+use App\Services\Interfaces\WarehouseService;
 
 use App\Services\Repositories\UserRepositoryEloquent;
 use App\Services\Repositories\RoleRepositoryEloquent;
@@ -31,6 +32,7 @@ use App\Services\Repositories\TransactionRepositoryEloquent;
 use App\Services\Repositories\DashboardRepositoryEloquent;
 use App\Services\Repositories\LocalityRepositoryEloquent;
 use App\Services\Repositories\ImportProductRepositoryEloquent;
+use App\Services\Repositories\WarehouseRepositoryEloquent;
 
 
 class AppServiceProvider extends ServiceProvider implements DeferrableProvider
@@ -54,6 +56,8 @@ class AppServiceProvider extends ServiceProvider implements DeferrableProvider
         DashboardService::class => DashboardRepositoryEloquent::class,
         LocalityService::class => LocalityRepositoryEloquent::class,
         ImportProductService::class => ImportProductRepositoryEloquent::class,
+        WarehouseService::class => WarehouseRepositoryEloquent::class,
+        
     ];
 
     /**
@@ -80,6 +84,7 @@ class AppServiceProvider extends ServiceProvider implements DeferrableProvider
             DashboardService::class,
             LocalityService::class,
             ImportProductService::class,
+            WarehouseService::class,
         ];
     }
 

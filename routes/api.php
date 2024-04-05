@@ -14,6 +14,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LocalityController;
 use App\Http\Controllers\ImportProductController;
+use App\Http\Controllers\WarehouseController;
 
 use App\Http\Controllers\HomePageController;
 
@@ -134,4 +135,12 @@ Route::controller(DashboardController::class)->group(function() {
     Route::get('/analytics/best-store', 'bestSellingChannelStore')->name('analytics.best_store');
     Route::get('/analytics/best-product', 'bestSellingProduct')->name('analytics.best_product');
     Route::get('/analytics/chart-performance', 'getChartSelling')->name('analytics.chart_performance');
+});
+
+// Warehouse
+Route::controller(WarehouseController::class)->group(function() {
+    Route::get('/warehouse', 'getWarehouse')->name('warehouse.data');
+    Route::post('/warehouse/create', 'create')->name('warehouse.create');
+    Route::post('/warehouse/delete', 'delete')->name('warehouse.delete');
+    Route::post('/warehouse/detail', 'detail')->name('warehouse.detail');
 });

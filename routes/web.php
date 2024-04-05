@@ -10,6 +10,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\SalesChannelController;
 use App\Http\Controllers\LocalityController;
+use App\Http\Controllers\WarehouseController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -71,4 +73,8 @@ Route::controller(TransactionController::class)->group(function() {
     Route::get('/transaction/add', 'add')->name('transaction.add');
     Route::get('/transaction/edit/{id}', 'edit')->name('transaction.edit');
     Route::get('/transaction/download/import', 'downloadFormatImportTransaksi')->name('transaction.download.import');
+});
+
+Route::controller(WarehouseController::class)->group(function() {
+    Route::get('/warehouse', 'warehousePage')->name('warehouse');
 });
