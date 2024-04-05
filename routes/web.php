@@ -11,6 +11,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\SalesChannelController;
 use App\Http\Controllers\LocalityController;
 use App\Http\Controllers\WarehouseController;
+use App\Http\Controllers\SalesInvoiceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,4 +78,9 @@ Route::controller(TransactionController::class)->group(function() {
 
 Route::controller(WarehouseController::class)->group(function() {
     Route::get('/warehouse', 'warehousePage')->name('warehouse');
+});
+
+Route::controller(SalesInvoiceController::class)->group(function() {
+    Route::get('/sales-invoice', 'index')->name('sales_invoice');
+    Route::get('/sales-invoice/add', 'add')->name('sales_invoice.add');
 });

@@ -61,7 +61,7 @@ use Yajra\DataTables\Facades\DataTables;
     public function getSalesChannelDatatable(Request $request){
         try{
             
-            $salesChannel = $this->salesChannel::orderBy('id', 'ASC');
+            $salesChannel = $this->salesChannel::orderBy('code', 'ASC');
           
             if($request->name != null){
                 $salesChannel  = $salesChannel->where("name", "like", "%" . $request->name. "%");

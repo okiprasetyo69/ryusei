@@ -126,7 +126,12 @@
     <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
       <li>
         <a href="/transaction">
-          <i class="bi bi-circle"></i><span>Transaksi Penjualan</span>
+          <i class="bi bi-circle"></i><span>Transaksi</span>
+        </a>
+      </li>
+      <li>
+        <a href="/sales-invoice">
+          <i class="bi bi-circle"></i><span>Invoice</span>
         </a>
       </li>
       <li>

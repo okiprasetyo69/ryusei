@@ -1,20 +1,20 @@
 
 @extends('layout.home')
-@section('title','Gudang')
+@section('title','Dashboard')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 @section('content')
 
 <main id="main" class="main">
     <div class="pagetitle">
-        <h1>Management Barang</h1>
+        <h1>Management Transaksi</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="#">Gudang</a>
+                <li class="breadcrumb-item ">
+                    <a href="#">Penjualan</a>
                 </li>
                 <li class="breadcrumb-item active">
-                    <a href="/warehouse">Pengaturan</a>
+                    <a href="#">Invoice</a>
                 </li>
             </ol>
         </nav>
@@ -43,18 +43,26 @@
                     <div class="card-body">
                         <div class="row mt-2"> 
                             <div class="col md-4">
-                                <button type="button" class="btn btn-primary rounded-pill btn-add" data-bs-toggle="modal" data-bs-target="#modalWarehouse">
+                                <button type="button" class="btn btn-primary rounded-pill" id="btn-add">
                                     <i class="bi bi-plus-circle"></i> Tambah
                                 </button>
                             </div>
+                        </div>
+                        <div class="row mt-2">
                             <div class="col-md-12">
                                 <div class="">
-                                    <table class="table table-striped" id="table-warehouse">
+                                    <table class="table table-striped" id="table-invoice">
                                         <thead>
                                             <tr>
                                                 <th scope="col">#</th>
-                                                <th scope="col">Nama Gudang</th>
-                                                <th scope="col">Alamat</th>
+                                                <th scope="col">Doc No.</th>
+                                                <th scope="col">Date</th>
+                                                <th scope="col">Due Date</th>
+                                                <th scope="col">Customer</th>
+                                                <th scope="col">Sales Person</th>
+                                                <th scope="col">Amount</th>
+                                                <th scope="col">Amt Due</th>
+                                                <th scope="col">State</th>
                                                 <th scope="col">Aksi</th>
                                             </tr>
                                         </thead>
@@ -64,7 +72,6 @@
                                     </table>
                                 </div>
                             </div>
-                            
                         </div>
                     </div>
                 </div>
@@ -72,112 +79,35 @@
         </div>
     </section>
 </main>
-<!-- End #main -->
-
-<div class="modal fade" id="modalWarehouse" tabindex="-1" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="#" id="frm-warehouse"> 
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title">Tambah Gudang</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="id" id="id" class="form-control" />
-                    <div class="row">
-                        <div class="col-md-12 mt-2">
-                            <label> Nama Gudang</label>
-                            <input type="text" class="form-control" name="name" id="name" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 mt-2">
-                            <label> Alamat </label>
-                            <input type="text" class="form-control" name="address" id="address" />
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success" id="btn-save">Simpan</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                  
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 <script type="text/javascript"> 
     var name
     var table
-    var category_list_id
     $(document).ready(function () {
         
-        loadWarehouse()
+        //loadInvoice()
 
-        // Close Modal
-        $("#btn-close").click(function(e){
+        $("#btn-add").on("click", function(e){
             e.preventDefault()
-            $("#modalWarehouse").modal("hide")
+            window.location.href = "/sales-invoice/add"
         })
 
-        // filter category
+        // filter invoice
         $("#filter_name").on("keyup", function(e){
             e.preventDefault()
             name = $("#filter_name").val()
-            loadWarehouse(name)
+            // loadInvoice(name)
         })
 
-        // Store data
-        $("#frm-warehouse").on("submit", function(e){
-            e.preventDefault()
-
-            if($("#name").val() == ""){
-                $.alert({
-                    title: 'Pesan!',
-                    content: 'Nama Gudang tidak boleh kosong !',
-                });
-                return 
-            }
-
-            $.ajax({
-                type: "POST",
-                url: "/api/warehouse/create",
-                data: {
-                    id : $("#id").val(),
-                    name : $("#name").val(),
-                    address : $("#address").val(),
-                },
-                dataType: "JSON",
-                success: function (response) {
-                    if(response.status == 200){
-                        $("#modalWarehouse").modal("hide")
-                        $.confirm({
-                            title: 'Pesan ',
-                            content: 'Data Gudang berhasil diperbarui !',
-                            buttons: {
-                                Ya: {
-                                    btnClass: 'btn-success any-other-class',
-                                    action: function(){
-                                        loadWarehouse()
-                                    }
-                                },
-                            }
-                        });
-                    }
-                }
-            });
-        })
 
     });
 
-    function loadWarehouse(name = null){
+    function loadInvoice(name = null){
         if (table != null) {
             table.destroy();
         }
 
-        table =  $("#table-warehouse").DataTable(
+        table =  $("#table-invoice").DataTable(
            {
                 lengthChange: false,
                 searching: false,
@@ -236,7 +166,7 @@
     function detail(id){
         $.ajax({
             type: "POST",
-            url: "/api/warehouse/detail",
+            url: "",
             data: {
                 id : id
             },
@@ -274,7 +204,7 @@
     function remove(id){
         $.ajax({
             type: "POST",
-            url: "/api/warehouse/delete",
+            url: "",
             data: {
                 id : id,
             },
