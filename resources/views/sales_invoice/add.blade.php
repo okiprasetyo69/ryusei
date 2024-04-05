@@ -187,7 +187,7 @@
                         <div class="row mt-2">
                             <div class="col-md-12">
                                 <div class="table-responsive">
-                                    <table class="table table-striped" id="table-add-invoice-item" style="max-height:600px;">
+                                    <table class="table table-bordered table-striped" id="table-add-invoice-item" style="max-height:600px;">
                                         <thead>
                                             <tr class="text-center">
                                                 <th scope="col">#</th>
@@ -208,7 +208,7 @@
                                         </tbody>
                                     </table>
 
-                                    <table class="table table-striped" id="table-add-invoice-summary" style="max-height:600px;">
+                                    <table class="table table-bordered table-striped" id="table-add-invoice-summary" style="max-height:600px;">
                                         <thead>
                                             <tr class="text-center">
                                                 <th scope="col">#</th>
@@ -325,8 +325,8 @@
                 <div class="row mt-2">
                     <div class="col-md-4"></div>
                     <div class="col-md-4 text-center">
-                        <button type="submit" class="btn btn-success btn-save">Simpan</button>
-                        <button type="button" class="btn btn-secondary btn-reset">Batal</button>
+                        <button type="button" class="btn btn-success btn-save">Simpan</button>
+                        <a href="/sales-invoice" class="btn btn-secondary">Batal</a>
                     </div>
                     <div class="col-md-4"></div>
                 </div>
