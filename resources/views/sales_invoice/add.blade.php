@@ -3,11 +3,11 @@
 @section('title','Dashboard')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.css" rel="stylesheet" />
 <style> 
     .table-responsive {
         max-height:600px;
     }
-    
 </style>
 @section('content')
 
@@ -173,7 +173,7 @@
                             <div class="col-md-2 mt-2" id="attr_warehouse"> 
                                 <label> Warehouse :</label>
                                 <select class="form-control mt-2" name="warehouse_id" id="warehouse_id"> 
-                                     
+                                    <option value=""> - Pilih gudang - </option>
                                 </select>
                             </div>
                         </div>
@@ -182,6 +182,10 @@
                                 <button type="button" class="btn btn-sm btn-primary rounded-pill" id="btn-add">
                                     <i class="bi bi-plus-circle"></i> Tambah
                                 </button>
+                            </div>
+                            <div class="col md-4 mt-2"> </div>
+                            <div class="col md-4 mt-2"> 
+                                <input type="text" class="form-control" name="search_text" id="search_text" placeholder="Masukkan Item Code" autofocus/>
                             </div>
                         </div>
                         <div class="row mt-2">
@@ -306,7 +310,7 @@
                                 <div class="row mb-3">
                                     <label for="" class="col-sm-3 col-form-label">Total</label>
                                     <div class="col-sm-6">
-                                        <input type="number" class="form-control" name="total" id="total"/>
+                                        <input type="number" class="form-control grand_total" name="total" id="grand_total"/>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -348,7 +352,7 @@
                 <div class="modal-body">
                     <div class="col-md-12"> 
                         <h5> Pastikan File Sesuai Format </h5>
-                        <input type="file" name="file_import_invoice" class="form-control mt-2">
+                        <input type="file" name="file_import_invoice" id="file_import_invoice" class="form-control mt-2">
                     </div>
                     <div class="col-md-12 mt-2">  
                         <button type="button" class="btn btn-md btn-dark" id="btn-download-format-import"><i class="bi bi-cloud-download-fill"></i></button>
@@ -356,7 +360,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success" id="btn-save">Simpan</button>
+                    <button type="button" class="btn btn-success" id="btn-import-file">Import</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                   
                 </div>
@@ -368,12 +372,39 @@
 
 <script type="text/javascript"> 
 
-    var table
+    var table, count, kodeSku, description , qty, price , discPercent, taxCode, orderNumber, total, unit, grandTotal
 
     $(document).ready(function () {
+        var now = new Date();
+        var month = (now.getMonth() + 1);               
+        var day = now.getDate();
+
+        if (month < 10) 
+            month = "0" + month;
+        if (day < 10) 
+            day = "0" + day;
+        var today = now.getFullYear() + '-' + month + '-' + day;
+
+        var convertOrderDate = day + '-' + month.toLocaleString('default', { month: 'long' }) + '-' + now.getFullYear()
+        var convertProcessOrderDate = day + '-' + month.toLocaleString('default', { month: 'long' }) + '-' + now.getFullYear()
+       
+        $("#date").datepicker({
+            format: 'dd-mm-yyyy',
+            defaultDate: new Date(),
+        });
+        $('#date').val(convertOrderDate);
+
+        $("#due_date" ).datepicker({
+            format: 'dd-mm-yyyy',
+            defaultDate: new Date(),
+        });
+        $('#due_date').val(convertProcessOrderDate);
+
+        getWarehouse()
 
         $("#table-add-invoice-summary").hide()
 
+        // select invoice type
         $("#invoice_type").on("change", function(e){
             e.preventDefault()
             value = this.value
@@ -392,14 +423,30 @@
             }
         })
 
+        // assign select 2
+        $(".item_code").select2()
+
+        // search sku code on table
+        $("#search_text").on("keyup press", function(e){
+            e.preventDefault()
+            var searchText = $(this).val().toLowerCase();
+            $('#table-add-invoice-item tbody tr').each(function() {
+                var rowData = $(this).text().toLowerCase();
+                if (rowData.indexOf(searchText) === -1) {
+                    $(this).hide();
+                } else {
+                    $(this).show();
+                }
+            });
+        })
+
         // create dynamic form
         $("#btn-add").on("click", function(e){
             e.preventDefault()
-            console.log("Masuk sini")
             let row = ""
             let head = ""
             var selectedType = $("#invoice_type option:selected").val()
-            let count = 0
+            count = 0
 
             if(selectedType == 1){
                 $("#table-add-invoice-item").show()
@@ -408,12 +455,12 @@
                 $("#attr_warehouse").show()
 
                 count = $('#table-add-invoice-item tr').length
-                row =  `<tr> 
+                row =  `<tr class="text-center"> 
                         <td>`+count+`</td>
                         <td><select name="item_code[]" class="form-control item_code" id="item_code_`+ count +`" style="width:100%;"></select></td>    
                         <td><input type="text" name="description[]" class="form-control description" id="description_`+ count +`"/></td>    
                         <td><input type="number" min="0" name="qty[]" class="form-control qty" id="qty_`+ count +`"/></td>    
-                        <td><input type="number" min="0" name="unit[]" class="form-control unit" id="unit_`+ count +`"/></td>  
+                        <td><input type="text" min="0" name="unit[]" class="form-control unit" id="unit_`+ count +`"/></td>  
                         <td><input type="number" min="0 "name="price[]" class="form-control price" id="price_`+count+`"/></td>    
                         <td><input type="number" min="0 "name="discount[]" class="form-control discount" id="discount_`+count+`"/></td>    
                         <td><input type="number" min="0 "name="total[]" class="form-control total" id="total_`+count+`"/></td>
@@ -421,7 +468,11 @@
                         <td><input type="text" name="order_number[]" class="form-control order_number" id="order_number_`+ count +`"/></td>             
                         <td><button type='button' class='btn btn-md btn-danger delete-row' id=`+count+`><i class='bi bi-trash' aria-hidden='true'></i></button></td>    
                     </tr>`
-                $('#tbody-invoice-item').append(row);
+                $('#tbody-invoice-item').append(row)
+                // $("#table-add-invoice-item").DataTable()
+                getSkuCode()
+                
+               $("#total").val(grandTotal)
             } 
 
             if(selectedType == 2){
@@ -444,11 +495,12 @@
                         <td><button type='button' class='btn btn-md btn-danger delete-row' id=`+count+`><i class='bi bi-trash' aria-hidden='true'></i></button></td>    
                     </tr>`
                 $('#tbody-invoice-summary').append(row);
+                getSkuCode()
             }
 
         })
 
-         // remove row form table invoice item
+        // remove row form table invoice item
         $("#tbody-invoice-item").on("click", '.delete-row',function(e){
             e.preventDefault()
             var rowId =  $(this).attr('id')
@@ -461,15 +513,191 @@
             var rowId =  $(this).attr('id')
             $("#"+rowId+"").parent('td').parent('tr').remove(); 
         })
+
+        // import from excel to view blade
+        $('#btn-import-file').click(function() {
+            $("#modalImportInvoice").modal('toggle')
+
+            var file = $('#file_import_invoice').prop('files')[0];
+            var reader = new FileReader();
+            var arrDataSheet = []
+          
+            count = $('#table-add-invoice-item tr').length
+            reader.onload = function (e) {
+                var data = new Uint8Array(e.target.result);
+                var workbook = XLSX.read(data, { type: 'array' });
+                var sheet = workbook.Sheets[workbook.SheetNames[0]];
+                var sheetData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+                
+                // start indexing loop after header has red
+                sheetData = sheetData.slice(1)
+                var html = '';
+                count = $('#table-add-invoice-item tr').length
+                var rowData =""
+
+                $.each(sheetData, function (index, value) { 
+
+                    if(value[0] != undefined){
+                        kodeSku = value[0]
+                    } else {
+                        kodeSku = ""
+                    }
+
+                    if(value[1] != undefined){
+                        description = value[1]
+                    } else{
+                        description = ""
+                    }
+
+                    if(value[2] != undefined){
+                        qty = value[2]
+                    } else {
+                        qty = ""
+                    }
+
+                    if(value[3] != undefined){
+                        unit = value[3]
+                    } else {
+                        unit = ""
+                    }
+
+                    if(value[4] != undefined){
+                        price = value[4]
+                    } else {
+                        price = ""
+                    }
+
+                    if(value[5] != undefined){
+                        discPercent = value[5]
+                    } else {
+                        discPercent = ""
+                    }
+
+                    if(value[6] != undefined){
+                        taxCode = value[6]
+                    } else {
+                        taxCode = ""
+                    }
+
+                    if(value[7] != undefined){
+                        orderNumber = value[7]
+                    } else {
+                        orderNumber = ""
+                    }
+
+                    total = qty * price
+                    arrDataSheet.push({
+                        kode_sku : kodeSku,
+                        description : description,
+                        qty : qty,
+                        unit : unit,
+                        price : price,
+                        disc_percent : discPercent,
+                        tax_code : taxCode,
+                        order_number : orderNumber,
+                        total : total
+                    })
+            
+                });
+
+                $.each(arrDataSheet, function (i, val) { 
+                    rowData += `<tr class="text-center"> 
+                                <td>`+ count +`</td>
+                                <td><select name="item_code[]" class="form-control item_code" id="item_code_`+ count +`" style="width:100%;"> <option value=""> `+val.kode_sku+` <option> </select></td>    
+                                <td><input type="text" name="description[]" class="form-control description" id="description_`+ count +`" value="`+val.description+`"/></td>    
+                                <td><input type="number" min="0" name="qty[]" class="form-control qty" id="qty_`+ count +`" value="`+val.qty+`"/></td>    
+                                <td><input type="text" name="unit[]" class="form-control unit" id="unit_`+ count +`" value="`+val.unit+`"/></td>  
+                                <td><input type="number" min="0 "name="price[]" class="form-control price" id="price_`+count+`" value="`+val.price+`"/></td>    
+                                <td><input type="number" min="0 "name="discount[]" class="form-control discount" id="discount_`+count+`" value="`+val.disc_percent+`"/></td>    
+                                <td><input type="number" min="0 "name="total[]" class="form-control total" id="total_`+count+`" value="`+val.total+`"/></td>
+                                <td><input type="text" name="tax_code[]" class="form-control tax_code" id="tax_code_`+ count +`" value="`+val.tax_code+`"/></td> 
+                                <td><input type="text" name="order_number[]" class="form-control order_number" id="order_number_`+ count +`"  value="`+val.order_number+`"/></td>             
+                                <td><button type='button' class='btn btn-md btn-danger delete-row' id=`+count+`><i class='bi bi-trash' aria-hidden='true'></i></button></td>    
+                            </tr>`
+                    count++
+                });
+
+                $('#tbody-invoice-item').append(rowData)
+                // $("#table-add-invoice-item").DataTable()
+                getSkuCode()
+            };
+
+            reader.readAsArrayBuffer(file);
+            $("#file_import_invoice").val("")
+        });
+
+         // Calculate total on input change
+        $('#table-add-invoice-item tbody').on('keyup', '.total', function() {
+            var row = $(this).closest('tr')
+            var total = parseFloat(row.find('.total').val()) || 0
+            row.find('.total').text(total.toFixed(2))
+            console.log(total)
+
+            // Update grand total
+            grandTotal = total + total
+            console.log(grandTotal)
+            
+            $('#grand_total').val(grandTotal.toFixed(2))
+        });
     });
 
 
-   
+    function getSkuCode(dataId=null){
+        let item_code = $('.item_code').val()
+        $(".item_code").select2({
+            ajax: {
+                url: "/api/product/list/select2",
+                dataType: "JSON",
+                type: "GET",
+                data: function (params) {
+                    //console.log(params)
+                    return {
+                        searchTerm: params.term,
+                        id: item_code,
+                    };
+                },
+                processResults: function (response) {
+                    //console.log(response)
+                    return {
+                        results: response,
+                    };
+                },
+                cache: true,
+            },
+        })
+        .on("select2:select", function (e) {
+            var data = e.params.data;
+            //console.log(data)
+        });
+
+    }
+
+   function getWarehouse(){
+        $.ajax({
+            type: "GET",
+            url: "/api/warehouse",
+            data: "data",
+            dataType: "JSON",
+            success: function (response) {
+                //console.log(response.data)
+                var data = response.data
+                var option = ""
+                $("#warehouse_id").html()
+                $.each(data, function (i, val) { 
+                    option += "<option value="+val.id+"> "+val.name+" </option>"
+                })
+                $("#warehouse_id").append(option)
+               
+            }   
+        });
+   }
 
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.4/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.js"></script>
 @endsection
 @section('pagespecificscripts')
    
