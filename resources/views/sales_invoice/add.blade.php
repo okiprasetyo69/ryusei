@@ -310,7 +310,7 @@
                                 <div class="row mb-3">
                                     <label for="" class="col-sm-3 col-form-label">Total</label>
                                     <div class="col-sm-6">
-                                        <input type="number" class="form-control grand_total" name="total" id="grand_total"/>
+                                        <input type="number" class="form-control grand_total" name="grand_total" id="grand_total"/>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -446,7 +446,7 @@
             let row = ""
             let head = ""
             var selectedType = $("#invoice_type option:selected").val()
-            count = 0
+           
 
             if(selectedType == 1){
                 $("#table-add-invoice-item").show()
@@ -463,16 +463,63 @@
                         <td><input type="text" min="0" name="unit[]" class="form-control unit" id="unit_`+ count +`"/></td>  
                         <td><input type="number" min="0 "name="price[]" class="form-control price" id="price_`+count+`"/></td>    
                         <td><input type="number" min="0 "name="discount[]" class="form-control discount" id="discount_`+count+`"/></td>    
-                        <td><input type="number" min="0 "name="total[]" class="form-control total" id="total_`+count+`"/></td>
+                        <td><input type="number" min="0 "name="total[]" class="form-control total" id="total_`+count+`"/ readonly></td>
                         <td><input type="text" name="tax_code[]" class="form-control tax_code" id="tax_code_`+ count +`"/></td> 
                         <td><input type="text" name="order_number[]" class="form-control order_number" id="order_number_`+ count +`"/></td>             
                         <td><button type='button' class='btn btn-md btn-danger delete-row' id=`+count+`><i class='bi bi-trash' aria-hidden='true'></i></button></td>    
                     </tr>`
                 $('#tbody-invoice-item').append(row)
-                // $("#table-add-invoice-item").DataTable()
+
                 getSkuCode()
-                
-               $("#total").val(grandTotal)
+                var elementsTotal  =  document.getElementsByClassName('total')
+                var actGrandTotal = 0
+               
+
+                // calculate total without discount
+                $("#price_"+ count).on("keyup", function(e){
+                    e.preventDefault()
+                    price =  $("#price_"+ count).val()
+                    qty =   $("#qty_"+ count).val()
+                    total = qty * price
+                    grandTotal = 0
+
+                    // assign value into element total
+                    $("#total_"+ count).val(total)
+                    
+                    // calculate grand total without discount
+                    for(var i = 0; i < elementsTotal.length; i++){
+                        actGrandTotal = parseInt(elementsTotal[i].value)
+                        grandTotal = actGrandTotal + grandTotal
+                        $("#grand_total").val(grandTotal)
+                    }
+                })
+               
+                // calculate total with discount
+                $("#discount_"+ count).on("change", function(e){
+                    e.preventDefault()
+                    var currentTotal = total
+                    var discountGrandTotal = 0
+                    discPercent = $("#discount_"+ count).val()
+                    discPercent = (discPercent / 100) * total
+                    currentTotal = currentTotal - discPercent
+                    
+                    // assign into element total after discount
+                    $("#total_"+ count).val(currentTotal)
+
+                    // initializing value into element grand total for the first time
+                    $("#grand_total").val(currentTotal)
+                    
+                    // get value current grand total for increase
+                    var currentGrandTotal = $("#grand_total").val()
+                    
+                    // calculate grand total with discount
+                    for(var i = 0; i < elementsTotal.length; i++){
+                        currentGrandTotal = parseInt(elementsTotal[i].value)
+                        discountGrandTotal = discountGrandTotal + currentGrandTotal
+                        $("#grand_total").val(discountGrandTotal)
+                    }
+                })
+           
             } 
 
             if(selectedType == 2){
@@ -600,7 +647,17 @@
             
                 });
 
+                grandTotal = 0
                 $.each(arrDataSheet, function (i, val) { 
+                   
+                    if(val.disc_percent != ""){
+                        total =  val.total - ((val.disc_percent/100) * val.total)
+                        grandTotal = total + grandTotal
+                    } else{
+                        total = val.total
+                        grandTotal = total + grandTotal
+                    }
+
                     rowData += `<tr class="text-center"> 
                                 <td>`+ count +`</td>
                                 <td><select name="item_code[]" class="form-control item_code" id="item_code_`+ count +`" style="width:100%;"> <option value=""> `+val.kode_sku+` <option> </select></td>    
@@ -609,7 +666,7 @@
                                 <td><input type="text" name="unit[]" class="form-control unit" id="unit_`+ count +`" value="`+val.unit+`"/></td>  
                                 <td><input type="number" min="0 "name="price[]" class="form-control price" id="price_`+count+`" value="`+val.price+`"/></td>    
                                 <td><input type="number" min="0 "name="discount[]" class="form-control discount" id="discount_`+count+`" value="`+val.disc_percent+`"/></td>    
-                                <td><input type="number" min="0 "name="total[]" class="form-control total" id="total_`+count+`" value="`+val.total+`"/></td>
+                                <td><input type="number" min="0 "name="total[]" class="form-control total" id="total_`+count+`" value="`+total+`"/></td>
                                 <td><input type="text" name="tax_code[]" class="form-control tax_code" id="tax_code_`+ count +`" value="`+val.tax_code+`"/></td> 
                                 <td><input type="text" name="order_number[]" class="form-control order_number" id="order_number_`+ count +`"  value="`+val.order_number+`"/></td>             
                                 <td><button type='button' class='btn btn-md btn-danger delete-row' id=`+count+`><i class='bi bi-trash' aria-hidden='true'></i></button></td>    
@@ -618,27 +675,16 @@
                 });
 
                 $('#tbody-invoice-item').append(rowData)
-                // $("#table-add-invoice-item").DataTable()
                 getSkuCode()
+                $("#grand_total").val(grandTotal)
+              
             };
 
             reader.readAsArrayBuffer(file);
             $("#file_import_invoice").val("")
         });
 
-         // Calculate total on input change
-        $('#table-add-invoice-item tbody').on('keyup', '.total', function() {
-            var row = $(this).closest('tr')
-            var total = parseFloat(row.find('.total').val()) || 0
-            row.find('.total').text(total.toFixed(2))
-            console.log(total)
-
-            // Update grand total
-            grandTotal = total + total
-            console.log(grandTotal)
-            
-            $('#grand_total').val(grandTotal.toFixed(2))
-        });
+        
     });
 
 
@@ -691,6 +737,7 @@
             }   
         });
    }
+
 
 </script>
 

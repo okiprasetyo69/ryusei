@@ -219,4 +219,17 @@ class ProductController extends Controller
             return false;
         }
     }
+
+    public function getProductSelect2Invoice(Request $request){
+        try{
+            $product = $this->service->getProductSelect2ForInvoice($request);
+            if($product != null){
+                return $product;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
 }

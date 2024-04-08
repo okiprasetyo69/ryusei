@@ -43,7 +43,15 @@ use Illuminate\Support\Str;
             $product = $this->product::with('category', 'sizes');
           
             if($request->name != null){
-                $product->where("name", "like", "%" . $request->name. "%");
+                $product = $product->where("name", "like", "%" . $request->name. "%");
+            }
+
+            if($request->category_id != null){
+                $product = $product->where("category_id", $request->category_id);
+            }
+
+            if($request->sku != null){
+                $product = $product->where("sku", $request->sku);
             }
 
             $product = $product->get();
@@ -349,6 +357,24 @@ use Illuminate\Support\Str;
                         ->get(['id', 'sku as text', 'sku'])
                         ->makeHidden(['image_url']);
                         
+            return response()->json($product, 200);
+        }
+        catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function getProductSelect2ForInvoice(Request $request){
+        try{
+            $product = $this->product;
+         
+            if($request->category_id != null){
+                $product = $product::where("category_id", $request->category_id)->orderBy('id', 'ASC');
+            }
+               
+            $product = $product->get(['id', 'sku as text', 'sku' , 'name'])->makeHidden(['image_url']);
+            //dd($product);
             return response()->json($product, 200);
         }
         catch(Exception $ex){

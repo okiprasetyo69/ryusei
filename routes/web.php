@@ -12,6 +12,7 @@ use App\Http\Controllers\SalesChannelController;
 use App\Http\Controllers\LocalityController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\SalesInvoiceController;
+use App\Http\Controllers\ItemStockController;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,9 +77,16 @@ Route::controller(TransactionController::class)->group(function() {
     Route::get('/transaction/download/import', 'downloadFormatImportTransaksi')->name('transaction.download.import');
 });
 
+// Warehouse Menu
 Route::controller(WarehouseController::class)->group(function() {
     Route::get('/warehouse', 'warehousePage')->name('warehouse');
 });
+
+// Item Stock
+Route::controller(ItemStockController::class)->group(function() {
+    Route::get('/items-incoming', 'index')->name('items_incoming');
+});
+
 
 Route::controller(SalesInvoiceController::class)->group(function() {
     Route::get('/sales-invoice', 'index')->name('sales_invoice');

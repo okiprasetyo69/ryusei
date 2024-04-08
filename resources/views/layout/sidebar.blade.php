@@ -94,7 +94,7 @@
         </a>
       </li>
       <li>
-        <a href="#">
+        <a href="/items-incoming">
           <i class="bi bi-circle"></i><span>Barang Masuk</span>
         </a>
       </li>
