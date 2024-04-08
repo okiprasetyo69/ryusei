@@ -232,4 +232,17 @@ class ProductController extends Controller
             return false;
         }
     }
+
+    public function getItemUnit(Request $request){
+        try{
+            $itemUnit = $this->service->getItemUnit($request);
+            if($itemUnit != null){
+                return $itemUnit;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
 }

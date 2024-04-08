@@ -84,6 +84,7 @@ Route::controller(ProductController::class)->group(function() {
     Route::get('/product/list-product', 'listProduct')->name('product.list');
     Route::get('/product/list/select2', 'getProductSelect2')->name('product.list.select2');
     Route::get('/product/list/invoice/select2', 'getProductSelect2Invoice')->name('product.list.invoice.select2');
+    Route::get('/product/item-unit', 'getItemUnit')->name('item.unit');
 });
 
 // Manage Import Product

@@ -41,18 +41,26 @@
                                         </div>
                                     </div>
                                     <div class="row mt-4">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-floating">
                                                 <input type="text" class="form-control" name="name" id="name" placeholder="Masukkan Nama SKU" autofocus>
                                                 <label for="">Nama SKU</label>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-floating">
                                                 <select name="category_id" id="category_id" class="form-control category_id" placeholder="Kategori"> 
                                                     <option> - Pilih Kategori - </option>
                                                 </select>
                                                 <label for="">Kategori</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-floating">
+                                                <select name="unit_id" id="unit_id" class="form-control unit_id" > 
+                                                    <option> - Pilih Satuan - </option>
+                                                </select>
+                                                <label for="">Satuan</label>
                                             </div>
                                         </div>
                                     </div>
@@ -130,6 +138,7 @@
     var articles
     var prices
     var category_ids
+    var item_unit_id
     var sizes = '<?php echo $size ;?>'
     var products = '<?php echo $products ;?>'
     var product_detail = <?php echo $product ;?>
@@ -160,6 +169,8 @@
             readURL(this);
         });
 
+        item_unit_id =  product_detail.item_unit_id
+        getItemUnit(item_unit_id)
         // get category 
         category_id = product_detail.category_id
         getCategory(category_id)
@@ -231,6 +242,7 @@
             formData.append("status", status)
             formData.append("products", jsonProducts)
             formData.append('category_id', $('#category_id option:selected').val())
+            formData.append('item_unit_id', $('#unit_id option:selected').val())
             
             $.ajax({
                 type: "POST",
@@ -426,6 +438,32 @@
         });
     }
 
+    function getItemUnit(item_unit_id = null){
+        $.ajax({
+            type: "GET",
+            url: "/api/product/item-unit",
+            data: "data",
+            dataType: "JSON",
+            success: function (response) {
+                var data = response.data
+                $("#unit_id").html("");
+                    var len = 0;
+                    if(response['data'] != null) {
+                        len = response['data'].length
+                        for(i = 0; i < len; i++) {
+                            var selected = ""
+                            var id = response['data'][i].id
+                            var name = response['data'][i].name
+                            if(id == item_unit_id){
+                                selected = "selected"
+                            }
+                            var option = "<option value='"+id+"' "+selected+">"+name+"</option>";
+                            $("#unit_id").append(option);
+                    }
+                }
+            }
+        });
+    }
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>

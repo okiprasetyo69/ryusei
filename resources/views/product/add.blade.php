@@ -44,18 +44,26 @@
                                         </div>
                                     </div>
                                     <div class="row mt-4">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-floating">
                                                 <input type="text" class="form-control" name="name" id="name" placeholder="Masukkan Nama SKU" autofocus>
                                                 <label for="">Nama SKU</label>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-floating">
                                                 <select name="category_id" id="category_id" class="form-control category_id" placeholder="Kategori"> 
                                                     <option> - Pilih Kategori - </option>
                                                 </select>
-                                                <label for="floatingCity">Kategori</label>
+                                                <label for="">Kategori</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-floating">
+                                                <select name="unit_id" id="unit_id" class="form-control unit_id" > 
+                                                    <option> - Pilih Satuan - </option>
+                                                </select>
+                                                <label for="">Satuan</label>
                                             </div>
                                         </div>
                                     </div>
@@ -167,7 +175,7 @@
 
         // get category 
         getCategory()
-
+        getItemUnit()
         // row dynamic form
         $("#btn-add").on("click", function(e){
             e.preventDefault()
@@ -240,6 +248,7 @@
             formData.append("status", status)
             formData.append("products", jsonProducts)
             formData.append('category_id', $('#category_id option:selected').val())
+            formData.append('item_unit_id', $('#unit_id option:selected').val())
 
             $.ajax({
                 type: "POST",
@@ -376,6 +385,33 @@
                     option += "<option value="+val.id+"> "+val.name+" </option>"
                 })
                 $("#size-"+dataId+"").append(option)
+            }
+        });
+    }
+
+    function getItemUnit(){
+        $.ajax({
+            type: "GET",
+            url: "/api/product/item-unit",
+            data: "data",
+            dataType: "JSON",
+            success: function (response) {
+                var data = response.data
+                $("#unit_id").html("");
+                    var len = 0;
+                    if(response['data'] != null) {
+                        len = response['data'].length
+                        for(i = 0; i < len; i++) {
+                            var selected = ""
+                            var id = response['data'][i].id
+                            var name = response['data'][i].name
+                            if(id == category_id){
+                                selected = "selected"
+                            }
+                            var option = "<option value='"+id+"' "+selected+">"+name+"</option>";
+                            $("#unit_id").append(option);
+                    }
+                }
             }
         });
     }

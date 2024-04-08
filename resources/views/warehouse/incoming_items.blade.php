@@ -43,7 +43,7 @@
                     <div class="card-body">
                         <div class="row mt-2"> 
                             <div class="col md-4 mt-2">
-                                <button type="button" class="btn btn-sm btn-success rounded-pill">
+                                <button type="button" class="btn btn-sm btn-success rounded-pill" id="btn-add-new-stock-item">
                                     <i class="bi bi-file-earmark-plus-fill"></i> Tambah Baru
                                 </button>
                                 <button type="button" class="btn btn-sm btn-dark rounded-pill btn-add" data-bs-toggle="modal" data-bs-target="#modalStockItems">
@@ -97,7 +97,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <label>  Category </label>
-                            <select class="form-control mt-2"  name="category" id="category">
+                            <select class="form-control mt-2"  name="category" id="category" style="width:100%;">
                                 <option value="">  - Search Category -  </option>
                             </select>
                         </div>
@@ -105,8 +105,8 @@
                     <div class="row">
                         <div class="col-md-12 mt-2">
                             <label> Item Code </label>
-                            <select class="form-control mt-2 sku_id"  name="sku_id" id="sku_id">
-                                <option value="">  - Search Item Code -  </option>
+                            <select class="form-control mt-2 sku_id"  name="sku_id" id="sku_id" style="width: 100%;">
+                              
                             </select>
                         </div>
                     </div>
@@ -140,6 +140,14 @@
     $(document).ready(function () {
         
         getCategory()
+        // getSkuCode()
+        //$(".sku_id").select2()
+
+        $("#btn-add-new-stock-item").on("click", function(e){
+            e.preventDefault()
+            window.location.href = '/product/add'
+        })
+
         $("#category").on("change", function(e){
             e.preventDefault()
             category_id = this.value
@@ -151,6 +159,7 @@
             sku = $("#sku_id option:selected").text()
             getArticle(sku)
         })
+
         // loadStockItems()
 
         // Close Modal
@@ -363,7 +372,6 @@
             dataType: "JSON",
             success: function (response) {
                 var data = response.data
-                // console.log(data)
                 var option = ""
                 $("#sku_id").html("")
                 $.each(data, function (i, val) { 
@@ -372,6 +380,7 @@
                 $("#sku_id").append(option)
             }
         });
+       
     }
 
     function getArticle(sku = null){

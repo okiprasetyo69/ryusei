@@ -23,7 +23,8 @@ class Product extends Model
         'price',
         'status',
         'category_id',
-        'image_path'
+        'image_path',
+        'item_unit_id'
     ];
 
     protected $appends = ['image_url'];

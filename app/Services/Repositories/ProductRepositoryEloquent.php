@@ -3,6 +3,7 @@
 namespace App\Services\Repositories;
 
 use App\Models\Product;
+use App\Models\ItemUnit;
 use App\Services\Interfaces\ProductService;
 
 use Exception;
@@ -136,6 +137,7 @@ use Illuminate\Support\Str;
                 $product->status = $status;
                 $product->category_id = $request->category_id;
                 $product->image_path = $name;
+                $product->item_unit_id = $request->item_unit_id;
                 
                 //dd($product);
                 $product->save();
@@ -260,14 +262,6 @@ use Illuminate\Support\Str;
                 $code =  Str::random(9);
             }
             
-            // Deprecated syntax
-            // append data product with same id
-            // foreach ($product as $key => $value) {
-            //     array_push($detailsProduct, [
-            //         "id" => $value->id,
-            //         "products" => $products[$key]
-            //     ]);
-            // }
 
             foreach ($products as $key => $value) {
                 $id = null;
@@ -293,6 +287,7 @@ use Illuminate\Support\Str;
                 $productUpdate->status = $status;
                 $productUpdate->category_id = $request->category_id;
                 $productUpdate->image_path = $name;
+                $productUpdate->item_unit_id =  $request->item_unit_id;
                 $productUpdate->save();
                 // DB::connection()->enableQueryLog();
                 $productUpdate->save();
@@ -327,17 +322,6 @@ use Illuminate\Support\Str;
                     $product->save();
                 }
             }
-            
-            // Deprecated syntax
-            // set value product detail
-            // foreach ($detailsProduct as $key => $value) {
-            //     $productDetail = Product::find($value['id']);
-            //     $productDetail->sku = $value['products']['sku'];
-            //     $productDetail->article =$value['products']['article'];
-            //     $productDetail->size = $value['products']['size'];
-            //     $productDetail->price = $value['products']['price'];
-            //     //$productDetail->save();
-            // }
             
             return response()->json([
                 'status' => 200,
@@ -376,6 +360,23 @@ use Illuminate\Support\Str;
             $product = $product->get(['id', 'sku as text', 'sku' , 'name'])->makeHidden(['image_url']);
             //dd($product);
             return response()->json($product, 200);
+        }
+        catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function getItemUnit(Request $request){
+        try{
+            
+            $itemUnit = ItemUnit::all();
+           
+            return response()->json([
+                'status' => 200,
+                'message' => true,
+                'data' => $itemUnit
+            ]); 
         }
         catch(Exception $ex){
             Log::error($ex->getMessage());
