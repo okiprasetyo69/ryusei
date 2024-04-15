@@ -760,10 +760,22 @@
             var jsonInvoices = JSON.stringify(invoices);
 
             // convert data
-            convertOrderDate = date.split("-").reverse().join("-")
-            convertProcessOrderDate = dueDate.split("-").reverse().join("-")
+            convertDate = date.split("-").reverse().join("-")
+            convertDueDate = dueDate.split("-").reverse().join("-")
 
-            console.log(jsonInvoices)
+            var data = {
+                customer_code : customerCode,
+                customer_phone : customerPhone,
+                customer_reference : customerReference,
+                category_invoice : categoryInvoice,
+                invoice_number : invoiceNumber,
+                batch_number : batchNumber,
+                invoice_type : invoiceType,
+                date : convertDate,
+                due_date : convertDueDate,
+                invoices : jsonInvoices
+            }
+            console.log(data)
         })
     });
 
