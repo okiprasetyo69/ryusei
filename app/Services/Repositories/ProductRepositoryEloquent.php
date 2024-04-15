@@ -351,14 +351,17 @@ use Illuminate\Support\Str;
 
     public function getProductSelect2ForInvoice(Request $request){
         try{
-            $product = $this->product;
-         
+            $product = $this->product::where("sku", "like", "%" . $request->input('searchTerm'). "%")->orderBy('id', 'ASC');
+           
             if($request->category_id != null){
-                $product = $product::where("category_id", $request->category_id)->orderBy('id', 'ASC');
+              $product = $product->where("category_id", $request->category_id);
+            }
+
+            if($request->sku_id != null){
+                $product = $product->where("id", $request->sku_id);
             }
                
-            $product = $product->get(['id', 'sku as text', 'sku' , 'name'])->makeHidden(['image_url']);
-            //dd($product);
+            $product = $product->get(['id', 'sku as text', 'sku' , 'name', 'article'])->makeHidden(['image_url']);
             return response()->json($product, 200);
         }
         catch(Exception $ex){

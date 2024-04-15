@@ -195,11 +195,11 @@
                                         <thead>
                                             <tr class="text-center">
                                                 <th scope="col">#</th>
-                                                <th scope="col">Item Code</th>
-                                                <th scope="col">Description</th>
+                                                <th scope="col">Kode SKU</th>
+                                                <th scope="col">Deskripsi</th>
                                                 <th scope="col">Qty</th>
-                                                <th scope="col">Unit</th>
-                                                <th scope="col">Price</th>
+                                                <th scope="col">Satuan</th>
+                                                <th scope="col">Harga</th>
                                                 <th scope="col">Disc %</th>
                                                 <th scope="col">Total</th>
                                                 <th scope="col">Tax Code</th>
@@ -424,7 +424,8 @@
         })
 
         // assign select 2
-        $(".item_code").select2()
+        $(".sku_code").select2()
+        $(".unit").select2()
 
         // search sku code on table
         $("#search_text").on("keyup press", function(e){
@@ -457,10 +458,10 @@
                 count = $('#table-add-invoice-item tr').length
                 row =  `<tr class="text-center"> 
                         <td>`+count+`</td>
-                        <td><select name="item_code[]" class="form-control item_code" id="item_code_`+ count +`" style="width:100%;"></select></td>    
+                        <td><select name="sku_code[]" class="form-control sku_code" id="sku_code_`+ count +`" style="width:100%;"></select></td>    
                         <td><input type="text" name="description[]" class="form-control description" id="description_`+ count +`"/></td>    
                         <td><input type="number" min="0" name="qty[]" class="form-control qty" id="qty_`+ count +`"/></td>    
-                        <td><input type="text" min="0" name="unit[]" class="form-control unit" id="unit_`+ count +`"/></td>  
+                        <td><select class="form-control unit" name="unit" id="unit_`+count+`" data-id="`+count+`"> </select></td>  
                         <td><input type="number" min="0 "name="price[]" class="form-control price" id="price_`+count+`"/></td>    
                         <td><input type="number" min="0 "name="discount[]" class="form-control discount" id="discount_`+count+`"/></td>    
                         <td><input type="number" min="0 "name="total[]" class="form-control total" id="total_`+count+`"/ readonly></td>
@@ -471,6 +472,7 @@
                 $('#tbody-invoice-item').append(row)
 
                 getSkuCode()
+                getItemUnit(count)
                 var elementsTotal  =  document.getElementsByClassName('total')
                 var actGrandTotal = 0
                
@@ -663,7 +665,7 @@
                                 <td><select name="item_code[]" class="form-control item_code" id="item_code_`+ count +`" style="width:100%;"> <option value=""> `+val.kode_sku+` <option> </select></td>    
                                 <td><input type="text" name="description[]" class="form-control description" id="description_`+ count +`" value="`+val.description+`"/></td>    
                                 <td><input type="number" min="0" name="qty[]" class="form-control qty" id="qty_`+ count +`" value="`+val.qty+`"/></td>    
-                                <td><input type="text" name="unit[]" class="form-control unit" id="unit_`+ count +`" value="`+val.unit+`"/></td>  
+                                <td><select class="form-control unit" name="unit" id="unit_`+count+`" data-id="`+count+`"><option value=""> `+val.unit+` </option></select></td>  
                                 <td><input type="number" min="0 "name="price[]" class="form-control price" id="price_`+count+`" value="`+val.price+`"/></td>    
                                 <td><input type="number" min="0 "name="discount[]" class="form-control discount" id="discount_`+count+`" value="`+val.disc_percent+`"/></td>    
                                 <td><input type="number" min="0 "name="total[]" class="form-control total" id="total_`+count+`" value="`+total+`"/></td>
@@ -676,6 +678,8 @@
 
                 $('#tbody-invoice-item').append(rowData)
                 getSkuCode()
+                getItemUnit(count)
+
                 $("#grand_total").val(grandTotal)
               
             };
@@ -684,13 +688,18 @@
             $("#file_import_invoice").val("")
         });
 
-        
+        $(".unit").on("change", function(e){
+            e.preventDefault()
+            console.log("Masuk sini")
+            var dataId = $(this).attr("data-id")
+            console.log(dataId)
+        })
     });
 
 
     function getSkuCode(dataId=null){
-        let item_code = $('.item_code').val()
-        $(".item_code").select2({
+        let item_code = $('.sku_code').val()
+        $(".sku_code").select2({
             ajax: {
                 url: "/api/product/list/select2",
                 dataType: "JSON",
@@ -738,7 +747,33 @@
         });
    }
 
+   function getItemUnit(count=null){
 
+        $.ajax({
+            type: "GET",
+            url: "/api/product/item-unit",
+            data: "data",
+            dataType: "JSON",
+            success: function (response) {
+                var data = response.data
+                $("#unit_"+count+"").html("");
+                    var len = 0;
+                    if(response['data'] != null) {
+                        len = response['data'].length
+                        for(i = 0; i < len; i++) {
+                            var selected = ""
+                            var id = response['data'][i].id
+                            var name = response['data'][i].name
+                            if(id == category_id){
+                                selected = "selected"
+                            }
+                            var option = "<option value='"+id+"' "+selected+">"+name+"</option>";
+                            $("#unit_"+count+"").append(option);
+                    }
+                }
+            }
+        });
+    }
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>

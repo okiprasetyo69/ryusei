@@ -15,6 +15,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LocalityController;
 use App\Http\Controllers\ImportProductController;
 use App\Http\Controllers\WarehouseController;
+use App\Http\Controllers\ItemStockController;
 
 use App\Http\Controllers\HomePageController;
 
@@ -145,4 +146,12 @@ Route::controller(WarehouseController::class)->group(function() {
     Route::post('/warehouse/create', 'create')->name('warehouse.create');
     Route::post('/warehouse/delete', 'delete')->name('warehouse.delete');
     Route::post('/warehouse/detail', 'detail')->name('warehouse.detail');
+});
+
+// Manage Item Stock
+Route::controller(ItemStockController::class)->group(function() {
+    Route::get('/item-stock', 'getItemStock')->name('stock.data');
+    Route::post('/item-stock/create', 'create')->name('stock.create');
+    Route::post('/item-stock/delete', 'delete')->name('stock.delete');
+    Route::post('/item-stock/detail', 'detail')->name('stock.detail');
 });

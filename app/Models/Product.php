@@ -37,6 +37,10 @@ class Product extends Model
         return $this->belongsTo(Size::class, 'size','id');
     }
 
+    public function unit(){
+        return $this->belongsTo(ItemUnit::class, 'item_unit_id','id');
+    }
+
     public function getImageUrlAttribute()
     {
         return asset('/uploads/product/'. $this->image_path);
