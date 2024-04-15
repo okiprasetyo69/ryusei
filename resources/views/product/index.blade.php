@@ -16,9 +16,6 @@
                 <li class="breadcrumb-item active">
                     <a href="/product">Product</a>
                 </li>
-                <li class="breadcrumb-item">
-                    <a href="/product/add">Tambah</a>
-                </li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -92,6 +89,13 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
+                        <div class="row mt-2"> 
+                            <div class="col md-4">
+                                <button type="button" class="btn btn-primary rounded-pill" id="btn-add">
+                                    <i class="bi bi-plus-circle"></i> Tambah
+                                </button>
+                            </div>
+                        </div>
                         <div class="row mt-4" id="item-list">
                             @foreach ($data as $item)
                                 <div class="col-lg-2">
@@ -152,7 +156,10 @@
 <script type="text/javascript"> 
 
     $(document).ready(function () {
-        
+        $("#btn-add").on("click", function(e){
+            e.preventDefault()
+            window.location.href = "/product/add"
+        })
     });
 
     function getCategory(){

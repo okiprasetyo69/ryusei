@@ -264,13 +264,6 @@
             $("#modalStockItems").modal("hide")
         })
 
-        // // filter category
-        // $("#filter_name").on("keyup", function(e){
-        //     e.preventDefault()
-        //     name = $("#filter_name").val()
-        //     loadStockItems(name)
-        // })
-
         // Store data
         $("#frm-stock-items").on("submit", function(e){
             e.preventDefault()

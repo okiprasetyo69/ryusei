@@ -401,7 +401,7 @@
         $('#due_date').val(convertProcessOrderDate);
 
         getWarehouse()
-
+        getSalesChannel()
         $("#table-add-invoice-summary").hide()
 
         // select invoice type
@@ -748,7 +748,6 @@
    }
 
    function getItemUnit(count=null){
-
         $.ajax({
             type: "GET",
             url: "/api/product/item-unit",
@@ -774,6 +773,27 @@
             }
         });
     }
+
+    function getSalesChannel(){
+        $.ajax({
+            type: "GET",
+            url: "/api/sales-channel",
+            data: "data",
+            dataType: "JSON",
+            success: function (response) {
+                var data = response.data
+                var option = ""
+                $("#sales_channel_id").html()
+                $.each(data, function (i, val) { 
+                    option += "<option value="+val.id+"> "+val.name+" </option>"
+                });
+                $("#sales_channel_id").append(option)
+            }
+        });
+    }
+
+
+
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
