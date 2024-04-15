@@ -44,6 +44,10 @@ use Yajra\DataTables\Facades\DataTables;
                 $salesChannel  = $salesChannel->where("name", "like", "%" . $request->name. "%");
             }
 
+            if($request->id != null){
+                $salesChannel  = $salesChannel->where("id", $request->id);
+            }
+
             $salesChannel = $salesChannel->get();
            
             return response()->json([

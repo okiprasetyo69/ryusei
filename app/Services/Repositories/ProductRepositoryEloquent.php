@@ -361,7 +361,7 @@ use Illuminate\Support\Str;
                 $product = $product->where("id", $request->sku_id);
             }
                
-            $product = $product->get(['id', 'sku as text', 'sku' , 'name', 'article'])->makeHidden(['image_url']);
+            $product = $product->get(['id', 'sku as text', 'sku' , 'name', 'article', 'price'])->makeHidden(['image_url']);
             return response()->json($product, 200);
         }
         catch(Exception $ex){

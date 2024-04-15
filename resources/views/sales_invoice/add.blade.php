@@ -185,7 +185,7 @@
                             </div>
                             <div class="col md-4 mt-2"> </div>
                             <div class="col md-4 mt-2"> 
-                                <input type="text" class="form-control" name="search_text" id="search_text" placeholder="Masukkan Item Code" autofocus/>
+                                <input type="text" class="form-control" name="search_text" id="search_text" placeholder="Masukkan Kode SKU" autofocus/>
                             </div>
                         </div>
                         <div class="row mt-2">
@@ -372,7 +372,7 @@
 
 <script type="text/javascript"> 
 
-    var table, count, kodeSku, description , qty, price , discPercent, taxCode, orderNumber, total, unit, grandTotal
+    var table, count, kodeSku, description , qty, price , discPercent, taxCode, orderNumber, total, unit, grandTotal, salesChannelId
 
     $(document).ready(function () {
         var now = new Date();
@@ -423,6 +423,14 @@
             }
         })
 
+        // on change sales channel
+        $("#sales_channel_id").on("change", function(e){
+            e.preventDefault()
+            salesChannelId = this.value
+            getSalesChannel(salesChannelId)
+            //console.log(salesChannelId)
+        })
+
         // assign select 2
         $(".sku_code").select2()
         $(".unit").select2()
@@ -471,11 +479,30 @@
                     </tr>`
                 $('#tbody-invoice-item').append(row)
 
-                getSkuCode()
+                getSkuCode(count)
                 getItemUnit(count)
                 var elementsTotal  =  document.getElementsByClassName('total')
                 var actGrandTotal = 0
                
+                // calculate total from qty
+                $("#qty_"+ count).on("change", function(e){
+                    e.preventDefault()
+                    price =  $("#price_"+ count).val()
+                    qty =   $("#qty_"+ count).val()
+                    total = qty * price
+                    grandTotal = 0
+
+                    // assign value into element total
+                    $("#total_"+ count).val(total)
+                    // calculate grand total without discount
+                    for(var i = 0; i < elementsTotal.length; i++){
+                        actGrandTotal = parseInt(elementsTotal[i].value)
+                        grandTotal = actGrandTotal + grandTotal
+                        $("#grand_total").val(grandTotal)
+                        $("#subtotal").val(grandTotal)
+                        $("#balance_due").val(grandTotal)
+                    }
+                })
 
                 // calculate total without discount
                 $("#price_"+ count).on("keyup", function(e){
@@ -493,6 +520,8 @@
                         actGrandTotal = parseInt(elementsTotal[i].value)
                         grandTotal = actGrandTotal + grandTotal
                         $("#grand_total").val(grandTotal)
+                        $("#subtotal").val(grandTotal)
+                        $("#balance_due").val(grandTotal)
                     }
                 })
                
@@ -519,6 +548,8 @@
                         currentGrandTotal = parseInt(elementsTotal[i].value)
                         discountGrandTotal = discountGrandTotal + currentGrandTotal
                         $("#grand_total").val(discountGrandTotal)
+                        $("#subtotal").val(discountGrandTotal)
+                        $("#balance_due").val(discountGrandTotal)
                     }
                 })
            
@@ -662,7 +693,7 @@
 
                     rowData += `<tr class="text-center"> 
                                 <td>`+ count +`</td>
-                                <td><select name="item_code[]" class="form-control item_code" id="item_code_`+ count +`" style="width:100%;"> <option value=""> `+val.kode_sku+` <option> </select></td>    
+                                <td><select name="sku_code[]" class="form-control sku_code" id="sku_code_`+ count +`" style="width:100%;"> <option value=""> `+val.kode_sku+` <option> </select></td>    
                                 <td><input type="text" name="description[]" class="form-control description" id="description_`+ count +`" value="`+val.description+`"/></td>    
                                 <td><input type="number" min="0" name="qty[]" class="form-control qty" id="qty_`+ count +`" value="`+val.qty+`"/></td>    
                                 <td><select class="form-control unit" name="unit" id="unit_`+count+`" data-id="`+count+`"><option value=""> `+val.unit+` </option></select></td>  
@@ -681,6 +712,8 @@
                 getItemUnit(count)
 
                 $("#grand_total").val(grandTotal)
+                $("#subtotal").val(grandTotal)
+                $("#balance_due").val(grandTotal)
               
             };
 
@@ -690,9 +723,47 @@
 
         $(".unit").on("change", function(e){
             e.preventDefault()
-            console.log("Masuk sini")
             var dataId = $(this).attr("data-id")
-            console.log(dataId)
+            // console.log(dataId)
+        })
+
+        // save data
+        $(".btn-save").on("click", function(e){
+            e.preventDefault()
+            salesChannelId = $("#sales_channel_id option:selected").val()
+            var customerCode = $("#customer_code").val()
+            var customerPhone = $("#customer_phone").val()
+            var customerReference = $("#customer_reference").val()
+            var categoryInvoice = $("#category_id option:selected").val()
+            var invoiceNumber = $("#invoice_number").val()
+            var batchNumber = $("#batch_number").val()
+            var invoiceType = $("#type option:selected").val()
+            var date = $("#date").val()
+            var dueDate = $("#due_date").val()
+
+            var invoices = []
+            $("#table-add-invoice-item tbody tr").each(function(index){
+                sku_codes = $(this).find('.sku_code option:selected').text()
+                descrirptions = $(this).find('.descrirption').val()
+                qtys = $(this).find('.qty').val()
+                units = $(this).find('.unit').val()
+                prices = $(this).find('.price').val()
+                discounts = $(this).find('.discount').val()
+                totals = $(this).find('.total').val()
+                tax_codes = $(this).find('.tax_code').val()
+                order_numbers = $(this).find('.order_number').val()
+
+                invoices.push({sku_code : sku_codes, descrirption:descrirptions, qty:qtys, unit:units, price:prices, discount: discounts, tax_code:tax_codes, order_number : order_numbers })
+            })
+
+            // convert to json
+            var jsonInvoices = JSON.stringify(invoices);
+
+            // convert data
+            convertOrderDate = date.split("-").reverse().join("-")
+            convertProcessOrderDate = dueDate.split("-").reverse().join("-")
+
+            console.log(jsonInvoices)
         })
     });
 
@@ -701,7 +772,7 @@
         let item_code = $('.sku_code').val()
         $(".sku_code").select2({
             ajax: {
-                url: "/api/product/list/select2",
+                url: "/api/product/list/invoice/select2",
                 dataType: "JSON",
                 type: "GET",
                 data: function (params) {
@@ -722,32 +793,35 @@
         })
         .on("select2:select", function (e) {
             var data = e.params.data;
-            //console.log(data)
+            $("#description_"+dataId).val(data.article)
+            $("#qty_"+dataId).val(1)
+            $("#price_"+dataId).val(data.price)
+            $("#total_"+dataId).val(data.price)
         });
 
     }
 
-   function getWarehouse(){
-        $.ajax({
-            type: "GET",
-            url: "/api/warehouse",
-            data: "data",
-            dataType: "JSON",
-            success: function (response) {
-                //console.log(response.data)
-                var data = response.data
-                var option = ""
-                $("#warehouse_id").html()
-                $.each(data, function (i, val) { 
-                    option += "<option value="+val.id+"> "+val.name+" </option>"
-                })
-                $("#warehouse_id").append(option)
-               
-            }   
-        });
-   }
+    function getWarehouse(){
+            $.ajax({
+                type: "GET",
+                url: "/api/warehouse",
+                data: "data",
+                dataType: "JSON",
+                success: function (response) {
+                    //console.log(response.data)
+                    var data = response.data
+                    var option = ""
+                    $("#warehouse_id").html()
+                    $.each(data, function (i, val) { 
+                        option += "<option value="+val.id+"> "+val.name+" </option>"
+                    })
+                    $("#warehouse_id").append(option)
+                
+                }   
+            });
+    }
 
-   function getItemUnit(count=null){
+    function getItemUnit(count=null){
         $.ajax({
             type: "GET",
             url: "/api/product/item-unit",
@@ -756,42 +830,49 @@
             success: function (response) {
                 var data = response.data
                 $("#unit_"+count+"").html("");
-                    var len = 0;
-                    if(response['data'] != null) {
-                        len = response['data'].length
-                        for(i = 0; i < len; i++) {
-                            var selected = ""
-                            var id = response['data'][i].id
-                            var name = response['data'][i].name
-                            if(id == category_id){
-                                selected = "selected"
-                            }
-                            var option = "<option value='"+id+"' "+selected+">"+name+"</option>";
-                            $("#unit_"+count+"").append(option);
+                var len = 0;
+                if(response['data'] != null) {
+                    len = response['data'].length
+                    for(i = 0; i < len; i++) {
+                        var selected = ""
+                        var id = response['data'][i].id
+                        var name = response['data'][i].name
+                        if(id == category_id){
+                            selected = "selected"
+                        }
+                        var option = "<option value='"+id+"' "+selected+">"+name+"</option>";
+                        $("#unit_"+count+"").append(option);
                     }
                 }
             }
         });
     }
 
-    function getSalesChannel(){
+    function getSalesChannel(salesChannelId = null){
         $.ajax({
             type: "GET",
             url: "/api/sales-channel",
-            data: "data",
+            data: {
+                id : salesChannelId
+            },
             dataType: "JSON",
             success: function (response) {
                 var data = response.data
                 var option = ""
                 $("#sales_channel_id").html()
+
                 $.each(data, function (i, val) { 
                     option += "<option value="+val.id+"> "+val.name+" </option>"
                 });
+
                 $("#sales_channel_id").append(option)
+
+                if(salesChannelId != null){
+                    $("#customer_code").val(data[0].code)
+                }
             }
         });
     }
-
 
 
 </script>
