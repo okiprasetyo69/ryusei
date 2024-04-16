@@ -17,6 +17,7 @@ use App\Http\Controllers\ImportProductController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\ItemStockController;
 use App\Http\Controllers\InvoiceCategoryController;
+use App\Http\Controllers\SalesInvoiceController;
 
 use App\Http\Controllers\HomePageController;
 
@@ -161,4 +162,12 @@ Route::controller(ItemStockController::class)->group(function() {
 // Manage invoice category
 Route::controller(InvoiceCategoryController::class)->group(function() {
     Route::get('/invoice/category', 'getAllInvoiceCategory')->name('invoice.category.data');
+});
+
+// Manage sales invoice
+Route::controller(SalesInvoiceController::class)->group(function() {
+    Route::get('/sales-invoice', 'getAllSalesInvoice')->name('sales-invoice.data');
+    Route::get('/sales-invoice/create', 'create')->name('sales-invoice.create');
+    Route::get('/sales-invoice/delete', 'delete')->name('sales-invoice.delete');
+    Route::get('/sales-invoice/detail', 'detail')->name('sales-invoice.detail');
 });
