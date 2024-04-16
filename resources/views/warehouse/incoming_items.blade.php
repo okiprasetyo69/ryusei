@@ -85,11 +85,14 @@
                     <div class="card-body">
                         <div class="row mt-2"> 
                             <div class="col md-4 mt-2">
-                                <button type="button" class="btn btn-sm btn-success rounded-pill" id="btn-add-new-stock-item">
+                                <button type="button" class="btn btn-sm btn-primary rounded-pill" id="btn-add-new-stock-item">
                                     <i class="bi bi-file-earmark-plus-fill"></i> Tambah Baru
                                 </button>
                                 <button type="button" class="btn btn-sm btn-dark rounded-pill btn-add" data-bs-toggle="modal" data-bs-target="#modalStockItems">
                                     <i class="bi bi-plus-circle"></i> Tambah
+                                </button>
+                                <button type="button" class="btn btn-sm btn-success rounded-pill" id="btn-import" data-bs-toggle="modal" data-bs-target="#basicModal">
+                                    <i class="bi bi-file-earmark-excel-fill"></i> Import
                                 </button>
                             </div>
                             <div class="col-md-12">
@@ -176,11 +179,42 @@
     </div>
 </div>
 
+<!-- Basic Modal -->
+<div class="modal fade" id="basicModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form id="import-form-item-stock" enctype="multipart/form-data">
+            <div class="modal-content">
+                <div class="modal-header">
+                      <h5 class="modal-title">Import File Xlsx</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12">  
+                        <h5> Pastikan File Sesuai Format </h5>
+                        <input type="file" name="file_import_item_stock" id="file_import_product" class="form-control">
+                    </div>
+                    <div class="col-md-12 mt-2">  
+                        <button type="button" class="btn btn-md btn-dark" id="btn-download-format-import"><i class="bi bi-cloud-download-fill"></i></button>
+                        <label> <b> Download Format File </b></label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" id="importBtn">Import</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- End Basic Modal-->
+
 <script type="text/javascript"> 
     var table
     var category_id, start_date, end_date, article, sku_code, convertStartDate, convertEndDate
     
     $(document).ready(function () {
+
+        // Set Date
         var now = new Date();
         var month = (now.getMonth() + 1);               
         var day = now.getDate();
@@ -200,6 +234,7 @@
             defaultDate: new Date(),
         });
         
+        // Filter
         $("#btn-search").on("click", function(e){
             e.preventDefault()
             start_date = $("#start_date").val()
@@ -231,6 +266,7 @@
             loadStockItems(sku_code, convertStartDate, convertEndDate, article, filterCategory)
         })
         
+        // Load Data
         loadStockItems()
         getCategory()
         // getSkuCode()
@@ -322,6 +358,41 @@
             });
         })
 
+        // Import data by xlxs
+        $("#import-form-item-stock").on("submit", function(e){
+            e.preventDefault()
+            var formData = new FormData($(this)[0]);
+            $.ajax({
+                type: "POST",
+                url: "/api/item-stock/import",
+                data: formData,
+                contentType: false,
+                processData: false,
+                cache: false,
+                success: function (response) {
+                    if(response.status == 200){
+                        $.confirm({
+                            title: 'Pesan ',
+                            content: 'Data barang masuk berhasil diperbarui !',
+                            buttons: {
+                                Ya: {
+                                    btnClass: 'btn-success any-other-class',
+                                    action: function(){
+                                        window.location.href = '/items-incoming'
+                                    }
+                                },
+                            }
+                        });
+                    }
+                }
+            });
+        })
+
+        // download format file
+        $("#btn-download-format-import").on("click", function(e){
+            e.preventDefault()
+            window.location.href = '/items-incoming/download/import'
+        })
     });
 
     function loadStockItems(sku_code = null, start_date=null, end_date=null, article=null, filter_category){

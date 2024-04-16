@@ -93,7 +93,9 @@
                             <div class="row mb-3">
                                 <label for="" class="col-sm-4 col-form-label">Category</label>
                                 <div class="col-sm-8">
-                                    <select class="form-control" name="category_id" id="category_id"> </select>
+                                    <select class="form-control" name="invoice_category_id" id="invoice_category_id"> 
+                                        <option value=""> - Pilih Kategori -  </option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -165,7 +167,7 @@
                         <div class="row mt-2"> 
                             <div class="col-md-2 mt-2">
                                <label> Tipe :</label>
-                               <select class="form-control mt-2" name="invoice_type" id="invoice_type"> 
+                               <select class="form-control mt-2" name="invoice_form_type" id="invoice_form_type"> 
                                     <option value="1"> Item </option> 
                                     <option value="2"> Summary </option> 
                                 </select>
@@ -173,7 +175,7 @@
                             <div class="col-md-2 mt-2" id="attr_warehouse"> 
                                 <label> Warehouse :</label>
                                 <select class="form-control mt-2" name="warehouse_id" id="warehouse_id"> 
-                                    <option value=""> - Pilih gudang - </option>
+                                    <option value=""> - Pilih Gudang - </option>
                                 </select>
                             </div>
                         </div>
@@ -275,19 +277,19 @@
                                         <input type="number" min="0" class="form-control" name="discount_percent" id="discount_percent"/>
                                     </div>
                                     <div class="col-sm-4">
-                                        <input type="number" min="0" class="form-control" name="discount" id="discount"/>
+                                        <input type="text" class="form-control" name="discount" id="discount" readonly/>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <label for="" class="col-sm-4 col-form-label">Additional Char</label>
                                     <div class="col-sm-6">
-                                        <input type="number" min="0" class="form-control" name="subtotal" id="subtotal"/>
+                                        <input type="number" min="0" class="form-control" name="additional_char" id="additional_char" readonly/>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <label for="" class="col-sm-4 col-form-label">Down Pmt.</label>
                                     <div class="col-sm-6">
-                                        <input type="number" min="0" class="form-control" name="subtotal" id="subtotal"/>
+                                        <input type="number" min="0" class="form-control" name="down_pmt" id="down_pmt" readonly/>
                                     </div>
                                 </div>
                             </div>
@@ -295,28 +297,28 @@
                                 <div class="row mb-3">
                                     <label for="" class="col-sm-3 col-form-label">Tax</label>
                                     <div class="col-sm-6">
-                                        <input type="number" class="form-control" name="tax" id="tax"/>
+                                        <input type="number" min="0" class="form-control" name="tax" id="tax" readonly/>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <label for="" class="col-sm-3 col-form-label">PPh 23</label>
                                     <div class="col-sm-4">
-                                        <input type="number" min="0" class="form-control" name="pph_percent" id="pph_percent"/>
+                                        <input type="number" min="0" class="form-control" name="pph_percent" id="pph_percent" readonly/>
                                     </div>
                                     <div class="col-sm-4">
-                                        <input type="number" min="0" class="form-control" name="pph" id="pph"/>
+                                        <input type="number" min="0" class="form-control" name="pph" id="pph" readonly/>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <label for="" class="col-sm-3 col-form-label">Total</label>
                                     <div class="col-sm-6">
-                                        <input type="number" class="form-control grand_total" name="grand_total" id="grand_total"/>
+                                        <input type="number" class="form-control grand_total" name="grand_total" id="grand_total" readonly/>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <label for="" class="col-sm-3 col-form-label">Balance Due</label>
                                     <div class="col-sm-6">
-                                        <input type="number" class="form-control" name="balance_due" id="balance_due"/>
+                                        <input type="number" class="form-control" name="balance_due" id="balance_due" readonly/>
                                     </div>
                                 </div>
                             </div>
@@ -402,6 +404,7 @@
 
         getWarehouse()
         getSalesChannel()
+        getInvoiceCategory()
         $("#table-add-invoice-summary").hide()
 
         // select invoice type
@@ -454,7 +457,7 @@
             e.preventDefault()
             let row = ""
             let head = ""
-            var selectedType = $("#invoice_type option:selected").val()
+            var selectedType = $("#invoice_form_type option:selected").val()
            
 
             if(selectedType == 1){
@@ -466,14 +469,14 @@
                 count = $('#table-add-invoice-item tr').length
                 row =  `<tr class="text-center"> 
                         <td>`+count+`</td>
-                        <td><select name="sku_code[]" class="form-control sku_code" id="sku_code_`+ count +`" style="width:100%;"></select></td>    
-                        <td><input type="text" name="description[]" class="form-control description" id="description_`+ count +`"/></td>    
-                        <td><input type="number" min="0" name="qty[]" class="form-control qty" id="qty_`+ count +`"/></td>    
-                        <td><select class="form-control unit" name="unit" id="unit_`+count+`" data-id="`+count+`"> </select></td>  
-                        <td><input type="number" min="0 "name="price[]" class="form-control price" id="price_`+count+`"/></td>    
-                        <td><input type="number" min="0 "name="discount[]" class="form-control discount" id="discount_`+count+`"/></td>    
-                        <td><input type="number" min="0 "name="total[]" class="form-control total" id="total_`+count+`"/ readonly></td>
-                        <td><input type="text" name="tax_code[]" class="form-control tax_code" id="tax_code_`+ count +`"/></td> 
+                        <td><select name="sku_code[]" class="form-control sku_code" id="sku_code_`+ count +`" style="width:100%;" data-id="`+count+`"></select></td>    
+                        <td><input type="text" name="description[]" class="form-control description" id="description_`+ count +`" data-id="`+count+`"/></td>    
+                        <td><input type="number" min="0" name="qty[]" class="form-control qty" id="qty_`+ count +`" data-id="`+count+`"/></td>    
+                        <td><select class="form-control unit" name="unit" id="unit_`+count+`" data-id="`+count+`" data-id="`+count+`"> </select></td>  
+                        <td><input type="number" min="0 "name="price[]" class="form-control price" id="price_`+count+`" data-id="`+count+`" /></td>    
+                        <td><input type="number" min="0 "name="discount[]" class="form-control discount" id="discount_`+count+`" data-id="`+count+`"/></td>    
+                        <td><input type="number" min="0 "name="total[]" class="form-control total" id="total_`+count+`" data-id="`+count+`" readonly /></td>
+                        <td><input type="text" name="tax_code[]" class="form-control tax_code" id="tax_code_`+ count +`" data-id="`+count+`"/></td> 
                         <td><input type="text" name="order_number[]" class="form-control order_number" id="order_number_`+ count +`"/></td>             
                         <td><button type='button' class='btn btn-md btn-danger delete-row' id=`+count+`><i class='bi bi-trash' aria-hidden='true'></i></button></td>    
                     </tr>`
@@ -578,6 +581,94 @@
                 getSkuCode()
             }
 
+        })
+
+        // on change tbody
+        $("#tbody-invoice-item").on("change", ".qty", function(e){
+            e.preventDefault()
+            var rowId =  $(this).attr('data-id')
+            qty = $("#qty_"+rowId).val()
+            price = $("#price_"+rowId).val()
+            total = qty * price
+            $("#total_"+rowId).val(total)
+
+            // assign and caclulate grand total
+            var elementsTotal  =  document.getElementsByClassName('total')
+            var actGrandTotal = 0
+            grandTotal = 0
+            for(var i = 0; i < elementsTotal.length; i++){
+                actGrandTotal = parseInt(elementsTotal[i].value)
+                grandTotal = actGrandTotal + grandTotal
+                $("#grand_total").val(grandTotal)
+                $("#subtotal").val(grandTotal)
+                $("#balance_due").val(grandTotal)
+            }
+            
+        })
+
+        $("#tbody-invoice-item").on("change", ".price", function(e){
+            e.preventDefault()
+            var rowId =  $(this).attr('data-id')
+            qty = $("#qty_"+rowId).val()
+            price = $("#price_"+rowId).val()
+            total = qty * price
+            $("#total_"+rowId).val(total)
+
+            // assign and caclulate grand total
+            var elementsTotal  =  document.getElementsByClassName('total')
+            var actGrandTotal = 0
+            grandTotal = 0
+            
+            for(var i = 0; i < elementsTotal.length; i++){
+                actGrandTotal = parseInt(elementsTotal[i].value)
+                grandTotal = actGrandTotal + grandTotal
+                $("#grand_total").val(grandTotal)
+                $("#subtotal").val(grandTotal)
+                $("#balance_due").val(grandTotal)
+            }
+          
+            
+        })
+
+        $("#tbody-invoice-item").on("change", ".discount", function(e){
+            e.preventDefault()
+            var rowId =  $(this).attr('data-id')
+            qty = $("#qty_"+rowId).val()
+            price = $("#price_"+rowId).val()
+            total = qty * price 
+            var currentTotal = total
+            discPercent = $("#discount_"+ rowId).val()
+            discPercent = (discPercent / 100) * total
+            currentTotal = currentTotal - discPercent
+            // assign value into element
+            $("#total_"+rowId).val(currentTotal)
+
+             // initializing value into element grand total for the first time
+             $("#grand_total").val(currentTotal)
+                    
+            // get value current grand total for increase
+            var currentGrandTotal = $("#grand_total").val()
+            var elementsTotal  =  document.getElementsByClassName('total')   
+            var discountGrandTotal = 0   
+            // calculate grand total with discount
+            for(var i = 0; i < elementsTotal.length; i++){
+                currentGrandTotal = parseInt(elementsTotal[i].value)
+                discountGrandTotal = discountGrandTotal + currentGrandTotal
+                $("#grand_total").val(discountGrandTotal)
+                $("#subtotal").val(discountGrandTotal)
+                $("#balance_due").val(discountGrandTotal)
+            }
+            
+        })
+
+        $("#discount_percent").on("change", function(e){
+            e.preventDefault()
+            var discountPercent = this.value
+            var subtotal = $("#subtotal").val()
+            var discount = subtotal - ((discountPercent/100) * subtotal)
+            $("#discount").val(discount)
+            $("#grand_total").val(discount)
+            $("#balance_due").val(discount)
         })
 
         // remove row form table invoice item
@@ -720,13 +811,7 @@
             reader.readAsArrayBuffer(file);
             $("#file_import_invoice").val("")
         });
-
-        $(".unit").on("change", function(e){
-            e.preventDefault()
-            var dataId = $(this).attr("data-id")
-            // console.log(dataId)
-        })
-
+       
         // save data
         $(".btn-save").on("click", function(e){
             e.preventDefault()
@@ -734,12 +819,26 @@
             var customerCode = $("#customer_code").val()
             var customerPhone = $("#customer_phone").val()
             var customerReference = $("#customer_reference").val()
-            var categoryInvoice = $("#category_id option:selected").val()
+            var categoryInvoice = $("#invoice_category_id option:selected").val()
             var invoiceNumber = $("#invoice_number").val()
             var batchNumber = $("#batch_number").val()
-            var invoiceType = $("#type option:selected").val()
+            var type = $("#type option:selected").val()
             var date = $("#date").val()
             var dueDate = $("#due_date").val()
+            var day = $("#day").val()
+            var invoiceType = $("#invoice_form_type option:selected").val()
+            var warehouseId = $("#warehouse_id option:selected").val()
+            var salesPerson = $("#sales_person").val()
+            var journalMemo = $("#journal_memo").val()
+            var note = $("#note").val()
+            var subtotal = $("#subtotal").val()
+            var discountPercent = $("#discount_percent").val()
+            var additionalChar = $("#additional_char").val()
+            var downPmt = $("#down_pmt").val()
+            var tax = $("#tax").val()
+            var pphPercent = $("#pph_percent").val()
+            grandTotal = $("#grand_total").val()
+            var balanceDue = $("#balance_due").val()
 
             var invoices = []
             $("#table-add-invoice-item tbody tr").each(function(index){
@@ -767,12 +866,29 @@
                 customer_code : customerCode,
                 customer_phone : customerPhone,
                 customer_reference : customerReference,
-                category_invoice : categoryInvoice,
+                category_invoice_id : categoryInvoice,
                 invoice_number : invoiceNumber,
                 batch_number : batchNumber,
-                invoice_type : invoiceType,
+
+                type : type,
                 date : convertDate,
                 due_date : convertDueDate,
+                day : day,
+
+                invoice_type : invoiceType,
+                warehouse_id : warehouseId,
+                sales_person : salesPerson,
+                journal_memo : journalMemo,
+                note : note,
+                subtotal : subtotal,
+                discount_percent : discountPercent,
+                additional_char : additionalChar,
+                down_pmt : downPmt,
+                tax : tax,
+                pph_percent : pphPercent,
+                grand_total : grandTotal,
+                balance_due : balanceDue,
+
                 invoices : jsonInvoices
             }
             console.log(data)
@@ -808,7 +924,25 @@
             $("#description_"+dataId).val(data.article)
             $("#qty_"+dataId).val(1)
             $("#price_"+dataId).val(data.price)
-            $("#total_"+dataId).val(data.price)
+
+            // var subtotal = 0
+            qty =  $("#qty_"+dataId).val()
+            price =  $("#price_"+dataId).val()
+            total = qty * price
+
+            $("#total_"+dataId).val(total)
+
+            var elementsTotal  =  document.getElementsByClassName('total')
+            var actGrandTotal = 0
+            grandTotal = 0
+
+            for(var i = 0; i < elementsTotal.length; i++){
+                actGrandTotal = parseInt(elementsTotal[i].value)
+                grandTotal = actGrandTotal + grandTotal
+                $("#grand_total").val(grandTotal)
+                $("#subtotal").val(grandTotal)
+                $("#balance_due").val(grandTotal)
+            }
         });
 
     }
@@ -849,9 +983,9 @@
                         var selected = ""
                         var id = response['data'][i].id
                         var name = response['data'][i].name
-                        if(id == category_id){
-                            selected = "selected"
-                        }
+                        // if(id == category_id){
+                        //     selected = "selected"
+                        // }
                         var option = "<option value='"+id+"' "+selected+">"+name+"</option>";
                         $("#unit_"+count+"").append(option);
                     }
@@ -886,7 +1020,32 @@
         });
     }
 
-
+    function getInvoiceCategory(name = null){
+        $.ajax({
+            type: "GET",
+            url: "/api/invoice/category",
+            data: "data",
+            dataType: "JSON",
+            success: function (response) {
+                var data = response.data
+                $("#invoice_category_id").html();
+                var len = 0;
+                if(response['data'] != null) {
+                    len = response['data'].length
+                    for(i = 0; i < len; i++) {
+                        var selected = ""
+                        var id = response['data'][i].id
+                        var name = response['data'][i].name
+                        // if(id == category_id){
+                        //     selected = "selected"
+                        // }
+                        var option = "<option value='"+id+"' "+selected+">"+name+"</option>";
+                        $("#invoice_category_id").append(option);
+                    }
+                }
+            }
+        });
+    }
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>

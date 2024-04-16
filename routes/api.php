@@ -16,6 +16,7 @@ use App\Http\Controllers\LocalityController;
 use App\Http\Controllers\ImportProductController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\ItemStockController;
+use App\Http\Controllers\InvoiceCategoryController;
 
 use App\Http\Controllers\HomePageController;
 
@@ -154,4 +155,10 @@ Route::controller(ItemStockController::class)->group(function() {
     Route::post('/item-stock/create', 'create')->name('stock.create');
     Route::post('/item-stock/delete', 'delete')->name('stock.delete');
     Route::post('/item-stock/detail', 'detail')->name('stock.detail');
+    Route::post('/item-stock/import', 'importItemStock')->name('stock.import');
+});
+
+// Manage invoice category
+Route::controller(InvoiceCategoryController::class)->group(function() {
+    Route::get('/invoice/category', 'getAllInvoiceCategory')->name('invoice.category.data');
 });

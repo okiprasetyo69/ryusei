@@ -15,6 +15,9 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\File; 
 use Illuminate\Support\Str;
 
+use Excel;
+use App\Imports\ImportItemStock;
+
 /**
  * Class ItemSctockRepositoryEloquent.
  * 
@@ -146,4 +149,28 @@ use Illuminate\Support\Str;
         }
     }
 
+    public function importItemStock(Request $request){
+        try{
+            
+            $itemStock = $this->itemStock;
+
+            if ($request->hasFile('file_import_item_stock')) {
+                //GET FILE
+                $file = $request->file('file_import_item_stock'); 
+                //IMPORT FILE 
+                $import = Excel::import(new ImportItemStock, $file);
+                if($import){
+                    return response()->json([
+                        'status' => 200,
+                        'message' => true,
+                        'data' => $itemStock
+                    ]); 
+                }
+            }  
+
+        } catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
  }

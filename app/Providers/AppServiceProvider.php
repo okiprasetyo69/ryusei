@@ -20,6 +20,7 @@ use App\Services\Interfaces\LocalityService;
 use App\Services\Interfaces\ImportProductService;
 use App\Services\Interfaces\WarehouseService;
 use App\Services\Interfaces\ItemStockService;
+use App\Services\Interfaces\InvoiceCategoryService;
 
 use App\Services\Repositories\UserRepositoryEloquent;
 use App\Services\Repositories\RoleRepositoryEloquent;
@@ -35,6 +36,7 @@ use App\Services\Repositories\LocalityRepositoryEloquent;
 use App\Services\Repositories\ImportProductRepositoryEloquent;
 use App\Services\Repositories\WarehouseRepositoryEloquent;
 use App\Services\Repositories\ItemStockRepositoryEloquent;
+use App\Services\Repositories\InvoiceCategoryRepositoryEloquent;
 
 
 class AppServiceProvider extends ServiceProvider implements DeferrableProvider
@@ -60,6 +62,7 @@ class AppServiceProvider extends ServiceProvider implements DeferrableProvider
         ImportProductService::class => ImportProductRepositoryEloquent::class,
         WarehouseService::class => WarehouseRepositoryEloquent::class,
         ItemStockService::class => ItemStockRepositoryEloquent::class,
+        InvoiceCategoryService::class => InvoiceCategoryRepositoryEloquent::class,
         
     ];
 
@@ -89,6 +92,7 @@ class AppServiceProvider extends ServiceProvider implements DeferrableProvider
             ImportProductService::class,
             WarehouseService::class,
             ItemStockService::class,
+            InvoiceCategoryService::class,
         ];
     }
 

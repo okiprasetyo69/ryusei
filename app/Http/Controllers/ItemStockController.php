@@ -32,6 +32,11 @@ class ItemStockController extends Controller
         return view("warehouse.incoming_items");
     }
 
+    public function downloadFormatImportStockItems(){
+        $path = public_path('/import/Format_Import_Stock_Items.xlsx');
+        return response()->download($path);
+    }
+
     // API
     public function getItemStock(Request $request){
         try{
@@ -104,5 +109,34 @@ class ItemStockController extends Controller
 
         $itemStock = $this->service->detail($request);
         return $itemStock;
+    }
+
+    public function importItemStock(Request $request)
+    {
+        try{
+             $validator = Validator::make(
+                 $request->all(), [
+                     'file_import_item_stock' => 'required|mimes:xls,xlsx'
+                 ]
+             );
+ 
+             if($validator->fails()){
+                 return response()->json([
+                     'data' => null,
+                     'message' => $validator->errors()->first(),
+                     'status' => 422
+                 ]);
+             }
+ 
+             $importItemStock = $this->service->importItemStock($request);
+ 
+             if($importItemStock) {
+                 return $importItemStock;
+             }
+            
+        }catch(Exception $ex){
+             Log::error($ex->getMessage());
+             return false;
+        }
     }
 }
