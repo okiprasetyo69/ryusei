@@ -167,7 +167,7 @@ Route::controller(InvoiceCategoryController::class)->group(function() {
 // Manage sales invoice
 Route::controller(SalesInvoiceController::class)->group(function() {
     Route::get('/sales-invoice', 'getAllSalesInvoice')->name('sales-invoice.data');
-    Route::get('/sales-invoice/create', 'create')->name('sales-invoice.create');
-    Route::get('/sales-invoice/delete', 'delete')->name('sales-invoice.delete');
-    Route::get('/sales-invoice/detail', 'detail')->name('sales-invoice.detail');
+    Route::post('/sales-invoice/create', 'create')->name('sales-invoice.create');
+    Route::post('/sales-invoice/delete', 'delete')->name('sales-invoice.delete');
+    Route::post('/sales-invoice/detail', 'detail')->name('sales-invoice.detail');
 });

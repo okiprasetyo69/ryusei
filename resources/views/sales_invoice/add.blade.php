@@ -863,6 +863,7 @@
             convertDueDate = dueDate.split("-").reverse().join("-")
 
             var data = {
+                customer_id : salesChannelId,
                 customer_code : customerCode,
                 customer_phone : customerPhone,
                 customer_reference : customerReference,
@@ -892,6 +893,15 @@
                 invoices : jsonInvoices
             }
             console.log(data)
+            $.ajax({
+                type: "POST",
+                url: "/api/sales-invoice/create",
+                data: data,
+                dataType: "JSON",
+                success: function (response) {
+                    console.log(response)
+                }
+            });
         })
     });
 

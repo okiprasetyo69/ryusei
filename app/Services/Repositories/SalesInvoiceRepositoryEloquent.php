@@ -64,6 +64,19 @@ use Yajra\DataTables\Facades\DataTables;
             // convert to array from json params
             $invoices = json_decode($request->invoices, true);
 
+            // genereate invoice number
+            $prefix = 'INV';
+            $date = now()->format('ym');
+            $lastId = DB::table('sales_invoices')->latest()->value('id');
+           
+            if($lastId == null){
+                $lastId = 1;
+            } 
+            $lastId = $lastId + 1;
+            // concate INV number
+            $invNumber = $prefix . '.' . $date . '.' . '00'. $lastId;
+          
+            // dd($invNumber);
             return response()->json([
                 'status' => 200,
                 'message' => true,
@@ -83,4 +96,6 @@ use Yajra\DataTables\Facades\DataTables;
     public function detail(Request $request){
         return true;
     }
+
+    
 }
