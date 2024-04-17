@@ -19,9 +19,19 @@ class SalesInvoiceDetail extends Model
         'sku_code',
         'description',
         'qty',
+        'unit_id',
+        'price',
         'discount',
         'total',
         'tax_code',
         'order_number',
     ];
+
+    public function invoice(){
+        return $this->belongsTo(SalesInvoice::class, 'invoice_id','id');
+    }
+
+    public function unit(){
+        return $this->belongsTo(ItemUnit::class, 'unit_id','id');
+    }
 }

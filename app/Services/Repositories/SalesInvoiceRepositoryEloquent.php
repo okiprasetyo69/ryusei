@@ -3,6 +3,9 @@
 namespace App\Services\Repositories;
 
 use App\Models\SalesInvoice;
+use App\Models\SalesInvoiceDetail;
+use App\Models\Product;
+use App\Models\ItemUnit;
 use App\Services\Interfaces\SalesInvoiceService;
 
 use Exception;
@@ -39,7 +42,7 @@ use Yajra\DataTables\Facades\DataTables;
     public function getSalesInvoice(Request $request){
         try{
             
-            $salesInvoice = $this->salesInvoice::orderBy('date', 'ASC');
+            $salesInvoice = $this->salesInvoice::with('customer')->orderBy('date', 'ASC');
           
             if($request->invoice_number != null){
                 $salesInvoice  = $salesInvoice->where("invoice_number", "like", "%" . $request->invoice_number. "%");
@@ -58,12 +61,74 @@ use Yajra\DataTables\Facades\DataTables;
 
     public function create(Request $request){
         try{
+
             $salesInvoice = $this->salesInvoice;
             $salesInvoice->fill($request->all());
 
+            $arrInvoice = [];
             // convert to array from json params
             $invoices = json_decode($request->invoices, true);
 
+            $skuId = null;
+            $description = "";
+            $unitId = null;
+            $discount = null;
+            $taxCode = null;
+            $orderNumber = "";
+            foreach ($invoices as $key => $value) {
+               
+                if($value["sku_id"] == null ){
+                    $product = Product::where("sku", $value['sku_code'])->first();
+                    $skuId =  $product->id;
+                } else {
+                    $skuId = $value["sku_id"];
+                }
+
+                if($value['description'] == null){
+                    $product = Product::where("sku", $value['sku_code'])->first();
+                    $description =  $product->article;
+                } else{
+                    $description = $value['description'];
+                }
+
+                if($value['unit_id'] == null){
+                    if($value['unit_name'] != null){
+                        $itemUnit = ItemUnit::where("name", $value['unit_name'])->first();
+                        $unitId = $itemUnit->id;
+                    }
+                }else {
+                    $unitId = $value['unit_id'];
+                }
+
+                if($value['discount'] != null){
+                    $discount = $value['discount'];
+                }
+
+                if( $value['tax_code'] != null){
+                    $taxCode = $value['tax_code'];
+                }
+
+                if( $value['order_number'] != null){
+                    $orderNumber =  $value['order_number'];
+                }
+
+               array_push($arrInvoice, [
+                    "sku_id" => $skuId,
+                    "sku_code" => $value['sku_code'],
+                    "description" =>  $description,
+                    "qty" =>  $value['qty'],
+                    "unit_name" => $value['unit_name'],
+                    "unit_id" =>  $unitId ,
+                    "price" => $value['price'],
+                    "discount" => $discount,
+                    "total" => $value['total'],
+                    "tax_code" =>  $taxCode ,
+                    "order_number" => $orderNumber,
+                ]);
+            }
+
+            //dd($arrInvoice);
+            // create invoice number
             $invNumber = "";
             if($request->invoice_number != null){
                 $invNumber = $request->invoice_number;
@@ -74,17 +139,75 @@ use Yajra\DataTables\Facades\DataTables;
                 $lastId = DB::table('sales_invoices')->latest()->value('id');
             
                 if($lastId == null){
-                    $lastId = 1;
+                    $lastId = 0;
                 } 
                 $lastId = $lastId + 1;
-
                 // concate INV number
                 $invNumber = $prefix . '.' . $date . '.' . '00'. $lastId;
             }
- 
+
+            $salesInvoice->invoice_number =  $invNumber;
+            $salesInvoice->batch_number =  $request->batch_number;
+            $salesInvoice->type =  $request->type;
+            $salesInvoice->type =  $request->type;
+            $salesInvoice->customer_id =  $request->customer_id;
+            $salesInvoice->customer_reference =  $request->customer_reference;
+            $salesInvoice->date =  $request->date;
+            $salesInvoice->due_date =  $request->due_date;
+            $salesInvoice->day =  $request->day;
+            $salesInvoice->category_invoice_id =  $request->category_invoice_id;
+            $salesInvoice->warehouse_id =  $request->warehouse_id;
+            $salesInvoice->sales_person =  $request->sales_person;
+            $salesInvoice->journal_memo =  $request->journal_memo;
+            $salesInvoice->note =  $request->note;
+            $salesInvoice->additional_char =  $request->additional_char;
+            $salesInvoice->down_pmt =  $request->down_pmt;
+            $salesInvoice->tax =  $request->tax;
+            $salesInvoice->pph_percent =  $request->pph_percent;
+            $salesInvoice->subtotal =  $request->subtotal;
+            $salesInvoice->discount_invoice =  $request->discount_invoice;
+            $salesInvoice->grand_total =  $request->grand_total;
+            $salesInvoice->balance_due =  $request->balance_due;
+
+            // store to database invoices
+            $salesInvoice->save();
+
+            // insert bulk detail invoice
+            // foreach ($invoices as $key => $value) {
+      
+            //     $invoiceDetail = new SalesInvoiceDetail();
+            //     $invoiceDetail->invoice_id = $salesInvoice->id;
             
+            //     $invoiceDetail->sku_id = $value['sku_id']; 
+            //     $invoiceDetail->description = $value['description']; 
+            //     $invoiceDetail->qty = $value['qty']; 
+            //     $invoiceDetail->unit_id = $value['unit_id']; 
+            //     $invoiceDetail->price = $value['price'];
+            //     $invoiceDetail->discount = $value['discount'];
+            //     $invoiceDetail->total = $value['total'];
+            //     $invoiceDetail->tax_code = $value['tax_code'];
+            //     $invoiceDetail->order_number = $value['order_number'];
+
+            //     $invoiceDetail->save();
+            // }
+        
+            for ($i=0 ; $i < count($arrInvoice) ; $i++ ) { 
+                $invoiceDetail = new SalesInvoiceDetail();
+
+                $invoiceDetail->invoice_id = $salesInvoice->id;
+                $invoiceDetail->sku_id = $arrInvoice[$i]['sku_id'];
+                $invoiceDetail->description = $arrInvoice[$i]['description'];
+                $invoiceDetail->qty = $arrInvoice[$i]['qty'];
+                $invoiceDetail->unit_id = $arrInvoice[$i]['unit_id'];
+                $invoiceDetail->price = $arrInvoice[$i]['price'];
+                $invoiceDetail->discount = $arrInvoice[$i]['discount'];
+                $invoiceDetail->total = $arrInvoice[$i]['total'];
+                $invoiceDetail->tax_code = $arrInvoice[$i]['tax_code'];
+                $invoiceDetail->order_number = $arrInvoice[$i]['order_number'];
+
+                $invoiceDetail->save();
+            }
           
-            //  dd($invNumber);
             return response()->json([
                 'status' => 200,
                 'message' => true,

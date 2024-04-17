@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('sku_code')->nullable();
             $table->text('description')->nullable();
             $table->integer('qty')->nullable();
+            $table->integer('unit_id')->nullable();
+            $table->integer('price')->nullable();
             $table->decimal('discount', 5, 2)->nullable();
             $table->integer('total')->nullable();
             $table->string('tax_code')->nullable();

@@ -274,7 +274,7 @@
                                 <div class="row mb-3">
                                     <label for="" class="col-sm-4 col-form-label">Discount</label>
                                     <div class="col-sm-2">
-                                        <input type="number" min="0" class="form-control" name="discount_percent" id="discount_percent"/>
+                                        <input type="number" min="0" class="form-control" name="discount_invoice" id="discount_invoice"/>
                                     </div>
                                     <div class="col-sm-4">
                                         <input type="text" class="form-control" name="discount" id="discount" readonly/>
@@ -484,77 +484,6 @@
 
                 getSkuCode(count)
                 getItemUnit(count)
-                var elementsTotal  =  document.getElementsByClassName('total')
-                var actGrandTotal = 0
-               
-                // calculate total from qty
-                $("#qty_"+ count).on("change", function(e){
-                    e.preventDefault()
-                    price =  $("#price_"+ count).val()
-                    qty =   $("#qty_"+ count).val()
-                    total = qty * price
-                    grandTotal = 0
-
-                    // assign value into element total
-                    $("#total_"+ count).val(total)
-                    // calculate grand total without discount
-                    for(var i = 0; i < elementsTotal.length; i++){
-                        actGrandTotal = parseInt(elementsTotal[i].value)
-                        grandTotal = actGrandTotal + grandTotal
-                        $("#grand_total").val(grandTotal)
-                        $("#subtotal").val(grandTotal)
-                        $("#balance_due").val(grandTotal)
-                    }
-                })
-
-                // calculate total without discount
-                $("#price_"+ count).on("keyup", function(e){
-                    e.preventDefault()
-                    price =  $("#price_"+ count).val()
-                    qty =   $("#qty_"+ count).val()
-                    total = qty * price
-                    grandTotal = 0
-
-                    // assign value into element total
-                    $("#total_"+ count).val(total)
-                    
-                    // calculate grand total without discount
-                    for(var i = 0; i < elementsTotal.length; i++){
-                        actGrandTotal = parseInt(elementsTotal[i].value)
-                        grandTotal = actGrandTotal + grandTotal
-                        $("#grand_total").val(grandTotal)
-                        $("#subtotal").val(grandTotal)
-                        $("#balance_due").val(grandTotal)
-                    }
-                })
-               
-                // calculate total with discount
-                $("#discount_"+ count).on("change", function(e){
-                    e.preventDefault()
-                    var currentTotal = total
-                    var discountGrandTotal = 0
-                    discPercent = $("#discount_"+ count).val()
-                    discPercent = (discPercent / 100) * total
-                    currentTotal = currentTotal - discPercent
-                    
-                    // assign into element total after discount
-                    $("#total_"+ count).val(currentTotal)
-
-                    // initializing value into element grand total for the first time
-                    $("#grand_total").val(currentTotal)
-                    
-                    // get value current grand total for increase
-                    var currentGrandTotal = $("#grand_total").val()
-                    
-                    // calculate grand total with discount
-                    for(var i = 0; i < elementsTotal.length; i++){
-                        currentGrandTotal = parseInt(elementsTotal[i].value)
-                        discountGrandTotal = discountGrandTotal + currentGrandTotal
-                        $("#grand_total").val(discountGrandTotal)
-                        $("#subtotal").val(discountGrandTotal)
-                        $("#balance_due").val(discountGrandTotal)
-                    }
-                })
            
             } 
 
@@ -571,7 +500,7 @@
                         <td><input type="number" min="0" name="qty[]" class="form-control qty" id="qty_`+ count +`"/></td>    
                         <td><input type="number" min="0" name="unit[]" class="form-control unit" id="unit_`+ count +`"/></td>  
                         <td><input type="number" min="0 "name="price[]" class="form-control price" id="price_`+count+`"/></td>    
-                        <td><input type="number" min="0 "name="discount_percent[]" class="form-control discount" id="discount_percent`+count+`"/></td>   
+                        <td><input type="number" min="0 "name="discount[]" class="form-control discount" id="discount_`+count+`"/></td>   
                         <td><input type="number" min="0 "name="discount" class="form-control discount" id="discount_`+count+`"/></td>  
                         <td><input type="number" min="0 "name="total[]" class="form-control total" id="total_`+count+`"/></td>
                         <td><input type="text" name="tax_code[]" class="form-control tax_code" id="tax_code_`+ count +`"/></td>           
@@ -661,7 +590,7 @@
             
         })
 
-        $("#discount_percent").on("change", function(e){
+        $("#discount_invoice").on("change", function(e){
             e.preventDefault()
             var discountPercent = this.value
             var subtotal = $("#subtotal").val()
@@ -832,7 +761,7 @@
             var journalMemo = $("#journal_memo").val()
             var note = $("#note").val()
             var subtotal = $("#subtotal").val()
-            var discountPercent = $("#discount_percent").val()
+            var discountInvoice = $("#discount_invoice").val()
             var additionalChar = $("#additional_char").val()
             var downPmt = $("#down_pmt").val()
             var tax = $("#tax").val()
@@ -842,22 +771,55 @@
 
             var invoices = []
             $("#table-add-invoice-item tbody tr").each(function(index){
+                sku_ids = $(this).find('.sku_code option:selected').val()
+
                 sku_codes = $(this).find('.sku_code option:selected').text()
-                descrirptions = $(this).find('.descrirption').val()
+                sku_codes = sku_codes.split(' ').join('')
+
+                descriptions = $(this).find('.description').val()
                 qtys = $(this).find('.qty').val()
-                units = $(this).find('.unit').val()
+                unit_ids = $(this).find('.unit').val()
+
+                unit_names = $(this).find('.unit').text()
+                unit_names = unit_names.split(' ').join('')
+
                 prices = $(this).find('.price').val()
                 discounts = $(this).find('.discount').val()
                 totals = $(this).find('.total').val()
                 tax_codes = $(this).find('.tax_code').val()
                 order_numbers = $(this).find('.order_number').val()
 
-                invoices.push({sku_code : sku_codes, descrirption:descrirptions, qty:qtys, unit:units, price:prices, discount: discounts, tax_code:tax_codes, order_number : order_numbers })
+                invoices.push({sku_id:sku_ids, sku_code : sku_codes, description:descriptions, qty:qtys, unit_id:unit_ids, unit_name:unit_names, price:prices, discount: discounts, total:totals, tax_code:tax_codes, order_number : order_numbers })
             })
 
+
+            if(salesChannelId == ""){
+                $.alert({
+                    title: 'Pesan !',
+                    content: 'Customer tidak boleh kosong. Silakan Pilih !',
+                });
+                return 
+            }
+        
+            if(warehouseId == ""){
+                $.alert({
+                    title: 'Pesan !',
+                    content: 'Gudang tidak boleh kosong. Silakan pilih !',
+                });
+                return 
+            }
+
+            if(!invoices.length){
+                $.alert({
+                    title: 'Pesan !',
+                    content: 'Detail invoice tidak boleh kosong. Silakan isi detail invoice !',
+                });
+                return 
+            }
+            
             // convert to json
             var jsonInvoices = JSON.stringify(invoices);
-
+          
             // convert data
             convertDate = date.split("-").reverse().join("-")
             convertDueDate = dueDate.split("-").reverse().join("-")
@@ -882,7 +844,7 @@
                 journal_memo : journalMemo,
                 note : note,
                 subtotal : subtotal,
-                discount_percent : discountPercent,
+                discount_invoice : discountInvoice,
                 additional_char : additionalChar,
                 down_pmt : downPmt,
                 tax : tax,
@@ -892,19 +854,31 @@
 
                 invoices : jsonInvoices
             }
-            console.log(data)
+            // console.log(data) 
             $.ajax({
                 type: "POST",
                 url: "/api/sales-invoice/create",
                 data: data,
                 dataType: "JSON",
                 success: function (response) {
-                    console.log(response)
+                    if(response.status == 200){
+                        $.confirm({
+                            title: 'Pesan ',
+                            content: 'Data Sales Invoice berhasil diperbarui !',
+                            buttons: {
+                                Ya: {
+                                    btnClass: 'btn-success any-other-class',
+                                    action: function(){
+                                        window.location.href = '/sales-invoice'
+                                    }
+                                },
+                            }
+                        });
+                    }
                 }
             });
         })
     });
-
 
     function getSkuCode(dataId=null){
         let item_code = $('.sku_code').val()

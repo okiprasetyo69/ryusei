@@ -85,7 +85,7 @@
     var table
     $(document).ready(function () {
         
-        //loadInvoice()
+        loadInvoice()
 
         $("#btn-add").on("click", function(e){
             e.preventDefault()
@@ -116,6 +116,7 @@
                 serverSide: true,
                 bAutoWidth: true,
                 scrollCollapse : true,
+                ordering: false,
                 language: {
                 emptyTable: "Data tidak tersedia",
                 zeroRecords: "Tidak ada data yang ditemukan",
@@ -134,7 +135,7 @@
                     },
                 },
                 ajax:{
-                    url :  '/api/warehouse',
+                    url :  '/api/sales-invoice',
                     type: "GET",
                     data: {
                         name: name,
@@ -143,14 +144,156 @@
                     }
                 },
                 columns: [
-                    { data: 'id', name: 'id',  width: "10%",},
-                    { data: 'name', name: 'name', width: "30%", },
-                    { data: 'address', name: 'address', width: "30%", },
-                    { data: null },
+                    {
+                        data: null, width: "5%"
+                    },
+                    {
+                        data: null,
+                    },
+                    {
+                        data: null,
+                    },
+                    {
+                        data: null,
+                    },
+                    {
+                        data: null,
+                    },
+                    {
+                        data: null,
+                    },
+                    {
+                        data: null,
+                    },
+                    {
+                        data: null,
+                    },
+                    {
+                        data: null,
+                    },
+                    {
+                        data: null,
+                    },
                 ],
                 columnDefs: [
                     {
+                        targets: 0,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).addClass("text-center");
+                            $(td).html(table.page.info().start + row + 1);
+                        },
+                    },
+                    {
+                        targets: 1,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var invoice_number = ""
+                            if(rowData.invoice_number == null){
+                                invoice_number = "-"
+                            } else {
+                                invoice_number = rowData.invoice_number
+                            }
+                            $(td).html(invoice_number);
+                        },
+                    },
+                    {
+                        targets: 2,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var dates = rowData.date
+                            date = new Date(dates)
+                            month = date.toLocaleString('default', { month: 'long' })
+                            year = date.getFullYear()
+                            format = date.getDate() + "-"+ month +"-"+ year
+
+                            $(td).html(format);
+                        },
+                    },
+                    {
                         targets: 3,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var due_date = rowData.due_date
+                            date = new Date(due_date)
+                            month = date.toLocaleString('default', { month: 'long' })
+                            year = date.getFullYear()
+                            format = date.getDate() + "-"+ month +"-"+ year
+
+                            $(td).html(format);
+                        },
+                    },
+                    {
+                        targets: 4,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var customer = ""
+                            if(rowData.customer == null){
+                                due_date = "-"
+                            } else {
+                                customer = rowData.customer.name
+                            }
+                            $(td).html(customer);
+                        },
+                    },
+                    {
+                        targets: 5,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var sales_person = ""
+                            if(rowData.sales_person == null){
+                                sales_person = "-"
+                            } else {
+                                sales_person = sales_person.sales_person
+                            }
+                            $(td).html(sales_person);
+                        },
+                    },
+                    {
+                        targets: 6,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var grand_total = ""
+                            if(rowData.grand_total == null){
+                                grand_total = "-"
+                            } else {
+                                grand_total = rowData.grand_total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })
+                            }
+                            $(td).html(grand_total);
+                        },
+                    },
+                    {
+                        targets: 7,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var grand_total = ""
+                            if(rowData.grand_total == null){
+                                grand_total = "-"
+                            } else {
+                                grand_total = rowData.grand_total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })
+                            }
+                            $(td).html(grand_total);
+                        },
+                    },
+                    {
+                        targets: 8,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var state = "Open"
+                            $(td).html(state);
+                        },
+                    },
+                    {
+                        targets: 9,
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {

@@ -31,7 +31,7 @@ return new class extends Migration
             $table->decimal('tax', 5, 2)->nullable();
             $table->decimal('pph_percent', 5, 2)->nullable();
             $table->integer('subtotal')->nullable();
-            $table->decimal('discount', 5, 2)->nullable();
+            $table->decimal('discount_invoice', 5, 2)->nullable();
             $table->integer('grand_total')->nullable();
             $table->integer('balance_due')->nullable();
             $table->timestamps();
