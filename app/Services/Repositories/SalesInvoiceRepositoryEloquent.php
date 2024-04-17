@@ -221,7 +221,30 @@ use Yajra\DataTables\Facades\DataTables;
     }
 
     public function delete(Request $request){
-        return true;
+        try{
+
+            $salesInvoice = $this->salesInvoice::where("id", $request->id)->first();
+            $salesInvoiceDetail = SalesInvoiceDetail::where("invoice_id",  $salesInvoice->id);
+            
+            if($salesInvoice == null){
+                return response()->json([
+                    'data' => null,
+                    'message' => 'Data not found',
+                    'status' => 400
+                ]);
+            }
+
+            $salesInvoiceDetail->delete();
+            $salesInvoice->delete();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Success delete sales invoice.',
+            ]);
+
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
     }
 
     public function detail(Request $request){

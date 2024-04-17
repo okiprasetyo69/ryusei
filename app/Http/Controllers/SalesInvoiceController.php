@@ -78,7 +78,22 @@ class SalesInvoiceController extends Controller
     }
 
     public function delete(Request $request){
-        return true;
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'data' => null,
+                'message' => $validator->errors(),
+                'status' => 422
+            ]);
+        }
+
+        $salesInvoice = $this->service->delete($request);
+        if($salesInvoice) {
+            return $salesInvoice;
+        }
     }
 
     public function detail(Request $request){

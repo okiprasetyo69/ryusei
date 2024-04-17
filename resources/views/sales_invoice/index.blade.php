@@ -1,6 +1,6 @@
 
 @extends('layout.home')
-@section('title','Dashboard')
+@section('title','Sales Invoice')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 @section('content')
@@ -347,21 +347,22 @@
     function remove(id){
         $.ajax({
             type: "POST",
-            url: "",
+            url: "/api/sales-invoice/delete",
             data: {
                 id : id,
             },
             dataType: "JSON",
             success: function (response) {
+                console.log(response)
                 if(response.status == 200){
                     $.confirm({
                         title: 'Pesan',
-                        content: 'Data Gudang berhasil dihapus !',
+                        content: 'Data Sales Invoice berhasil dihapus !',
                         buttons: {
                             Ya: {
                                 btnClass: 'btn-success any-other-class',
                                 action: function(){
-                                    loadWarehouse()
+                                    loadInvoice()
                                 }
                             },
                         }
