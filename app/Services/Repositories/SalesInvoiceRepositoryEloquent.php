@@ -95,6 +95,8 @@ use Yajra\DataTables\Facades\DataTables;
                     if($value['unit_name'] != null){
                         $itemUnit = ItemUnit::where("name", $value['unit_name'])->first();
                         $unitId = $itemUnit->id;
+                    } else {
+                        $unitId = null;
                     }
                 }else {
                     $unitId = $value['unit_id'];
@@ -106,10 +108,14 @@ use Yajra\DataTables\Facades\DataTables;
 
                 if( $value['tax_code'] != null){
                     $taxCode = $value['tax_code'];
+                } else {
+                    $taxCode = null;
                 }
 
                 if( $value['order_number'] != null){
                     $orderNumber =  $value['order_number'];
+                } else {
+                    $orderNumber = null;
                 }
 
                array_push($arrInvoice, [
@@ -126,8 +132,7 @@ use Yajra\DataTables\Facades\DataTables;
                     "order_number" => $orderNumber,
                 ]);
             }
-
-            //dd($arrInvoice);
+            
             // create invoice number
             $invNumber = "";
             if($request->invoice_number != null){
@@ -149,9 +154,9 @@ use Yajra\DataTables\Facades\DataTables;
             $salesInvoice->invoice_number =  $invNumber;
             $salesInvoice->batch_number =  $request->batch_number;
             $salesInvoice->type =  $request->type;
-            $salesInvoice->type =  $request->type;
             $salesInvoice->customer_id =  $request->customer_id;
             $salesInvoice->customer_reference =  $request->customer_reference;
+            $salesInvoice->customer_phone =  $request->customer_phone;
             $salesInvoice->date =  $request->date;
             $salesInvoice->due_date =  $request->due_date;
             $salesInvoice->day =  $request->day;
@@ -173,29 +178,12 @@ use Yajra\DataTables\Facades\DataTables;
             $salesInvoice->save();
 
             // insert bulk detail invoice
-            // foreach ($invoices as $key => $value) {
-      
-            //     $invoiceDetail = new SalesInvoiceDetail();
-            //     $invoiceDetail->invoice_id = $salesInvoice->id;
-            
-            //     $invoiceDetail->sku_id = $value['sku_id']; 
-            //     $invoiceDetail->description = $value['description']; 
-            //     $invoiceDetail->qty = $value['qty']; 
-            //     $invoiceDetail->unit_id = $value['unit_id']; 
-            //     $invoiceDetail->price = $value['price'];
-            //     $invoiceDetail->discount = $value['discount'];
-            //     $invoiceDetail->total = $value['total'];
-            //     $invoiceDetail->tax_code = $value['tax_code'];
-            //     $invoiceDetail->order_number = $value['order_number'];
-
-            //     $invoiceDetail->save();
-            // }
-        
             for ($i=0 ; $i < count($arrInvoice) ; $i++ ) { 
                 $invoiceDetail = new SalesInvoiceDetail();
 
                 $invoiceDetail->invoice_id = $salesInvoice->id;
                 $invoiceDetail->sku_id = $arrInvoice[$i]['sku_id'];
+                $invoiceDetail->sku_code = $arrInvoice[$i]['sku_code'];
                 $invoiceDetail->description = $arrInvoice[$i]['description'];
                 $invoiceDetail->qty = $arrInvoice[$i]['qty'];
                 $invoiceDetail->unit_id = $arrInvoice[$i]['unit_id'];
@@ -225,7 +213,7 @@ use Yajra\DataTables\Facades\DataTables;
 
             $salesInvoice = $this->salesInvoice::where("id", $request->id)->first();
             $salesInvoiceDetail = SalesInvoiceDetail::where("invoice_id",  $salesInvoice->id);
-            
+
             if($salesInvoice == null){
                 return response()->json([
                     'data' => null,
@@ -251,5 +239,17 @@ use Yajra\DataTables\Facades\DataTables;
         return true;
     }
 
-    
+    public function detailInvoiceItem(Request $request){
+        try{
+            $salesInvoiceDetail = SalesInvoiceDetail::with("unit")->where("invoice_id", $request->invoice_id)->get();
+            return response()->json([
+                'status' => 200,
+                'message' => true,
+                'data' => $salesInvoiceDetail
+            ]);
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
 }

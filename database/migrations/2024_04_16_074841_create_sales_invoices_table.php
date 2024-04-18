@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('type')->nullable();
             $table->unsignedBigInteger('customer_id')->nullable();
             $table->string('customer_reference')->nullable();
+            $table->string('customer_phone')->nullable();
             $table->date('date')->nullable();
             $table->date('due_date')->nullable();
             $table->integer('day')->nullable();

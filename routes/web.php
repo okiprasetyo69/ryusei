@@ -92,4 +92,5 @@ Route::controller(ItemStockController::class)->group(function() {
 Route::controller(SalesInvoiceController::class)->group(function() {
     Route::get('/sales-invoice', 'index')->name('sales_invoice');
     Route::get('/sales-invoice/add', 'add')->name('sales_invoice.add');
+    Route::get('/sales-invoice/{id}', 'edit')->name('sales_invoice.edit');
 });

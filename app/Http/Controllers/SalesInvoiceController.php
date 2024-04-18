@@ -12,6 +12,7 @@ use Exception;
 use Illuminate\Support\Facades\Log;
 
 use App\Models\SalesInvoice;
+use App\Models\SalesInvoiceDetail;
 use App\Services\Interfaces\SalesInvoiceService;
 
 class SalesInvoiceController extends Controller
@@ -34,6 +35,13 @@ class SalesInvoiceController extends Controller
 
     public function add(Request $request){
         return view("sales_invoice.add");
+    }
+
+    public function edit(Request $request){
+        $invoice = SalesInvoice::find($request->id);
+        $invoiceDetail = SalesInvoiceDetail::where("invoice_id", $request->id)->get();
+        $invoiceDetail = json_encode($invoiceDetail);
+        return view("sales_invoice.detail", compact("invoice","invoiceDetail"));
     }
 
     // API Response
@@ -98,5 +106,25 @@ class SalesInvoiceController extends Controller
 
     public function detail(Request $request){
         return true;
+    }
+
+    public function detailInvoice(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'invoice_id' => 'required',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'data' => null,
+                'message' => $validator->errors(),
+                'status' => 422
+            ]);
+        }
+
+        $salesInvoice = $this->service->detailInvoiceItem($request);
+        if($salesInvoice) {
+            return $salesInvoice;
+        }
     }
 }
