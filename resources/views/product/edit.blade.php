@@ -271,8 +271,8 @@
         })
 
         $("#table-add-product").on("click", '.size', function(){
-                var id = $(this).attr('data-id')
-                changeSize(id)
+            var id = $(this).attr('data-id')
+            changeSize(id)
         })
 
     });

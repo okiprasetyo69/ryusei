@@ -431,7 +431,6 @@
             e.preventDefault()
             salesChannelId = this.value
             getSalesChannel(salesChannelId)
-            //console.log(salesChannelId)
         })
 
         // assign select 2

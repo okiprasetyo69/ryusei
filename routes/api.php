@@ -171,4 +171,5 @@ Route::controller(SalesInvoiceController::class)->group(function() {
     Route::post('/sales-invoice/delete', 'delete')->name('sales-invoice.delete');
     Route::post('/sales-invoice/detail', 'detail')->name('sales-invoice.detail');
     Route::post('/sales-invoice/detail-invoice-item', 'detailInvoice')->name('sales-invoice.detail.invoice-item');
+    Route::post('/sales-invoice/detail-invoice-item/delete', 'deleteDetailInvoice')->name('sales-invoice.detail.invoice-item.delete');
 });

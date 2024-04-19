@@ -555,8 +555,6 @@
             e.preventDefault()
             var rowId =  $(this).attr('data-id')
             var value = this.value
-            // getSkuCode()
-            console.log(value)
         })
 
         $("#tbody-invoice-item").on("change", ".qty", function(e){
@@ -651,6 +649,24 @@
             e.preventDefault()
             var rowId =  $(this).attr('id')
             $("#"+rowId+"").parent('td').parent('tr').remove(); 
+            var elementsTotal  =  document.getElementsByClassName('total')
+            var actGrandTotal = 0
+            grandTotal = 0
+            var discount_invoice = $("#discount_invoice").val()
+           
+            for(var i = 0; i < elementsTotal.length; i++){
+                actGrandTotal = parseInt(elementsTotal[i].value)
+              
+                //console.log(discount_invoice)
+                grandTotal = actGrandTotal + grandTotal
+                var currentDiscount = (discount_invoice / 100) * grandTotal
+                // console.log(currentDiscount)
+                var currentTotal = grandTotal - currentDiscount
+                // $("#discount").val(currentDiscount)
+                $("#grand_total").val(currentTotal)
+                $("#subtotal").val(currentTotal)
+                $("#balance_due").val(currentTotal)
+            }
         })
 
         // remove row form table invoice summary
@@ -982,7 +998,7 @@
        });
     }
 
-    function getSkuCode(dataId=null){
+    function getSkuCode(dataId = null){
         let item_code = $('.sku_code').val()
         $(".sku_code").select2({
             ajax: {
@@ -1006,17 +1022,21 @@
             },
         })
         .on("select2:select", function (e) {
+           
             var data = e.params.data;
-            $("#description_"+dataId).val(data.article)
-            $("#qty_"+dataId).val(1)
-            $("#price_"+dataId).val(data.price)
+            var rowId =  $(this).attr('data-id')
+            getItemUnit(rowId)
+
+            $("#description_"+rowId).val(data.article)
+            $("#qty_"+rowId).val(1)
+            $("#price_"+rowId).val(data.price)
 
             // var subtotal = 0
-            qty =  $("#qty_"+dataId).val()
-            price =  $("#price_"+dataId).val()
+            qty =  $("#qty_"+rowId).val()
+            price =  $("#price_"+rowId).val()
             total = qty * price
 
-            $("#total_"+dataId).val(total)
+            $("#total_"+rowId).val(total)
 
             var elementsTotal  =  document.getElementsByClassName('total')
             var actGrandTotal = 0
@@ -1061,7 +1081,7 @@
     }
 
     function getItemUnit(unit_id = null){
-        console.log(unit_id)
+        // console.log(unit_id)
         $.ajax({
             type: "GET",
             url: "/api/product/item-unit",
@@ -1140,6 +1160,51 @@
                         var option = "<option value='"+id+"' "+selected+">"+name+"</option>";
                         $("#invoice_category_id").append(option);
                     }
+                }
+            }
+        });
+    }
+
+    function confirmDelete(id){
+        $.confirm({
+            title: 'Pesan ',
+            content: 'Apa anda yakin akan menghapus data ini ?',
+            buttons: {
+                Ya: {
+                    btnClass: 'btn-red any-other-class',
+                    action: function(){
+                        remove(id)
+                    }
+                },
+                Batal: {
+                    btnClass: 'btn-secondary',
+                },
+            }
+        });
+    }
+
+    function remove(id){
+        $.ajax({
+            type: "POST",
+            url: "/api/sales-invoice/detail-invoice-item/delete",
+            data: {
+                id : id,
+            },
+            dataType: "JSON",
+            success: function (response) {
+                if(response.status == 200){
+                    $.confirm({
+                        title: 'Pesan',
+                        content: 'Data detail invoice berhasil dihapus !',
+                        buttons: {
+                            Ya: {
+                                btnClass: 'btn-success any-other-class',
+                                action: function(){
+                                    window.location.reload()
+                                }
+                            },
+                        }
+                    });
                 }
             }
         });
