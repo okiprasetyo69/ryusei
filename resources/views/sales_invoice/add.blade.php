@@ -515,9 +515,14 @@
         $("#tbody-invoice-item").on("change", ".qty", function(e){
             e.preventDefault()
             var rowId =  $(this).attr('data-id')
-            qty = $("#qty_"+rowId).val()
+            var discountItem =  $("#discount_"+rowId).val()
+
             price = $("#price_"+rowId).val()
-            total = qty * price
+            qty = $("#qty_"+rowId).val()
+            discountItem = (discountItem / 100) * (price*qty)
+
+            total = (qty * price) - discountItem
+
             $("#total_"+rowId).val(total)
 
             // assign and caclulate grand total
@@ -929,7 +934,7 @@
             $("#price_"+rowId).val(data.price)
 
             qty =  $("#qty_"+rowId).val()
-            price =  $("#price_"+rowId).val()
+            price =  parseInt(data.price)
             dicountItem = $("#discount_"+rowId).val()
             dicountItem = (dicountItem / 100) * (qty * price)
 
@@ -942,8 +947,13 @@
             grandTotal = 0
 
             for(var i = 0; i < elementsTotal.length; i++){
+
+                if(elementsTotal[i].value == ""){
+                    elementsTotal[i].value = 0
+                }
                 actGrandTotal = parseInt(elementsTotal[i].value)
                 grandTotal = actGrandTotal + grandTotal
+                //console.log(elementsTotal[i].value)
                 $("#grand_total").val(grandTotal)
                 $("#subtotal").val(grandTotal)
                 $("#balance_due").val(grandTotal)

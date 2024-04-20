@@ -595,6 +595,7 @@
             var rowId =  $(this).attr('data-id')
             var discountItem =  $("#discount_"+rowId).val()
             discountItem = discountItem / 100
+            
             qty = $("#qty_"+rowId).val()
             price = $("#price_"+rowId).val()
             total = (qty * price) - (discountItem * price)
@@ -1071,6 +1072,9 @@
             grandTotal = 0
 
             for(var i = 0; i < elementsTotal.length; i++){
+                if(elementsTotal[i].value == ""){
+                    elementsTotal[i].value = 0
+                }
                 actGrandTotal = parseInt(elementsTotal[i].value)
                 grandTotal = actGrandTotal + grandTotal
                 $("#grand_total").val(grandTotal)
