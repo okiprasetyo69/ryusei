@@ -104,6 +104,8 @@ use Yajra\DataTables\Facades\DataTables;
 
                 if($value['discount'] != null){
                     $discount = $value['discount'];
+                } else {
+                    $discount = null;
                 }
 
                 if( $value['tax_code'] != null){

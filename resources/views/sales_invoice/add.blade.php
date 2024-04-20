@@ -523,13 +523,21 @@
             // assign and caclulate grand total
             var elementsTotal  =  document.getElementsByClassName('total')
             var actGrandTotal = 0
+            var discountInvoice = $("#discount_invoice").val() / 100
             grandTotal = 0
+            var actSubTotal= 0
+            var actDiscount = 0 
+
             for(var i = 0; i < elementsTotal.length; i++){
                 actGrandTotal = parseInt(elementsTotal[i].value)
                 grandTotal = actGrandTotal + grandTotal
-                $("#grand_total").val(grandTotal)
+                actDiscount = discountInvoice * grandTotal
+                actSubTotal = grandTotal - actDiscount
+
                 $("#subtotal").val(grandTotal)
-                $("#balance_due").val(grandTotal)
+                $("#discount").val(actDiscount)
+                $("#grand_total").val(actSubTotal)
+                $("#balance_due").val(actSubTotal)
             }
             
         })
@@ -537,54 +545,64 @@
         $("#tbody-invoice-item").on("change", ".price", function(e){
             e.preventDefault()
             var rowId =  $(this).attr('data-id')
+            var discountItem =  $("#discount_"+rowId).val()
+            discountItem = discountItem / 100
             qty = $("#qty_"+rowId).val()
             price = $("#price_"+rowId).val()
-            total = qty * price
+            total = (qty * price) - (discountItem * price)
             $("#total_"+rowId).val(total)
 
             // assign and caclulate grand total
             var elementsTotal  =  document.getElementsByClassName('total')
             var actGrandTotal = 0
+            var discountInvoice = $("#discount_invoice").val() / 100
             grandTotal = 0
+            var actSubTotal= 0
+            var actDiscount = 0 
             
             for(var i = 0; i < elementsTotal.length; i++){
                 actGrandTotal = parseInt(elementsTotal[i].value)
                 grandTotal = actGrandTotal + grandTotal
-                $("#grand_total").val(grandTotal)
+                actDiscount = discountInvoice * grandTotal
+                actSubTotal = grandTotal - actDiscount
+
                 $("#subtotal").val(grandTotal)
-                $("#balance_due").val(grandTotal)
+                $("#discount").val(actDiscount)
+                $("#grand_total").val(actSubTotal)
+                $("#balance_due").val(actSubTotal)
             }
           
-            
         })
 
         $("#tbody-invoice-item").on("change", ".discount", function(e){
             e.preventDefault()
             var rowId =  $(this).attr('data-id')
+            var discountItem =  $("#discount_"+rowId).val()
+            discountItem = discountItem / 100
             qty = $("#qty_"+rowId).val()
             price = $("#price_"+rowId).val()
-            total = qty * price 
-            var currentTotal = total
-            discPercent = $("#discount_"+ rowId).val()
-            discPercent = (discPercent / 100) * total
-            currentTotal = currentTotal - discPercent
-            // assign value into element
-            $("#total_"+rowId).val(currentTotal)
+            total = (qty * price) - (discountItem * price)
 
-             // initializing value into element grand total for the first time
-             $("#grand_total").val(currentTotal)
-                    
-            // get value current grand total for increase
-            var currentGrandTotal = $("#grand_total").val()
-            var elementsTotal  =  document.getElementsByClassName('total')   
-            var discountGrandTotal = 0   
+            $("#total_"+rowId).val(total)
+
+            // initializing value into element grand total for the first time
+            var elementsTotal  =  document.getElementsByClassName('total')
+            var actGrandTotal = 0
+            var discountInvoice = $("#discount_invoice").val() / 100
+            grandTotal = 0
+            var actSubTotal= 0
+            var actDiscount = 0 
             // calculate grand total with discount
             for(var i = 0; i < elementsTotal.length; i++){
-                currentGrandTotal = parseInt(elementsTotal[i].value)
-                discountGrandTotal = discountGrandTotal + currentGrandTotal
-                $("#grand_total").val(discountGrandTotal)
-                $("#subtotal").val(discountGrandTotal)
-                $("#balance_due").val(discountGrandTotal)
+                actGrandTotal = parseInt(elementsTotal[i].value)
+                grandTotal = actGrandTotal + grandTotal
+                actDiscount = discountInvoice * grandTotal
+                actSubTotal = grandTotal - actDiscount
+
+                $("#subtotal").val(grandTotal)
+                $("#discount").val(actDiscount)
+                $("#grand_total").val(actSubTotal)
+                $("#balance_due").val(actSubTotal)
             }
             
         })
@@ -593,10 +611,11 @@
             e.preventDefault()
             var discountPercent = this.value
             var subtotal = $("#subtotal").val()
-            var discount = subtotal - ((discountPercent/100) * subtotal)
+            var discount = ((discountPercent/100) * subtotal)
+            grandTotal = subtotal - ((discountPercent/100) * subtotal)
             $("#discount").val(discount)
-            $("#grand_total").val(discount)
-            $("#balance_due").val(discount)
+            $("#grand_total").val(grandTotal)
+            $("#balance_due").val(grandTotal)
         })
 
         // remove row form table invoice item
@@ -904,16 +923,19 @@
         })
         .on("select2:select", function (e) {
             var data = e.params.data;
-            $("#description_"+dataId).val(data.article)
-            $("#qty_"+dataId).val(1)
-            $("#price_"+dataId).val(data.price)
+            var rowId =  $(this).attr('data-id')
+            $("#description_"+rowId).val(data.article)
+            $("#qty_"+rowId).val(1)
+            $("#price_"+rowId).val(data.price)
 
-            // var subtotal = 0
-            qty =  $("#qty_"+dataId).val()
-            price =  $("#price_"+dataId).val()
-            total = qty * price
+            qty =  $("#qty_"+rowId).val()
+            price =  $("#price_"+rowId).val()
+            dicountItem = $("#discount_"+rowId).val()
+            dicountItem = (dicountItem / 100) * (qty * price)
 
-            $("#total_"+dataId).val(total)
+            total = (qty * price) - dicountItem
+
+            $("#total_"+rowId).val(total)
 
             var elementsTotal  =  document.getElementsByClassName('total')
             var actGrandTotal = 0
