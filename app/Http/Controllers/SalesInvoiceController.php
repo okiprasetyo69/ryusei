@@ -85,6 +85,33 @@ class SalesInvoiceController extends Controller
         }
     }
 
+    public function update(Request $request){
+        $validator = Validator::make(
+            $request->all(), [
+                'id' => 'required',
+                'customer_id' => 'required',
+                'date' => 'required',
+                'due_date' => 'required',
+                'warehouse_id' => 'required',
+                'invoices' => 'required',
+            ]
+        );
+
+        if($validator->fails()){
+            return response()->json([
+                'data' => null,
+                'message' => $validator->errors()->first(),
+                'status' => 422
+            ]);
+        }
+
+        $salesInvoice = $this->service->update($request);
+
+        if($salesInvoice) {
+            return $salesInvoice;
+        }
+    }
+
     public function delete(Request $request){
         $validator = Validator::make($request->all(), [
             'id' => 'required',

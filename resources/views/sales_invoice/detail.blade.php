@@ -418,6 +418,7 @@
 
         $("#id").val(dataInvoice.id)
         $("#customer_reference").val(dataInvoice.customer_reference)
+        $("#customer_phone").val(dataInvoice.customer_phone)
         $('#date').val(reversedDate);
         $('#due_date').val(reversedDueDate);
         $("#invoice_number").val(dataInvoice.invoice_number)
@@ -563,9 +564,10 @@
             var rowId =  $(this).attr('data-id')
             var discountItem =  $("#discount_"+rowId).val()
 
-            price = $("#price_"+rowId).val()
-            discountItem = (discountItem / 100) * price
             qty = $("#qty_"+rowId).val()
+            price = $("#price_"+rowId).val()
+            discountItem = (discountItem / 100) * price * qty
+
             total = (qty * price) - discountItem
 
             $("#total_"+rowId).val(total)
@@ -594,11 +596,11 @@
             e.preventDefault()
             var rowId =  $(this).attr('data-id')
             var discountItem =  $("#discount_"+rowId).val()
-            discountItem = discountItem / 100
-            
             qty = $("#qty_"+rowId).val()
             price = $("#price_"+rowId).val()
-            total = (qty * price) - (discountItem * price)
+            discountItem = (discountItem / 100) * price * qty
+
+            total = (qty * price) - discountItem
             $("#total_"+rowId).val(total)
 
             // assign and caclulate grand total
@@ -625,10 +627,11 @@
             e.preventDefault()
             var rowId =  $(this).attr('data-id')
             var discountItem =  $("#discount_"+rowId).val()
-            discountItem = discountItem / 100
             qty = $("#qty_"+rowId).val()
             price = $("#price_"+rowId).val()
-            total = (qty * price) - (discountItem * price)
+
+            discountItem = (discountItem / 100)  * price * qty
+            total = (qty * price) - discountItem
 
             $("#total_"+rowId).val(total)
 
@@ -873,9 +876,22 @@
                 tax_codes = $(this).find('.tax_code').val()
                 order_numbers = $(this).find('.order_number').val()
 
-                invoices.push({sku_id:sku_ids, sku_code : sku_codes, description:descriptions, qty:qtys, unit_id:unit_ids, unit_name:unit_names, price:prices, discount: discounts, total:totals, tax_code:tax_codes, order_number : order_numbers })
+                invoices.push({
+                    sku_id:sku_ids, 
+                    sku_code : sku_codes,
+                    description:descriptions, 
+                    qty:qtys, 
+                    unit_id:unit_ids, 
+                    unit_name:unit_names, 
+                    price:prices, 
+                    discount: discounts, 
+                    total:totals, 
+                    tax_code:tax_codes, 
+                    order_number : order_numbers 
+                })
             })
 
+            console.log(invoices) 
 
             if(salesChannelId == ""){
                 $.alert({
@@ -939,8 +955,9 @@
 
                 invoices : jsonInvoices
             }
+
             console.log(data) 
-            // return 
+            
             $.ajax({
                 type: "POST",
                 url: "/api/sales-invoice/update",
@@ -986,12 +1003,19 @@
 
                     $.each(data, function (i, val) { 
                         var unit_name = ""
+                        var unit_id = ""
                         taxCode = ""
                         orderNumber = ""
                         discPercent = null
+
                         if(val.unit != null){
                             unit_name = val.unit.name
                         }
+
+                        if(val.unit_id != null){
+                            unit_id == val.unit_id
+                        } 
+                  
                         if(val.tax_code != null){
                             taxCode = val.tax_code
                         }
@@ -1007,7 +1031,7 @@
                                     <td><select name="sku_code[]" class="form-control sku_code" id="sku_code_`+ count +`" style="width:100%;" data-id="`+count+`" ><option value="`+val.sku_id+`" selected> `+val.sku_code+` </option> </select></td>    
                                     <td><input type="text" name="description[]" class="form-control description" id="description_`+ count +`" data-id="`+count+`" value="`+val.description+`"/></td>    
                                     <td><input type="number" min="0" name="qty[]" class="form-control qty" id="qty_`+ count +`" data-id="`+count+`" value="`+val.qty+`"/></td>    
-                                    <td><select class="form-control unit" name="unit" id="unit_`+count+`" data-id="`+count+`" data-id="`+count+`"> <option value="`+val.unit_id+`"> `+ unit_name +` </option></select></td>  
+                                    <td><select class="form-control unit" name="unit" id="unit_`+count+`" data-id="`+count+`" data-id="`+count+`"> <option value="`+ unit_id +`"> `+ unit_name +` </option></select></td>  
                                     <td><input type="number" min="0 "name="price[]" class="form-control price" id="price_`+count+`" data-id="`+count+`" value="`+val.price+`"/></td>    
                                     <td><input type="number" min="0 "name="discount[]" class="form-control discount" id="discount_`+count+`" data-id="`+count+`" value="`+discPercent+`"/></td>    
                                     <td><input type="number" min="0 "name="total[]" class="form-control total" id="total_`+count+`" data-id="`+count+`" value="`+val.total+`" readonly /></td>
@@ -1055,21 +1079,23 @@
             var discountItem = $("#discount_"+rowId).val()
             var elementsTotal  =  document.getElementsByClassName('total')
             var actGrandTotal = 0
+            $("#qty_"+rowId).val(1)
 
             getItemUnit(rowId)
 
-            qty =  $("#qty_"+rowId).val()
+            qty =  $("#qty_"+rowId).val() 
             price =  data.price
             discountItem = (discountItem / 100) 
 
             total = (qty * price) - (discountItem * (qty * price))
            
             $("#description_"+rowId).val(data.article)
-            $("#qty_"+rowId).val(1)
             $("#price_"+rowId).val(price)
             $("#total_"+rowId).val(total)
-          
+
             grandTotal = 0
+            var discount = 0
+            var currentDiscount = $("#discount_invoice").val()
 
             for(var i = 0; i < elementsTotal.length; i++){
                 if(elementsTotal[i].value == ""){
@@ -1077,6 +1103,9 @@
                 }
                 actGrandTotal = parseInt(elementsTotal[i].value)
                 grandTotal = actGrandTotal + grandTotal
+                discount = grandTotal * (currentDiscount/100)
+   
+                $("#discount").val(discount)
                 $("#grand_total").val(grandTotal)
                 $("#subtotal").val(grandTotal)
                 $("#balance_due").val(grandTotal)

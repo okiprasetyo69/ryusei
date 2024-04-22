@@ -519,7 +519,7 @@
 
             price = $("#price_"+rowId).val()
             qty = $("#qty_"+rowId).val()
-            discountItem = (discountItem / 100) * (price*qty)
+            discountItem = (discountItem / 100) * price * qty
 
             total = (qty * price) - discountItem
 
@@ -551,10 +551,12 @@
             e.preventDefault()
             var rowId =  $(this).attr('data-id')
             var discountItem =  $("#discount_"+rowId).val()
-            discountItem = discountItem / 100
             qty = $("#qty_"+rowId).val()
             price = $("#price_"+rowId).val()
-            total = (qty * price) - (discountItem * price)
+
+            discountItem = (discountItem / 100) * price*qty
+           
+            total = (qty * price) - discountItem
             $("#total_"+rowId).val(total)
 
             // assign and caclulate grand total
@@ -583,10 +585,11 @@
             e.preventDefault()
             var rowId =  $(this).attr('data-id')
             var discountItem =  $("#discount_"+rowId).val()
-            discountItem = discountItem / 100
             qty = $("#qty_"+rowId).val()
             price = $("#price_"+rowId).val()
-            total = (qty * price) - (discountItem * price)
+
+            discountItem = (discountItem / 100)  * price * qty
+            total = (qty * price) - discountItem
 
             $("#total_"+rowId).val(total)
 
@@ -736,15 +739,15 @@
 
                     rowData += `<tr class="text-center"> 
                                 <td>`+ count +`</td>
-                                <td><select name="sku_code[]" class="form-control sku_code" id="sku_code_`+ count +`" style="width:100%;"> <option value=""> `+val.kode_sku+` <option> </select></td>    
-                                <td><input type="text" name="description[]" class="form-control description" id="description_`+ count +`" value="`+val.description+`"/></td>    
-                                <td><input type="number" min="0" name="qty[]" class="form-control qty" id="qty_`+ count +`" value="`+val.qty+`"/></td>    
+                                <td><select name="sku_code[]" class="form-control sku_code" id="sku_code_`+ count +`" style="width:100%;" data-id="`+count+`" > <option value=""> `+val.kode_sku+` <option> </select></td>    
+                                <td><input type="text" name="description[]" class="form-control description" id="description_`+ count +`" value="`+val.description+`" data-id="`+count+`"/></td>    
+                                <td><input type="number" min="0" name="qty[]" class="form-control qty" id="qty_`+ count +`" value="`+val.qty+`" data-id="`+count+`"/></td>    
                                 <td><select class="form-control unit" name="unit" id="unit_`+count+`" data-id="`+count+`"><option value=""> `+val.unit+` </option></select></td>  
-                                <td><input type="number" min="0 "name="price[]" class="form-control price" id="price_`+count+`" value="`+val.price+`"/></td>    
-                                <td><input type="number" min="0 "name="discount[]" class="form-control discount" id="discount_`+count+`" value="`+val.disc_percent+`"/></td>    
-                                <td><input type="number" min="0 "name="total[]" class="form-control total" id="total_`+count+`" value="`+total+`"/></td>
-                                <td><input type="text" name="tax_code[]" class="form-control tax_code" id="tax_code_`+ count +`" value="`+val.tax_code+`"/></td> 
-                                <td><input type="text" name="order_number[]" class="form-control order_number" id="order_number_`+ count +`"  value="`+val.order_number+`"/></td>             
+                                <td><input type="number" min="0 "name="price[]" class="form-control price" id="price_`+count+`" value="`+val.price+`" data-id="`+count+`"/></td>    
+                                <td><input type="number" min="0 "name="discount[]" class="form-control discount" id="discount_`+count+`" value="`+val.disc_percent+`" data-id="`+count+`"/></td>    
+                                <td><input type="number" min="0 "name="total[]" class="form-control total" id="total_`+count+`" value="`+total+`" data-id="`+count+`"/></td>
+                                <td><input type="text" name="tax_code[]" class="form-control tax_code" id="tax_code_`+ count +`" value="`+val.tax_code+`" data-id="`+count+`"/></td> 
+                                <td><input type="text" name="order_number[]" class="form-control order_number" id="order_number_`+ count +`"  value="`+val.order_number+`" data-id="`+count+`"/></td>             
                                 <td><button type='button' class='btn btn-md btn-danger delete-row' id=`+count+`><i class='bi bi-trash' aria-hidden='true'></i></button></td>    
                             </tr>`
                     count++
@@ -812,7 +815,19 @@
                 tax_codes = $(this).find('.tax_code').val()
                 order_numbers = $(this).find('.order_number').val()
 
-                invoices.push({sku_id:sku_ids, sku_code : sku_codes, description:descriptions, qty:qtys, unit_id:unit_ids, unit_name:unit_names, price:prices, discount: discounts, total:totals, tax_code:tax_codes, order_number : order_numbers })
+                invoices.push({
+                    sku_id:sku_ids, 
+                    sku_code : sku_codes, 
+                    description:descriptions, 
+                    qty:qtys,
+                    unit_id:unit_ids, 
+                    unit_name:unit_names, 
+                    price:prices, 
+                    discount: discounts, 
+                    total:totals, 
+                    tax_code:tax_codes,
+                    order_number : order_numbers 
+                })
             })
 
 
@@ -877,7 +892,7 @@
 
                 invoices : jsonInvoices
             }
-            // console.log(data) 
+
             $.ajax({
                 type: "POST",
                 url: "/api/sales-invoice/create",
@@ -927,8 +942,14 @@
             },
         })
         .on("select2:select", function (e) {
-            var data = e.params.data;
+            var data = e.params.data
             var rowId =  $(this).attr('data-id')
+            var elementsTotal  =  document.getElementsByClassName('total')
+            var actGrandTotal = 0
+            grandTotal = 0
+
+            getItemUnit(rowId)
+
             $("#description_"+rowId).val(data.article)
             $("#qty_"+rowId).val(1)
             $("#price_"+rowId).val(data.price)
@@ -941,10 +962,6 @@
             total = (qty * price) - dicountItem
 
             $("#total_"+rowId).val(total)
-
-            var elementsTotal  =  document.getElementsByClassName('total')
-            var actGrandTotal = 0
-            grandTotal = 0
 
             for(var i = 0; i < elementsTotal.length; i++){
 
