@@ -36,6 +36,8 @@ class SalesInvoice extends Model
         'discount',
         'grand_total',
         'balance_due',
+        'state',
+        'is_deleted'
     ];
 
     public function customer(){

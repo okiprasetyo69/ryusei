@@ -13,6 +13,7 @@ use App\Http\Controllers\LocalityController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\SalesInvoiceController;
 use App\Http\Controllers\ItemStockController;
+use App\Http\Controllers\VendorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -88,9 +89,16 @@ Route::controller(ItemStockController::class)->group(function() {
     Route::get('/items-incoming/download/import', 'downloadFormatImportStockItems')->name('items_incoming.download.import');
 });
 
-
+// Sales Invoice
 Route::controller(SalesInvoiceController::class)->group(function() {
     Route::get('/sales-invoice', 'index')->name('sales_invoice');
     Route::get('/sales-invoice/add', 'add')->name('sales_invoice.add');
     Route::get('/sales-invoice/{id}', 'edit')->name('sales_invoice.edit');
+});
+
+// Vendors
+Route::controller(VendorController::class)->group(function() {
+    Route::get('/vendors', 'index')->name('vendors');
+    Route::get('/vendors/add', 'add')->name('vendors.add');
+    Route::get('/vendors/{id}', 'edit')->name('vendors.edit');
 });

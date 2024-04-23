@@ -1,6 +1,6 @@
 
 @extends('layout.home')
-@section('title','Sales Invoice')
+@section('title','Vendor')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.css" rel="stylesheet" />
@@ -12,10 +12,10 @@
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item ">
-                    <a href="#">Penjualan</a>
+                    <a href="#">Pembelian</a>
                 </li>
                 <li class="breadcrumb-item active">
-                    <a href="#">Invoice</a>
+                    <a href="#">Pemasok - Vendor</a>
                 </li>
             </ol>
         </nav>
@@ -27,35 +27,26 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row mt-2">
-                            <div class="col-md-2">   
+                            <div class="col-md-4">   
                                 <label> <strong><span>Pencarian</span></strong> </label>
                             </div>
-                            <div class="col-md-2">  
-                                <label> <strong><span>Start Date </span></strong> </label>
-                            </div>
-                            <div class="col-md-2">  
-                                <label> <strong><span>End Date </span></strong> </label>
-                            </div>
                         </div>
-                        <div class="row mt-2">
-                            <div class="col-md-2">
+                        <div class="row mt-2"> 
+                            <div class="col-md-4">
+                                <div class="form-group"> 
+                                    <select class="form-control" name="filter_type" id="filter_type"> 
+                                        <option value="1"> Nama </option>
+                                        <option value="2"> Kode </option>
+                                        <option value="3"> Kategori </option>
+                                        <option value="4"> Phone </option>
+                                        <option value="5"> Mobile </option>
+                                        <option value="6"> Email </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <input type="text" name="filter_name" class="form-control" id="filter_name" placeholder="Masukkan kata kunci" autofocus/>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group"> 
-                                    <input type="text" name="start_date" class="form-control" id="start_date"/>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group"> 
-                                    <input type="text" name="end_date" class="form-control" id="end_date" />
-                                </div>
-                            </div>
-                            <div class="col-md-2"> 
-                                <div class="form-group"> 
-                                    <button type="button" class="btn btn-success" style="border-radius:50px;"> <i class="bi bi-search"></i> Cari </button>
                                 </div>
                             </div>
                         </div>
@@ -63,49 +54,12 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body"> 
-                            <h5 class="card-title">Status</h5>
-                            <div class="row mt-2"> 
-                                <div class="col-md-2">
-                                    <ul class="list-group"> 
-                                        <li class="list-group-item">
-                                            <input class="form-check-input" type="checkbox" value="0" id="stateOpen">
-                                            Open
-                                        </li>
-                                        <li class="list-group-item">
-                                            <input class="form-check-input" type="checkbox" value="1" id="stateClosed">
-                                            Closed
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-2">
-                                    <ul class="list-group"> 
-                                        <li class="list-group-item">
-                                            <input class="form-check-input" type="checkbox" value="2" id="stateDraft">
-                                            Draft
-                                        </li>
-                                        <li class="list-group-item">
-                                            <input class="form-check-input" type="checkbox" value="3" id="stateVoid">
-                                            Void
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div> 
-                    </div> 
-                </div> 
-            </div>
-
-
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
                         <div class="row mt-2"> 
                             <div class="col md-4">
-                                <button type="button" class="btn btn-primary rounded-pill" id="btn-add">
+                                <button type="button" class="btn btn-sm btn-primary rounded-pill" id="btn-add">
                                     <i class="bi bi-plus-circle"></i> Tambah
                                 </button>
                             </div>
@@ -113,18 +67,18 @@
                         <div class="row mt-2">
                             <div class="col-md-12">
                                 <div class="">
-                                    <table class="table table-striped" id="table-invoice">
+                                    <table class="table table-striped" id="table-vendor">
                                         <thead>
                                             <tr>
                                                 <th scope="col">#</th>
-                                                <th scope="col">Doc No.</th>
-                                                <th scope="col">Date</th>
-                                                <th scope="col">Due Date</th>
-                                                <th scope="col">Customer</th>
-                                                <th scope="col">Sales Person</th>
-                                                <th scope="col">Amount</th>
-                                                <th scope="col">Amt Due</th>
-                                                <th scope="col">State</th>
+                                                <th scope="col">Kode</th>
+                                                <th scope="col">Nama</th>
+                                                <th scope="col">Kategori</th>
+                                                <th scope="col">Telephone</th>
+                                                <th scope="col">Mobile Phone</th>
+                                                <th scope="col">Email</th>
+                                                <th scope="col">Tax</th>
+                                                <th scope="col">Balance</th>
                                                 <th scope="col">Aksi</th>
                                             </tr>
                                         </thead>
@@ -143,42 +97,56 @@
 </main>
 
 <script type="text/javascript"> 
-    var name
+    var name, vendor_code, category, phone, mobile, email
     var table
     $(document).ready(function () {
-        
-        $("#start_date").datepicker({
-            format: 'dd-mm-yyyy',
-            defaultDate: new Date(),
-        });
-        $("#end_date").datepicker({
-            format: 'dd-mm-yyyy',
-            defaultDate: new Date(),
-        });
 
-        loadInvoice()
+        loadVendor()
 
         $("#btn-add").on("click", function(e){
             e.preventDefault()
-            window.location.href = "/sales-invoice/add"
+            window.location.href = "/vendors/add"
         })
 
         // filter invoice
         $("#filter_name").on("keyup", function(e){
             e.preventDefault()
-            name = $("#filter_name").val()
-            // loadInvoice(name)
-        })
+            var type = $("#filter_type").val()
 
+            if(type == 1){
+                name = $("#filter_name").val()
+            }
+            if(type == 2){
+                vendor_code = $("#filter_name").val()
+            }
+
+            if(type == 3){
+                category = $("#filter_name").val()
+            }
+
+            if(type == 4){
+                phone = $("#filter_name").val()
+            }
+
+            if(type == 5){
+                mobile = $("#filter_name").val()
+            }
+            
+            if(type == 6){
+                email = $("#filter_name").val()
+            }
+
+            loadVendor(name, vendor_code, category, phone, mobile, email)
+        })
 
     });
 
-    function loadInvoice(name = null){
+    function loadVendor(name = null, vendor_code=null, category=null, phone=null, mobile=null, email=null){
         if (table != null) {
             table.destroy();
         }
 
-        table =  $("#table-invoice").DataTable(
+        table =  $("#table-vendor").DataTable(
            {
                 lengthChange: false,
                 searching: false,
@@ -197,7 +165,7 @@
                     previous: "‹",
                     next: "›",
                 },
-                info: "Menampilkan _START_ dari _END_ dari _TOTAL_ Kategori",
+                info: "Menampilkan _START_ dari _END_ dari _TOTAL_ Vendor",
                 aria: {
                         paginate: {
                             previous: "Previous",
@@ -206,10 +174,15 @@
                     },
                 },
                 ajax:{
-                    url :  '/api/sales-invoice',
+                    url :  '/api/vendor',
                     type: "GET",
                     data: {
                         name: name,
+                        vendor_code: vendor_code, 
+                        category : category,
+                        phone : phone,
+                        mobile : mobile,
+                        email : email
                         // page : 1,
                         // limit : 10
                     }
@@ -261,13 +234,7 @@
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
-                            var invoice_number = ""
-                            if(rowData.invoice_number == null){
-                                invoice_number = "-"
-                            } else {
-                                invoice_number = rowData.invoice_number
-                            }
-                            $(td).html(invoice_number);
+                            $(td).html(rowData.vendor_code);
                         },
                     },
                     {
@@ -275,13 +242,7 @@
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
-                            var dates = rowData.date
-                            date = new Date(dates)
-                            month = date.toLocaleString('default', { month: 'long' })
-                            year = date.getFullYear()
-                            format = date.getDate() + "-"+ month +"-"+ year
-
-                            $(td).html(format);
+                            $(td).html(rowData.name);
                         },
                     },
                     {
@@ -289,13 +250,7 @@
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
-                            var due_date = rowData.due_date
-                            date = new Date(due_date)
-                            month = date.toLocaleString('default', { month: 'long' })
-                            year = date.getFullYear()
-                            format = date.getDate() + "-"+ month +"-"+ year
-
-                            $(td).html(format);
+                            $(td).html(rowData.category);
                         },
                     },
                     {
@@ -303,13 +258,7 @@
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
-                            var customer = ""
-                            if(rowData.customer == null){
-                                due_date = "-"
-                            } else {
-                                customer = rowData.customer.name
-                            }
-                            $(td).html(customer);
+                            $(td).html(rowData.phone);
                         },
                     },
                     {
@@ -317,13 +266,7 @@
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
-                            var sales_person = ""
-                            if(rowData.sales_person == null){
-                                sales_person = "-"
-                            } else {
-                                sales_person = sales_person.sales_person
-                            }
-                            $(td).html(sales_person);
+                            $(td).html(rowData.mobile);
                         },
                     },
                     {
@@ -331,13 +274,7 @@
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
-                            var grand_total = ""
-                            if(rowData.grand_total == null){
-                                grand_total = "-"
-                            } else {
-                                grand_total = rowData.grand_total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })
-                            }
-                            $(td).html(grand_total);
+                            $(td).html(rowData.email);
                         },
                     },
                     {
@@ -345,13 +282,16 @@
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
-                            var grand_total = ""
-                            if(rowData.grand_total == null){
-                                grand_total = "-"
+                            var checked = ""
+                            var html = ""
+                            if(rowData.is_tax_on_purchase == 1){
+                                checked = "checked"
+                                html = "<input class='form-check-input tax' type='checkbox' id='is_tax_on_purchase' value="+rowData.is_tax_on_purchase+" "+checked+">"
                             } else {
-                                grand_total = rowData.grand_total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })
+                                html = "<input class='form-check-input tax' type='checkbox' id='is_tax_on_purchase' value="+rowData.is_tax_on_purchase+" >"
                             }
-                            $(td).html(grand_total);
+                            $(td).html(html);
+                          
                         },
                     },
                     {
@@ -359,29 +299,7 @@
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
-                            var state = ""
-                            if( (rowData.state == 0) && (rowData.is_deleted == 0) ){
-                                state = "Open"
-                                $("#stateOpen").prop("checked", true)
-                                $("#stateClosed").prop("checked", true)
-                            }
-
-                            if((rowData.state == 1) && (rowData.is_deleted == 0)){
-                                state = "Close"
-                                $("#stateClosed").prop("checked", true)
-                            }
-
-                            if((rowData.state == 2) && (rowData.is_deleted == 0)){
-                                state = "Draft"
-                                $("#stateDraft").prop("checked", true)
-                            }
-
-                            if((rowData.state == 3) && (rowData.is_deleted == 1)){
-                                state = "Void"
-                                $("#stateVoid").prop("checked", true)
-                            }
-
-                            $(td).html(state);
+                            $(td).html(rowData.balance);
                         },
                     },
                     {
@@ -389,8 +307,7 @@
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
-                            console.log(rowData)
-                            var html = "<a href='/sales-invoice/"+rowData.id+"' class='btn btn-sm btn-warning'> Detail </a> <button type='button' class='btn btn-sm btn-danger' onclick='confirm("+rowData.id+")'> Hapus </button>"
+                            var html = "<a href='/vendors/"+rowData.id+"' class='btn btn-sm btn-warning'> Detail </a> <button type='button' class='btn btn-sm btn-danger' onclick='confirm("+rowData.id+")'> Hapus </button>"
                             $(td).html(html);
                         },
                     },
@@ -409,12 +326,7 @@
             dataType: "JSON",
             success: function (response) {
                 var data = response.data
-                $("#modalWarehouse").modal("show")
-                $(".modal-title").text("Ubah Gudang")
-                $("#btn-save").text("Ubah")
-                $("#id").val(data.id)
-                $("#name").val(data.name)
-                $("#address").val(data.address)
+                
             }
         });
     }
@@ -440,22 +352,22 @@
     function remove(id){
         $.ajax({
             type: "POST",
-            url: "/api/sales-invoice/delete",
+            url: "/api/vendor/delete",
             data: {
                 id : id,
             },
             dataType: "JSON",
             success: function (response) {
-                console.log(response)
+
                 if(response.status == 200){
                     $.confirm({
                         title: 'Pesan',
-                        content: 'Data Sales Invoice berhasil dihapus !',
+                        content: 'Data Vendor berhasil dihapus !',
                         buttons: {
                             Ya: {
                                 btnClass: 'btn-success any-other-class',
                                 action: function(){
-                                    loadInvoice()
+                                    loadVendor()
                                 }
                             },
                         }

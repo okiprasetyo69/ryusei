@@ -18,6 +18,7 @@ use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\ItemStockController;
 use App\Http\Controllers\InvoiceCategoryController;
 use App\Http\Controllers\SalesInvoiceController;
+use App\Http\Controllers\VendorController;
 
 use App\Http\Controllers\HomePageController;
 
@@ -173,4 +174,12 @@ Route::controller(SalesInvoiceController::class)->group(function() {
     Route::post('/sales-invoice/detail', 'detail')->name('sales-invoice.detail');
     Route::post('/sales-invoice/detail-invoice-item', 'detailInvoice')->name('sales-invoice.detail.invoice-item');
     Route::post('/sales-invoice/detail-invoice-item/delete', 'deleteDetailInvoice')->name('sales-invoice.detail.invoice-item.delete');
+});
+
+// Manage Vendor
+Route::controller(VendorController::class)->group(function() {
+    Route::get('/vendor', 'getVendor')->name('vendor.data');
+    Route::post('/vendor/create', 'create')->name('vendor.create');
+    Route::post('/vendor/delete', 'delete')->name('vendor.delete');
+    Route::post('/vendor/detail', 'detail')->name('vendor.detail');
 });

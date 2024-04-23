@@ -94,7 +94,7 @@
         </a>
       </li>
       <li>
-        <a href="/items-incoming">
+        <a href="#">
           <i class="bi bi-circle"></i><span>Barang Masuk</span>
         </a>
       </li>
@@ -165,13 +165,13 @@
     </a>
     <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
       <li>
-        <a href="#">
+        <a href="/items-incoming">
           <i class="bi bi-circle"></i><span>Transaksi Pembelian</span>
         </a>
       </li>
       <li>
-        <a href="#">
-          <i class="bi bi-circle"></i><span>Kontak Pemasok</span>
+        <a href="/vendors">
+          <i class="bi bi-circle"></i><span>Pemasok / Vendor</span>
         </a>
       </li>
       <li>

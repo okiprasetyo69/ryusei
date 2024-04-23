@@ -247,9 +247,7 @@
                                 <div class="row mb-3">
                                     <label for="" class="col-sm-4 col-form-label">Sales Person</label>
                                     <div class="col-sm-6">
-                                        <select class="form-control" name="sales_person" id="sales_person"> 
-                                           
-                                        </select>
+                                        <input type="text" class="form-control" id="sales_person" />
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -993,8 +991,8 @@
             dataType: "JSON",
             success: function (response) {
                 var data = response.data
-               
-                if(invoive_form_type == 1){
+      
+                
                     $("#table-add-invoice-item").show()
                     $("#table-add-invoice-summary").hide()
                     $("#table-add-invoice-summary").html()
@@ -1044,7 +1042,7 @@
                     $('#tbody-invoice-item').append(row)
                     getSkuCode()
                     
-                }
+                
                
             }
        });

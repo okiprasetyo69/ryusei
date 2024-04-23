@@ -246,9 +246,7 @@
                                 <div class="row mb-3">
                                     <label for="" class="col-sm-4 col-form-label">Sales Person</label>
                                     <div class="col-sm-6">
-                                        <select class="form-control" name="sales_person" id="sales_person"> 
-                                           
-                                        </select>
+                                        <input type="text" class="form-control" id="sales_person" />
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -839,14 +837,6 @@
                 return 
             }
         
-            if(warehouseId == ""){
-                $.alert({
-                    title: 'Pesan !',
-                    content: 'Gudang tidak boleh kosong. Silakan pilih !',
-                });
-                return 
-            }
-
             if(!invoices.length){
                 $.alert({
                     title: 'Pesan !',

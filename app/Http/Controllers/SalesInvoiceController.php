@@ -65,7 +65,6 @@ class SalesInvoiceController extends Controller
                 'customer_id' => 'required',
                 'date' => 'required',
                 'due_date' => 'required',
-                'warehouse_id' => 'required',
                 'invoices' => 'required',
             ]
         );

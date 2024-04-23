@@ -6,6 +6,8 @@ use App\Models\SalesInvoice;
 use App\Models\SalesInvoiceDetail;
 use App\Models\Product;
 use App\Models\ItemUnit;
+use App\Services\Constants\SalesInvoiceConstantInterface;
+use App\Services\Constants\WarehouseConstantInterface;
 use App\Services\Interfaces\SalesInvoiceService;
 
 use Exception;
@@ -163,7 +165,13 @@ use Yajra\DataTables\Facades\DataTables;
             $salesInvoice->due_date =  $request->due_date;
             $salesInvoice->day =  $request->day;
             $salesInvoice->category_invoice_id =  $request->category_invoice_id;
-            $salesInvoice->warehouse_id =  $request->warehouse_id;
+
+            if($request->warehouse_id == null){
+                $salesInvoice->warehouse_id =  WarehouseConstantInterface::CENTER_WAREHOUSE;
+            } else {
+                $salesInvoice->warehouse_id =  $request->warehouse_id;
+            }
+
             $salesInvoice->sales_person =  $request->sales_person;
             $salesInvoice->journal_memo =  $request->journal_memo;
             $salesInvoice->note =  $request->note;
@@ -175,6 +183,8 @@ use Yajra\DataTables\Facades\DataTables;
             $salesInvoice->discount_invoice =  $request->discount_invoice;
             $salesInvoice->grand_total =  $request->grand_total;
             $salesInvoice->balance_due =  $request->balance_due;
+            $salesInvoice->state =  SalesInvoiceConstantInterface::OPEN;
+            $salesInvoice->is_deleted = SalesInvoiceConstantInterface::INVOICE_IS_ACKTIVE;
 
             // store to database invoices
             $salesInvoice->save();
@@ -237,8 +247,6 @@ use Yajra\DataTables\Facades\DataTables;
             $discount = null;
             $taxCode = null;
             $orderNumber = "";
-
-            // dd($invoices);
 
             foreach ($invoices as $key => $value) {
                
@@ -310,7 +318,13 @@ use Yajra\DataTables\Facades\DataTables;
             $salesInvoice->due_date =  $request->due_date;
             $salesInvoice->day =  $request->day;
             $salesInvoice->category_invoice_id =  $request->category_invoice_id;
-            $salesInvoice->warehouse_id =  $request->warehouse_id;
+
+            if($request->warehouse_id == null){
+                $salesInvoice->warehouse_id =  WarehouseConstantInterface::CENTER_WAREHOUSE;
+            } else {
+                $salesInvoice->warehouse_id =  $request->warehouse_id;
+            }
+            
             $salesInvoice->sales_person =  $request->sales_person;
             $salesInvoice->journal_memo =  $request->journal_memo;
             $salesInvoice->note =  $request->note;
@@ -359,7 +373,9 @@ use Yajra\DataTables\Facades\DataTables;
         try{
 
             $salesInvoice = $this->salesInvoice::where("id", $request->id)->first();
-            $salesInvoiceDetail = SalesInvoiceDetail::where("invoice_id",  $salesInvoice->id);
+            // $salesInvoiceDetail = SalesInvoiceDetail::where("invoice_id",  $salesInvoice->id);
+            $salesInvoice->state =  SalesInvoiceConstantInterface::VOID;
+            $salesInvoice->is_deleted = SalesInvoiceConstantInterface::INVOICE_IS_DELETED;
 
             if($salesInvoice == null){
                 return response()->json([
@@ -369,11 +385,11 @@ use Yajra\DataTables\Facades\DataTables;
                 ]);
             }
 
-            $salesInvoiceDetail->delete();
-            $salesInvoice->delete();
+            // $salesInvoiceDetail->save();
+            $salesInvoice->save();
             return response()->json([
                 'status' => 200,
-                'message' => 'Success delete sales invoice.',
+                'message' => 'Success deleted sales invoice.',
             ]);
 
         }catch(Exception $ex){
