@@ -379,6 +379,8 @@
                             if((rowData.state == 3) && (rowData.is_deleted == 1)){
                                 state = "Void"
                                 $("#stateVoid").prop("checked", true)
+                                $("#stateOpen").prop("checked", false)
+                                $("#stateClosed").prop("checked", false)
                             }
 
                             $(td).html(state);
