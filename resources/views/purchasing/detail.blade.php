@@ -1,6 +1,6 @@
 
 @extends('layout.home')
-@section('title','Sales Invoice')
+@section('title','Purchase Invoice')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.css" rel="stylesheet" />
@@ -15,12 +15,12 @@
     <div class="pagetitle">
         <h1>Management Transaksi</h1>
         <nav>
-            <ol class="breadcrumb">
+        <ol class="breadcrumb">
                 <li class="breadcrumb-item ">
-                    <a href="#">Penjualan</a>
+                    <a href="#">Pembelian</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="/sales-invoice">Invoice</a>
+                    <a href="/purchasing">Purchase Invoice</a>
                 </li>
                 <li class="breadcrumb-item active">
                     <a href="#">Detail</a>
@@ -38,20 +38,20 @@
                     <div class="card-body">
                         <div class="row mt-2">
                             <div class="col-md-2"> 
-                                <label> <strong> Customer </strong> </label>
+                                <label> <strong> Vendor </strong> </label>
                             </div>
                            <div class="col-md-2"></div>
                            <div class="col-md-2"></div>
                            <div class="col-md-2"></div>
                            <div class="col-md-2"></div>
                            <div class="col-md-2">
-                                <label> <b> Import File </b> </label>
+                                <!-- <label> <b> Import File </b> </label> -->
                            </div>
                         </div>
                         <div class="row mt-2">
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    <select name="sales_channel_id" class="form-control" id="sales_channel_id"> <option value=""> - Pilih Customer - </option> </select>
+                                    <select name="vendor_id" class="form-control" id="vendor_id"> <option value=""> - Pilih Vendor - </option> </select>
                                 </div>
                             </div>
                             <div class="col-md-2"></div>
@@ -59,9 +59,9 @@
                             <div class="col-md-2"></div>
                             <div class="col-md-2"></div>
                             <div class="col-md-2">
-                                <button type="button" class="btn btn-md btn-success float-right" id="btn-import" data-bs-toggle="modal" data-bs-target="#modalImportInvoice">
+                                <!-- <button type="button" class="btn btn-md btn-success float-right" id="btn-import" data-bs-toggle="modal" data-bs-target="#modalImportInvoice">
                                     <i class="bi bi-file-earmark-excel-fill"></i> Import
-                                </button>
+                                </button> -->
                             </div>
                         </div>
                     </div>
@@ -74,21 +74,21 @@
                         <div class="mt-3">
                             <input type="hidden" class="form-control" id="id" />
                             <div class="row mb-3">
-                                <label for="" class="col-sm-4 col-form-label">Cust. Code</label>
+                                <label for="" class="col-sm-4 col-form-label">Vendor. Code</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="customer_code" name="customer_code" readonly>
+                                    <input type="text" class="form-control" id="vendor_code" name="vendor_code" readonly>
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <label for="" class="col-sm-4 col-form-label">Cust. Phone</label>
+                                <label for="" class="col-sm-4 col-form-label">Vendor. Phone</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="customer_phone" name="customer_phone">
+                                    <input type="text" class="form-control" id="vendor_phone" name="vendor_phone">
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <label for="" class="col-sm-4 col-form-label">Cust. Ref</label>
+                                <label for="" class="col-sm-4 col-form-label">Vendor. Ref</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control" id="customer_reference">
+                                <input type="text" class="form-control" id="vendor_reference">
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -118,16 +118,6 @@
                                 <label for="" class="col-sm-4 col-form-label">Batch No.</label>
                                 <div class="col-sm-8">
                                     <input type="text" class="form-control" id="batch_number" name="batch_number">
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <label for="" class="col-sm-4 col-form-label">Type</label>
-                                <div class="col-sm-8">
-                                    <select class="form-control" name="type" id="type"> 
-                                        <option value=""> - Pilih Tipe -  </option>
-                                        <option value="1"> Standard </option>
-                                        <option value="2"> Service </option>
-                                    </select>
                                 </div>
                             </div>
                         </div> 
@@ -206,7 +196,6 @@
                                                 <th scope="col">Disc %</th>
                                                 <th scope="col">Total</th>
                                                 <th scope="col">Tax Code</th>
-                                                <th scope="col">No Order</th>
                                                 <th scope="col">Aksi</th>
                                             </tr>
                                         </thead>
@@ -244,12 +233,6 @@
 
                         <div class="row mt-2"> 
                             <div class="col-lg-4">
-                                <div class="row mb-3">
-                                    <label for="" class="col-sm-4 col-form-label">Sales Person</label>
-                                    <div class="col-sm-6">
-                                        <input type="text" class="form-control" id="sales_person" />
-                                    </div>
-                                </div>
                                 <div class="row mb-3">
                                     <label for="" class="col-sm-4 col-form-label">Journal Memo</label>
                                     <div class="col-sm-6">
@@ -331,7 +314,7 @@
                     <div class="col-md-4"></div>
                     <div class="col-md-4 text-center">
                         <button type="button" class="btn btn-success btn-save">Simpan</button>
-                        <a href="/sales-invoice" class="btn btn-secondary">Batal</a>
+                        <a href="/purchasing" class="btn btn-secondary">Batal</a>
                     </div>
                     <div class="col-md-4"></div>
                 </div>
@@ -374,7 +357,7 @@
 <script type="text/javascript"> 
 
     var table, count, kodeSku, description , qty, price , discPercent, taxCode, orderNumber, total, unit, grandTotal, salesChannelId, invoice_id
-    var dataInvoice = '<?php  echo json_encode($invoice) ;?>'
+    var dataInvoice = '<?php  echo json_encode($purchaseInvoice) ;?>'
 
     $(document).ready(function () {
 
@@ -403,20 +386,20 @@
         var reversedDueDate = due_date[2] + '-' + due_date[1] + '-' + due_date[0]
        
         // Assign dan passing data value into elements
-        var customer_id = dataInvoice.customer_id
+        var vendor_id = dataInvoice.vendor_id
         var warehouse_id =  dataInvoice.warehouse_id
         var discount = ((dataInvoice.discount_invoice / 100) * dataInvoice.subtotal)
 
-        getSalesChannel(customer_id)
-        getSalesChannel()
+        getVendor(vendor_id)
+        getVendor()
         getWarehouse(warehouse_id)
-        getInvoiceCategory(dataInvoice.category_invoice_id)
+        // getInvoiceCategory(dataInvoice.category_invoice_id)
         
         loadDetailInvoice(invoice_id, invoive_form_type)
 
         $("#id").val(dataInvoice.id)
-        $("#customer_reference").val(dataInvoice.customer_reference)
-        $("#customer_phone").val(dataInvoice.customer_phone)
+        $("#vendor_reference").val(dataInvoice.vendor_reference)
+        $("#vendor_phone").val(dataInvoice.vendor_phone)
         $('#date').val(reversedDate);
         $('#due_date').val(reversedDueDate);
         $("#invoice_number").val(dataInvoice.invoice_number)
@@ -431,7 +414,7 @@
         $("#additional_char").val(dataInvoice.additional_char)
         $("#grand_total").val(dataInvoice.grand_total)
         $("#balance_due").val(dataInvoice.balance_due)
-        $("#type").val(dataInvoice.type).attr('selected',true)
+        // $("#type").val(dataInvoice.type).attr('selected',true)
        
         $("#date").datepicker({
             format: 'dd-mm-yyyy',
@@ -509,7 +492,6 @@
                         <td><input type="number" min="0 "name="discount[]" class="form-control discount" id="discount_`+count+`" data-id="`+count+`"/></td>    
                         <td><input type="number" min="0 "name="total[]" class="form-control total" id="total_`+count+`" data-id="`+count+`" readonly /></td>
                         <td><input type="text" name="tax_code[]" class="form-control tax_code" id="tax_code_`+ count +`" data-id="`+count+`"/></td> 
-                        <td><input type="text" name="order_number[]" class="form-control order_number" id="order_number_`+ count +`"/></td>             
                         <td><button type='button' class='btn btn-md btn-danger delete-row' id=`+count+`><i class='bi bi-trash' aria-hidden='true'></i></button></td>    
                     </tr>`
                 $('#tbody-invoice-item').append(row)
@@ -763,12 +745,6 @@
                         taxCode = ""
                     }
 
-                    if(value[7] != undefined){
-                        orderNumber = value[7]
-                    } else {
-                        orderNumber = ""
-                    }
-
                     total = qty * price
                     arrDataSheet.push({
                         kode_sku : kodeSku,
@@ -778,7 +754,6 @@
                         price : price,
                         disc_percent : discPercent,
                         tax_code : taxCode,
-                        order_number : orderNumber,
                         total : total
                     })
             
@@ -829,20 +804,18 @@
         $(".btn-save").on("click", function(e){
             e.preventDefault()
             var id = $("#id").val()
-            salesChannelId = $("#sales_channel_id option:selected").val()
-            var customerCode = $("#customer_code").val()
-            var customerPhone = $("#customer_phone").val()
-            var customerReference = $("#customer_reference").val()
+            vendorId = $("#vendor_id option:selected").val()
+            var vendorCode = $("#vendor_code").val()
+            var vendorPhone = $("#vendor_phone").val()
+            var vendorReference = $("#vendor_reference").val()
             var categoryInvoice = $("#invoice_category_id option:selected").val()
             var invoiceNumber = $("#invoice_number").val()
             var batchNumber = $("#batch_number").val()
-            var type = $("#type option:selected").val()
             var date = $("#date").val()
             var dueDate = $("#due_date").val()
             var day = $("#day").val()
             var invoiceType = $("#invoice_form_type option:selected").val()
             var warehouseId = $("#warehouse_id option:selected").val()
-            var salesPerson = $("#sales_person").val()
             var journalMemo = $("#journal_memo").val()
             var note = $("#note").val()
             var subtotal = $("#subtotal").val()
@@ -872,34 +845,31 @@
                 discounts = $(this).find('.discount').val()
                 totals = $(this).find('.total').val()
                 tax_codes = $(this).find('.tax_code').val()
-                order_numbers = $(this).find('.order_number').val()
 
                 invoices.push({
                     sku_id:sku_ids, 
-                    sku_code : sku_codes,
+                    sku_code : sku_codes, 
                     description:descriptions, 
-                    qty:qtys, 
+                    qty:qtys,
                     unit_id:unit_ids, 
                     unit_name:unit_names, 
                     price:prices, 
                     discount: discounts, 
                     total:totals, 
-                    tax_code:tax_codes, 
-                    order_number : order_numbers 
+                    tax_code:tax_codes,
                 })
             })
 
             console.log(invoices) 
 
-            if(salesChannelId == ""){
+            if(vendorId == ""){
                 $.alert({
                     title: 'Pesan !',
-                    content: 'Customer tidak boleh kosong. Silakan Pilih !',
+                    content: 'Vendor tidak boleh kosong. Silakan Pilih !',
                 });
                 return 
             }
-        
-
+           
             if(!invoices.length){
                 $.alert({
                     title: 'Pesan !',
@@ -917,22 +887,21 @@
 
             var data = {
                 id: id,
-                customer_id : salesChannelId,
-                customer_code : customerCode,
-                customer_phone : customerPhone,
-                customer_reference : customerReference,
+                vendor_id : vendorId,
+                vendor_code : vendorCode,
+                vendor_phone : vendorPhone,
+                vendor_reference : vendorReference,
                 category_invoice_id : categoryInvoice,
                 invoice_number : invoiceNumber,
                 batch_number : batchNumber,
 
-                type : type,
                 date : convertDate,
                 due_date : convertDueDate,
                 day : day,
 
                 invoice_type : invoiceType,
                 warehouse_id : warehouseId,
-                sales_person : salesPerson,
+
                 journal_memo : journalMemo,
                 note : note,
                 subtotal : subtotal,
@@ -951,19 +920,19 @@
             
             $.ajax({
                 type: "POST",
-                url: "/api/sales-invoice/update",
+                url: "/api/purchasing-invoice/update",
                 data: data,
                 dataType: "JSON",
                 success: function (response) {
                     if(response.status == 200){
                         $.confirm({
                             title: 'Pesan ',
-                            content: 'Data Sales Invoice berhasil diperbarui !',
+                            content: 'Data Purchase Invoice berhasil diperbarui !',
                             buttons: {
                                 Ya: {
                                     btnClass: 'btn-success any-other-class',
                                     action: function(){
-                                        window.location.href = '/sales-invoice'
+                                        window.location.href = '/purchasing'
                                     }
                                 },
                             }
@@ -984,59 +953,50 @@
             dataType: "JSON",
             success: function (response) {
                 var data = response.data
-      
-                
-                    $("#table-add-invoice-item").show()
-                    $("#table-add-invoice-summary").hide()
-                    $("#table-add-invoice-summary").html()
-                    count = $('#table-add-invoice-item tr').length
-                    row = ""
+                $("#table-add-invoice-item").show()
+                $("#table-add-invoice-summary").hide()
+                $("#table-add-invoice-summary").html()
+                count = $('#table-add-invoice-item tr').length
+                row = ""
 
-                    $.each(data, function (i, val) { 
-                        var unit_name = ""
-                        var unit_id = ""
-                        taxCode = ""
-                        orderNumber = ""
-                        discPercent = null
+                $.each(data, function (i, val) { 
+                    var unit_name = ""
+                    var unit_id = ""
+                    taxCode = ""
+                    discPercent = null
 
-                        if(val.unit != null){
-                            unit_name = val.unit.name
-                        }
+                    if(val.unit != null){
+                        unit_name = val.unit.name
+                    }
 
-                        if(val.unit_id != null){
-                            unit_id == val.unit_id
-                        } 
+                    if(val.unit_id != null){
+                        unit_id == val.unit_id
+                    } 
                   
-                        if(val.tax_code != null){
-                            taxCode = val.tax_code
-                        }
-                        if(val.order_number != null){
-                            orderNumber = val.order_number
-                        }
+                    if(val.tax_code != null){
+                        taxCode = val.tax_code
+                    }
 
-                        if(val.discount != null){
-                            discPercent = val.discount
-                        }
-                        row += `<tr class="text-center"> 
-                                    <td>`+count+`</td>
-                                    <td><select name="sku_code[]" class="form-control sku_code" id="sku_code_`+ count +`" style="width:100%;" data-id="`+count+`" ><option value="`+val.sku_id+`" selected> `+val.sku_code+` </option> </select></td>    
-                                    <td><input type="text" name="description[]" class="form-control description" id="description_`+ count +`" data-id="`+count+`" value="`+val.description+`"/></td>    
-                                    <td><input type="number" min="0" name="qty[]" class="form-control qty" id="qty_`+ count +`" data-id="`+count+`" value="`+val.qty+`"/></td>    
-                                    <td><select class="form-control unit" name="unit" id="unit_`+count+`" data-id="`+count+`" data-id="`+count+`"> <option value="`+ unit_id +`"> `+ unit_name +` </option></select></td>  
-                                    <td><input type="number" min="0 "name="price[]" class="form-control price" id="price_`+count+`" data-id="`+count+`" value="`+val.price+`"/></td>    
-                                    <td><input type="number" min="0 "name="discount[]" class="form-control discount" id="discount_`+count+`" data-id="`+count+`" value="`+discPercent+`"/></td>    
-                                    <td><input type="number" min="0 "name="total[]" class="form-control total" id="total_`+count+`" data-id="`+count+`" value="`+val.total+`" readonly /></td>
-                                    <td><input type="text" name="tax_code[]" class="form-control tax_code" id="tax_code_`+ count +`" data-id="`+count+`" value="`+taxCode+`"/></td> 
-                                    <td><input type="text" name="order_number[]" class="form-control order_number" id="order_number_`+ count +`" value="`+ orderNumber+`" /></td>             
-                                    <td><button type='button' class='btn btn-md btn-danger delete-row' id=`+count+`><i class='bi bi-trash' aria-hidden='true'></i></button></td>    
-                                </tr>`
-                        count++
-                    });
-                    $('#tbody-invoice-item').append(row)
-                    getSkuCode()
+                    if(val.discount != null){
+                        discPercent = val.discount
+                    }
                     
-                
-               
+                    row += `<tr class="text-center"> 
+                                <td>`+count+`</td>
+                                <td><select name="sku_code[]" class="form-control sku_code" id="sku_code_`+ count +`" style="width:100%;" data-id="`+count+`" ><option value="`+val.sku_id+`" selected> `+val.sku_code+` </option> </select></td>    
+                                <td><input type="text" name="description[]" class="form-control description" id="description_`+ count +`" data-id="`+count+`" value="`+val.description+`"/></td>    
+                                <td><input type="number" min="0" name="qty[]" class="form-control qty" id="qty_`+ count +`" data-id="`+count+`" value="`+val.qty+`"/></td>    
+                                <td><select class="form-control unit" name="unit" id="unit_`+count+`" data-id="`+count+`" data-id="`+count+`"> <option value="`+ unit_id +`"> `+ unit_name +` </option></select></td>  
+                                <td><input type="number" min="0 "name="price[]" class="form-control price" id="price_`+count+`" data-id="`+count+`" value="`+val.price+`"/></td>    
+                                <td><input type="number" min="0 "name="discount[]" class="form-control discount" id="discount_`+count+`" data-id="`+count+`" value="`+discPercent+`"/></td>    
+                                <td><input type="number" min="0 "name="total[]" class="form-control total" id="total_`+count+`" data-id="`+count+`" value="`+val.total+`" readonly /></td>
+                                <td><input type="text" name="tax_code[]" class="form-control tax_code" id="tax_code_`+ count +`" data-id="`+count+`" value="`+taxCode+`"/></td> 
+                                <td><button type='button' class='btn btn-md btn-danger delete-row' id=`+count+`><i class='bi bi-trash' aria-hidden='true'></i></button></td>    
+                            </tr>`
+                    count++
+                });
+                $('#tbody-invoice-item').append(row)
+                getSkuCode()
             }
        });
     }
@@ -1160,31 +1120,31 @@
         });
     }
 
-    function getSalesChannel(salesChannelId = null){
+    function getVendor(vendorId = null){
         $.ajax({
             type: "GET",
-            url: "/api/sales-channel",
+            url: "/api/vendors",
             data: {
-                id : salesChannelId
+                id : vendorId
             },
             dataType: "JSON",
             success: function (response) {
                 var data = response.data
                 var option = ""
                 var selected = ""
-                $("#sales_channel_id").html()
+                $("#vendor_id").html()
                 
                 $.each(data, function (i, val) { 
-                    if(val.id == salesChannelId){
+                    if(val.id == vendorId){
                         selected = "selected"
                     }
                     option += "<option value="+val.id+" "+selected+"> "+val.name+" </option>"
                 });
 
-                $("#sales_channel_id").append(option)
+                $("#vendor_id").append(option)
 
-                if(salesChannelId != null){
-                    $("#customer_code").val(data[0].code)
+                if(vendorId != null){
+                    $("#vendor_code").val(data[0].vendor_code)
                 }
             }
         });

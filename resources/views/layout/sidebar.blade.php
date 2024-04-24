@@ -94,7 +94,7 @@
         </a>
       </li>
       <li>
-        <a href="#">
+        <a href="/items-incoming">
           <i class="bi bi-circle"></i><span>Barang Masuk</span>
         </a>
       </li>
@@ -165,8 +165,8 @@
     </a>
     <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
       <li>
-        <a href="/items-incoming">
-          <i class="bi bi-circle"></i><span>Transaksi Pembelian</span>
+        <a href="/purchasing">
+          <i class="bi bi-circle"></i><span>Purchase Invoice</span>
         </a>
       </li>
       <li>

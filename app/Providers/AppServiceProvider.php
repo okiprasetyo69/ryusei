@@ -23,6 +23,7 @@ use App\Services\Interfaces\ItemStockService;
 use App\Services\Interfaces\InvoiceCategoryService;
 use App\Services\Interfaces\SalesInvoiceService;
 use App\Services\Interfaces\VendorService;
+use App\Services\Interfaces\PurchasingInvoiceService;
 
 use App\Services\Repositories\UserRepositoryEloquent;
 use App\Services\Repositories\RoleRepositoryEloquent;
@@ -41,6 +42,7 @@ use App\Services\Repositories\ItemStockRepositoryEloquent;
 use App\Services\Repositories\InvoiceCategoryRepositoryEloquent;
 use App\Services\Repositories\SalesInvoiceRepositoryEloquent;
 use App\Services\Repositories\VendorRepositoryEloquent;
+use App\Services\Repositories\PurchasingInvoiceRepositoryEloquent;
 
 
 class AppServiceProvider extends ServiceProvider implements DeferrableProvider
@@ -69,6 +71,7 @@ class AppServiceProvider extends ServiceProvider implements DeferrableProvider
         InvoiceCategoryService::class => InvoiceCategoryRepositoryEloquent::class,
         SalesInvoiceService::class => SalesInvoiceRepositoryEloquent::class,
         VendorService::class => VendorRepositoryEloquent::class,
+        PurchasingInvoiceService::class => PurchasingInvoiceRepositoryEloquent::class,
         
     ];
 
@@ -101,6 +104,7 @@ class AppServiceProvider extends ServiceProvider implements DeferrableProvider
             InvoiceCategoryService::class,
             SalesInvoiceService::class,
             VendorService::class,
+            PurchasingInvoiceService::class,
         ];
     }
 

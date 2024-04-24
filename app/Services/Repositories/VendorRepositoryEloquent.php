@@ -63,6 +63,10 @@ use Yajra\DataTables\Facades\DataTables;
                 $vendor = $vendor->where("city", "like", "%" . $request->city. "%");
             }
 
+            if($request->id != null){
+                $vendor = $vendor->where("id", $request->id);
+            }
+
             if($vendor != null){
                 $datatables = Datatables::of( $vendor->get() );
                 return $datatables->make( true );
@@ -70,6 +74,33 @@ use Yajra\DataTables\Facades\DataTables;
             return false;
             
         }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function getVendors(Request $request){
+        try{
+            
+            $vendor =  $this->vendor ;
+
+            if($request->name != null){
+                $vendor  = $vendor->where("name", "like", "%" . $request->name. "%");
+            }
+
+            if($request->id != null){
+                $vendor  = $vendor->where("id", $request->id);
+            }
+
+            $vendor = $vendor->get();
+           
+            return response()->json([
+                'status' => 200,
+                'message' => true,
+                'data' => $vendor
+            ]); 
+        }
+        catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;
         }

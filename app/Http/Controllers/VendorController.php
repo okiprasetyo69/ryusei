@@ -56,6 +56,19 @@ class VendorController extends Controller
         }
     }
 
+    public function getVendors(Request $request){
+        try{
+            $vendors = $this->service->getVendors($request);
+            if($vendors != null){
+                return $vendors;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
     public function create(Request $request){
         try{
             $validator = Validator::make(

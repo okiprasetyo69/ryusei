@@ -19,6 +19,7 @@ use App\Http\Controllers\ItemStockController;
 use App\Http\Controllers\InvoiceCategoryController;
 use App\Http\Controllers\SalesInvoiceController;
 use App\Http\Controllers\VendorController;
+use App\Http\Controllers\PurchasingController;
 
 use App\Http\Controllers\HomePageController;
 
@@ -179,7 +180,19 @@ Route::controller(SalesInvoiceController::class)->group(function() {
 // Manage Vendor
 Route::controller(VendorController::class)->group(function() {
     Route::get('/vendor', 'getVendor')->name('vendor.data');
+    Route::get('/vendors', 'getVendors')->name('vendors.data');
     Route::post('/vendor/create', 'create')->name('vendor.create');
     Route::post('/vendor/delete', 'delete')->name('vendor.delete');
     Route::post('/vendor/detail', 'detail')->name('vendor.detail');
+});
+
+// Manage purchasing invoice
+Route::controller(PurchasingController::class)->group(function() {
+    Route::get('/purchasing-invoice', 'getPurchasingInvoice')->name('purchasing-invoice.data');
+    Route::post('/purchasing-invoice/create', 'create')->name('purchasing-invoice.create');
+    Route::post('/purchasing-invoice/update', 'update')->name('purchasing-invoice.update');
+    Route::post('/purchasing-invoice/delete', 'delete')->name('purchasing-invoice.delete');
+    Route::post('/purchasing-invoice/detail', 'detail')->name('purchasing-invoice.detail');
+    Route::post('purchasing-invoice/detail-invoice-item', 'detailInvoice')->name('purchasing-invoice.detail.invoice-item');
+    Route::post('/purchasing-invoice/detail-invoice-item/delete', 'deleteDetailInvoice')->name('purchasing-invoice.detail.invoice-item.delete');
 });

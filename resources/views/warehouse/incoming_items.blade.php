@@ -88,12 +88,12 @@
                                 <button type="button" class="btn btn-sm btn-primary rounded-pill" id="btn-add-new-stock-item">
                                     <i class="bi bi-file-earmark-plus-fill"></i> Tambah Baru
                                 </button>
-                                <button type="button" class="btn btn-sm btn-dark rounded-pill btn-add" data-bs-toggle="modal" data-bs-target="#modalStockItems">
+                                <!-- <button type="button" class="btn btn-sm btn-dark rounded-pill btn-add" data-bs-toggle="modal" data-bs-target="#modalStockItems">
                                     <i class="bi bi-plus-circle"></i> Tambah
                                 </button>
                                 <button type="button" class="btn btn-sm btn-success rounded-pill" id="btn-import" data-bs-toggle="modal" data-bs-target="#basicModal">
                                     <i class="bi bi-file-earmark-excel-fill"></i> Import
-                                </button>
+                                </button> -->
                             </div>
                             <div class="col-md-12">
                                 <div class="mt-4">
@@ -282,7 +282,8 @@
 
         $("#btn-add-new-stock-item").on("click", function(e){
             e.preventDefault()
-            window.location.href = '/product/add'
+            // window.location.href = '/product/add'
+            window.location.href = '/purchasing/invoice/add'
         })
 
         $("#category").on("change", function(e){

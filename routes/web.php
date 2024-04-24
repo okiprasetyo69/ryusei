@@ -14,6 +14,7 @@ use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\SalesInvoiceController;
 use App\Http\Controllers\ItemStockController;
 use App\Http\Controllers\VendorController;
+use App\Http\Controllers\PurchasingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -101,4 +102,11 @@ Route::controller(VendorController::class)->group(function() {
     Route::get('/vendors', 'index')->name('vendors');
     Route::get('/vendors/add', 'add')->name('vendors.add');
     Route::get('/vendors/{id}', 'edit')->name('vendors.edit');
+});
+
+// Purchasing
+Route::controller(PurchasingController::class)->group(function() {
+    Route::get('/purchasing', 'index')->name('purchasing');
+    Route::get('/purchasing/invoice/add', 'add')->name('purchasing-invoice.add');
+    Route::get('/purchasing/invoice/{id}', 'edit')->name('purchasing-invoice.edit');
 });

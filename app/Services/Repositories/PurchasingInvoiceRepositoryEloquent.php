@@ -2,13 +2,13 @@
 
 namespace App\Services\Repositories;
 
-use App\Models\SalesInvoice;
-use App\Models\SalesInvoiceDetail;
+use App\Models\PurchaseInvoice;
+use App\Models\PurchasingInvoiceDetail;
 use App\Models\Product;
 use App\Models\ItemUnit;
 use App\Services\Constants\SalesInvoiceConstantInterface;
 use App\Services\Constants\WarehouseConstantInterface;
-use App\Services\Interfaces\SalesInvoiceService;
+use App\Services\Interfaces\PurchasingInvoiceService;
 
 use Exception;
 use Illuminate\Http\Request;
@@ -18,8 +18,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
+
 /**
- * Class SalesInvoiceRepositoryEloquent.
+ * Class PurchasingInvoiceRepositoryEloquent.
  * 
  * @author  Oki Prasetyo  <oki.prasetyo45@gmail.com>
  * @since   2024.04.16
@@ -28,31 +29,32 @@ use Yajra\DataTables\Facades\DataTables;
  * @package namespace App\Services\Repositories;
  */
 
- class SalesInvoiceRepositoryEloquent implements SalesInvoiceService{
 
-    /**
-    * @var SalesInvoice
+ class PurchasingInvoiceRepositoryEloquent implements PurchasingInvoiceService{
+
+     /**
+    * @var PurchaseInvoice
     */
 
-    private SalesInvoice $salesInvoice;
+    private PurchaseInvoice $purchaseInvoice;
 
-    public function __construct(SalesInvoice $salesInvoice)
+    public function __construct(PurchaseInvoice $purchaseInvoice)
     {
-        $this->salesInvoice = $salesInvoice;
+        $this->purchaseInvoice = $purchaseInvoice;
     }
 
-    public function getSalesInvoice(Request $request){
+    public function getPurchasingInvoice(Request $request){
         try{
             
-            $salesInvoice = $this->salesInvoice::with('customer')->orderBy('date', 'ASC');
+            $purchaseInvoice = $this->purchaseInvoice::with('vendor')->orderBy('date', 'ASC');
           
             if($request->invoice_number != null){
-                $salesInvoice  = $salesInvoice->where("invoice_number", "like", "%" . $request->invoice_number. "%");
+                $purchaseInvoice  = $purchaseInvoice->where("invoice_number", "like", "%" . $request->invoice_number. "%");
             }
 
-            $salesInvoice = $salesInvoice->get();
+            $purchaseInvoice = $purchaseInvoice->get();
 
-            $datatables = Datatables::of($salesInvoice);
+            $datatables = Datatables::of($purchaseInvoice);
             return $datatables->make( true );
         }
         catch(Exception $ex){
@@ -64,8 +66,8 @@ use Yajra\DataTables\Facades\DataTables;
     public function create(Request $request){
         try{
 
-            $salesInvoice = $this->salesInvoice;
-            $salesInvoice->fill($request->all());
+            $purchaseInvoice = $this->purchaseInvoice;
+            $purchaseInvoice->fill($request->all());
 
             $arrInvoice = [];
             // convert to array from json params
@@ -116,12 +118,6 @@ use Yajra\DataTables\Facades\DataTables;
                     $taxCode = null;
                 }
 
-                if( $value['order_number'] != null){
-                    $orderNumber =  $value['order_number'];
-                } else {
-                    $orderNumber = null;
-                }
-
                array_push($arrInvoice, [
                     "sku_id" => $skuId,
                     "sku_code" => $value['sku_code'],
@@ -133,7 +129,6 @@ use Yajra\DataTables\Facades\DataTables;
                     "discount" => $discount,
                     "total" => $value['total'],
                     "tax_code" =>  $taxCode ,
-                    "order_number" => $orderNumber,
                 ]);
             }
             
@@ -145,7 +140,7 @@ use Yajra\DataTables\Facades\DataTables;
                 // genereate invoice number
                 $prefix = 'INV';
                 $date = now()->format('ym');
-                $lastId = DB::table('sales_invoices')->latest()->value('id');
+                $lastId = DB::table('purchase_invoices')->latest()->value('id');
             
                 if($lastId == null){
                     $lastId = 0;
@@ -155,58 +150,55 @@ use Yajra\DataTables\Facades\DataTables;
                 $invNumber = $prefix . '.' . $date . '.' . '00'. $lastId;
             }
 
-            $salesInvoice->invoice_number =  $invNumber;
-            $salesInvoice->batch_number =  $request->batch_number;
-            $salesInvoice->type =  $request->type;
-            $salesInvoice->customer_id =  $request->customer_id;
-            $salesInvoice->customer_reference =  $request->customer_reference;
-            $salesInvoice->customer_phone =  $request->customer_phone;
-            $salesInvoice->date =  $request->date;
-            $salesInvoice->due_date =  $request->due_date;
-            $salesInvoice->day =  $request->day;
-            $salesInvoice->category_invoice_id =  $request->category_invoice_id;
+            $purchaseInvoice->invoice_number =  $invNumber;
+            $purchaseInvoice->batch_number =  $request->batch_number;
+            $purchaseInvoice->type =  $request->type;
+            $purchaseInvoice->vendor_id =  $request->vendor_id;
+            $purchaseInvoice->vendor_reference =  $request->vendor_reference;
+            $purchaseInvoice->vendor_phone =  $request->vendor_phone;
+            $purchaseInvoice->date =  $request->date;
+            $purchaseInvoice->due_date =  $request->due_date;
+            $purchaseInvoice->day =  $request->day;
+            $purchaseInvoice->category_invoice_id =  $request->category_invoice_id;
 
             if($request->warehouse_id == null){
-                $salesInvoice->warehouse_id =  WarehouseConstantInterface::CENTER_WAREHOUSE;
+                $purchaseInvoice->warehouse_id =  WarehouseConstantInterface::CENTER_WAREHOUSE;
             } else {
-                $salesInvoice->warehouse_id =  $request->warehouse_id;
+                $purchaseInvoice->warehouse_id =  $request->warehouse_id;
             }
 
-            $salesInvoice->sales_person =  $request->sales_person;
-            $salesInvoice->journal_memo =  $request->journal_memo;
-            $salesInvoice->note =  $request->note;
-            $salesInvoice->additional_char =  $request->additional_char;
-            $salesInvoice->down_pmt =  $request->down_pmt;
-            $salesInvoice->tax =  $request->tax;
-            $salesInvoice->pph_percent =  $request->pph_percent;
-            $salesInvoice->subtotal =  $request->subtotal;
-            $salesInvoice->discount_invoice =  $request->discount_invoice;
-            $salesInvoice->grand_total =  $request->grand_total;
-            $salesInvoice->balance_due =  $request->balance_due;
-            $salesInvoice->state =  SalesInvoiceConstantInterface::OPEN;
-            $salesInvoice->is_deleted = SalesInvoiceConstantInterface::INVOICE_IS_ACKTIVE;
+            $purchaseInvoice->journal_memo =  $request->journal_memo;
+            $purchaseInvoice->note =  $request->note;
+            $purchaseInvoice->additional_char =  $request->additional_char;
+            $purchaseInvoice->down_pmt =  $request->down_pmt;
+            $purchaseInvoice->tax =  $request->tax;
+            $purchaseInvoice->pph_percent =  $request->pph_percent;
+            $purchaseInvoice->subtotal =  $request->subtotal;
+            $purchaseInvoice->discount_invoice =  $request->discount_invoice;
+            $purchaseInvoice->grand_total =  $request->grand_total;
+            $purchaseInvoice->balance_due =  $request->balance_due;
+            $purchaseInvoice->state =  SalesInvoiceConstantInterface::OPEN;
+            $purchaseInvoice->is_deleted = SalesInvoiceConstantInterface::INVOICE_IS_ACKTIVE;
 
             // store to database invoices
-            $salesInvoice->save();
+            $purchaseInvoice->save();
 
-            // insert bulk detail invoice
+             // insert bulk detail invoice
             for ($i=0 ; $i < count($arrInvoice) ; $i++ ) { 
-                $invoiceDetail = new SalesInvoiceDetail();
+                $invoiceDetail = new PurchasingInvoiceDetail();
 
-                $invoiceDetail->invoice_id = $salesInvoice->id;
+                $invoiceDetail->invoice_id = $purchaseInvoice->id;
                 $invoiceDetail->sku_id = $arrInvoice[$i]['sku_id'];
                 $invoiceDetail->sku_code = $arrInvoice[$i]['sku_code'];
                 $invoiceDetail->description = $arrInvoice[$i]['description'];
                 $invoiceDetail->qty = $arrInvoice[$i]['qty'];
-                // upsert Item stock here
-
+                // Upsert to stock item here
 
                 $invoiceDetail->unit_id = $arrInvoice[$i]['unit_id'];
                 $invoiceDetail->price = $arrInvoice[$i]['price'];
                 $invoiceDetail->discount = $arrInvoice[$i]['discount'];
                 $invoiceDetail->total = $arrInvoice[$i]['total'];
                 $invoiceDetail->tax_code = $arrInvoice[$i]['tax_code'];
-                $invoiceDetail->order_number = $arrInvoice[$i]['order_number'];
 
                 $invoiceDetail->save();
             }
@@ -214,7 +206,7 @@ use Yajra\DataTables\Facades\DataTables;
             return response()->json([
                 'status' => 200,
                 'message' => true,
-                'data' => $salesInvoice
+                'data' => $purchaseInvoice
             ]); 
 
         } catch(Exception $ex){
@@ -226,16 +218,16 @@ use Yajra\DataTables\Facades\DataTables;
     public function update(Request $request){
         try{
 
-            $salesInvoice = $this->salesInvoice;
-            $salesInvoice->fill($request->all());
+            $purchaseInvoice = $this->purchaseInvoice;
+            $purchaseInvoice->fill($request->all());
 
             // Find Invoice
             if($request->id != null){
-                $salesInvoice = $salesInvoice::find($request->id);
+                $purchaseInvoice = $purchaseInvoice::find($request->id);
             }
 
             // Find invoice detail then delete
-            $invoiceDetail = SalesInvoiceDetail::where("invoice_id", $request->id);
+            $invoiceDetail = PurchasingInvoiceDetail::where("invoice_id", $request->id);
             if($invoiceDetail != null){
                 $invoiceDetail->delete();
             }
@@ -249,7 +241,6 @@ use Yajra\DataTables\Facades\DataTables;
             $unitId = null;
             $discount = null;
             $taxCode = null;
-            $orderNumber = "";
 
             foreach ($invoices as $key => $value) {
                
@@ -290,12 +281,6 @@ use Yajra\DataTables\Facades\DataTables;
                     $taxCode = null;
                 }
 
-                if( $value['order_number'] != null){
-                    $orderNumber =  $value['order_number'];
-                } else {
-                    $orderNumber = null;
-                }
-
                array_push($arrInvoice, [
                     "sku_id" => $skuId,
                     "sku_code" => $value['sku_code'],
@@ -307,82 +292,78 @@ use Yajra\DataTables\Facades\DataTables;
                     "discount" => $discount,
                     "total" => $value['total'],
                     "tax_code" =>  $taxCode ,
-                    "order_number" => $orderNumber,
                 ]);
             }
 
-            $salesInvoice->invoice_number =  $request->invoice_number;
-            $salesInvoice->batch_number =  $request->batch_number;
-            $salesInvoice->type =  $request->type;
-            $salesInvoice->customer_id =  $request->customer_id;
-            $salesInvoice->customer_reference =  $request->customer_reference;
-            $salesInvoice->customer_phone =  $request->customer_phone;
-            $salesInvoice->date =  $request->date;
-            $salesInvoice->due_date =  $request->due_date;
-            $salesInvoice->day =  $request->day;
-            $salesInvoice->category_invoice_id =  $request->category_invoice_id;
+            $purchaseInvoice->invoice_number =  $request->invoice_number;
+            $purchaseInvoice->batch_number =  $request->batch_number;
+            // $purchaseInvoice->type =  $request->type;
+            $purchaseInvoice->vendor_id=  $request->vendor_id;
+            $purchaseInvoice->vendor_reference =  $request->vendor_reference;
+            $purchaseInvoice->vendor_phone =  $request->vendor_phone;
+            $purchaseInvoice->date =  $request->date;
+            $purchaseInvoice->due_date =  $request->due_date;
+            $purchaseInvoice->day =  $request->day;
+            $purchaseInvoice->category_invoice_id =  $request->category_invoice_id;
 
             if($request->warehouse_id == null){
-                $salesInvoice->warehouse_id =  WarehouseConstantInterface::CENTER_WAREHOUSE;
+                $purchaseInvoice->warehouse_id =  WarehouseConstantInterface::CENTER_WAREHOUSE;
             } else {
-                $salesInvoice->warehouse_id =  $request->warehouse_id;
+                $purchaseInvoice->warehouse_id =  $request->warehouse_id;
             }
             
-            $salesInvoice->sales_person =  $request->sales_person;
-            $salesInvoice->journal_memo =  $request->journal_memo;
-            $salesInvoice->note =  $request->note;
-            $salesInvoice->additional_char =  $request->additional_char;
-            $salesInvoice->down_pmt =  $request->down_pmt;
-            $salesInvoice->tax =  $request->tax;
-            $salesInvoice->pph_percent =  $request->pph_percent;
-            $salesInvoice->subtotal =  $request->subtotal;
-            $salesInvoice->discount_invoice =  $request->discount_invoice;
-            $salesInvoice->grand_total =  $request->grand_total;
-            $salesInvoice->balance_due =  $request->balance_due;
+            $purchaseInvoice->journal_memo =  $request->journal_memo;
+            $purchaseInvoice->note =  $request->note;
+            $purchaseInvoice->additional_char =  $request->additional_char;
+            $purchaseInvoice->down_pmt =  $request->down_pmt;
+            $purchaseInvoice->tax =  $request->tax;
+            $purchaseInvoice->pph_percent =  $request->pph_percent;
+            $purchaseInvoice->subtotal =  $request->subtotal;
+            $purchaseInvoice->discount_invoice =  $request->discount_invoice;
+            $purchaseInvoice->grand_total =  $request->grand_total;
+            $purchaseInvoice->balance_due =  $request->balance_due;
 
             // store to database invoices
-            $salesInvoice->save();
+            $purchaseInvoice->save();
 
              // insert bulk detail invoice
              for ($i=0 ; $i < count($arrInvoice) ; $i++ ) { 
-                $invoiceDetail = new SalesInvoiceDetail();
+                $invoiceDetail = new PurchasingInvoiceDetail();
 
-                $invoiceDetail->invoice_id = $salesInvoice->id;
+                $invoiceDetail->invoice_id = $purchaseInvoice->id;
                 $invoiceDetail->sku_id = $arrInvoice[$i]['sku_id'];
                 $invoiceDetail->sku_code = $arrInvoice[$i]['sku_code'];
+                // Upsert to stock item here
+
                 $invoiceDetail->description = $arrInvoice[$i]['description'];
                 $invoiceDetail->qty = $arrInvoice[$i]['qty'];
-                // upsert Item stock here
-
                 $invoiceDetail->unit_id = $arrInvoice[$i]['unit_id'];
                 $invoiceDetail->price = $arrInvoice[$i]['price'];
                 $invoiceDetail->discount = $arrInvoice[$i]['discount'];
                 $invoiceDetail->total = $arrInvoice[$i]['total'];
                 $invoiceDetail->tax_code = $arrInvoice[$i]['tax_code'];
-                $invoiceDetail->order_number = $arrInvoice[$i]['order_number'];
 
                 $invoiceDetail->save();
             }
             return response()->json([
                 'status' => 200,
                 'message' => true,
-                'data' => $salesInvoice
+                'data' => $purchaseInvoice
             ]); 
         }catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;
         }
     }
-
     public function delete(Request $request){
         try{
 
-            $salesInvoice = $this->salesInvoice::where("id", $request->id)->first();
+            $purchaseInvoice = $this->purchaseInvoice::where("id", $request->id)->first();
             // $salesInvoiceDetail = SalesInvoiceDetail::where("invoice_id",  $salesInvoice->id);
-            $salesInvoice->state =  SalesInvoiceConstantInterface::VOID;
-            $salesInvoice->is_deleted = SalesInvoiceConstantInterface::INVOICE_IS_DELETED;
+            $purchaseInvoice->state =  SalesInvoiceConstantInterface::VOID;
+            $purchaseInvoice->is_deleted = SalesInvoiceConstantInterface::INVOICE_IS_DELETED;
 
-            if($salesInvoice == null){
+            if($purchaseInvoice == null){
                 return response()->json([
                     'data' => null,
                     'message' => 'Data not found',
@@ -391,10 +372,10 @@ use Yajra\DataTables\Facades\DataTables;
             }
 
             // $salesInvoiceDetail->save();
-            $salesInvoice->save();
+            $purchaseInvoice->save();
             return response()->json([
                 'status' => 200,
-                'message' => 'Success deleted sales invoice.',
+                'message' => 'Success deleted purchase invoice.',
             ]);
 
         }catch(Exception $ex){
@@ -402,47 +383,6 @@ use Yajra\DataTables\Facades\DataTables;
             return false;
         }
     }
-
-    public function detail(Request $request){
-        return true;
-    }
-
-    public function detailInvoiceItem(Request $request){
-        try{
-            $salesInvoiceDetail = SalesInvoiceDetail::with("unit")->where("invoice_id", $request->invoice_id)->get();
-            return response()->json([
-                'status' => 200,
-                'message' => true,
-                'data' => $salesInvoiceDetail
-            ]);
-        }catch(Exception $ex){
-            Log::error($ex->getMessage());
-            return false;
-        }
-    }
-
-    public function deleteDetailInvoice(Request $request){
-        try{
-  
-            $salesInvoiceDetail = SalesInvoiceDetail::where("id", $request->id)->first();
-
-            if($salesInvoiceDetail == null){
-                return response()->json([
-                    'data' => null,
-                    'message' => 'Data not found',
-                    'status' => 400
-                ]);
-            }
-
-            $salesInvoiceDetail->delete();
-            return response()->json([
-                'status' => 200,
-                'message' => true,
-                'data' => $salesInvoiceDetail
-            ]);
-        }catch(Exception $ex){
-            Log::error($ex->getMessage());
-            return false;
-        }
-    }
-}
+    
+    public function detail(Request $request){}
+ }
