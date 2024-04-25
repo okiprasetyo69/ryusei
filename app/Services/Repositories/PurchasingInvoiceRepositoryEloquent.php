@@ -230,6 +230,12 @@ use Yajra\DataTables\Facades\DataTables;
                     $items->qty =  $arrInvoice[$i]['qty'];
                     $items->check_in_date = date('Y-m-d');
 
+                    if($request->warehouse_id == null){
+                        $items->warehouse_id =  WarehouseConstantInterface::CENTER_WAREHOUSE;
+                    } else {
+                        $items->warehouse_id = $request->warehouse_id;
+                    }
+
                     $items->save();
                 }
 
@@ -401,7 +407,7 @@ use Yajra\DataTables\Facades\DataTables;
   
                       $itemStock->save();
                 }
-                
+
                 if($itemStock == null) {
                     // insert item
                     $items = new ItemStock();
@@ -409,7 +415,12 @@ use Yajra\DataTables\Facades\DataTables;
                     $items->sku_id =  $arrInvoice[$i]['sku_id'];
                     $items->qty =  $arrInvoice[$i]['qty'];
                     $items->check_in_date = date('Y-m-d');
-  
+                    if($request->warehouse_id == null){
+                        $items->warehouse_id =  WarehouseConstantInterface::CENTER_WAREHOUSE;
+                    } else {
+                        $items->warehouse_id = $request->warehouse_id;
+                    }
+                    
                     $items->save();
                 }
   
