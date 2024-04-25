@@ -193,6 +193,6 @@ Route::controller(PurchasingController::class)->group(function() {
     Route::post('/purchasing-invoice/update', 'update')->name('purchasing-invoice.update');
     Route::post('/purchasing-invoice/delete', 'delete')->name('purchasing-invoice.delete');
     Route::post('/purchasing-invoice/detail', 'detail')->name('purchasing-invoice.detail');
-    Route::post('purchasing-invoice/detail-invoice-item', 'detailInvoice')->name('purchasing-invoice.detail.invoice-item');
+    Route::post('/purchasing-invoice/detail-invoice-item', 'detailInvoice')->name('purchasing-invoice.detail.invoice-item');
     Route::post('/purchasing-invoice/detail-invoice-item/delete', 'deleteDetailInvoice')->name('purchasing-invoice.detail.invoice-item.delete');
 });

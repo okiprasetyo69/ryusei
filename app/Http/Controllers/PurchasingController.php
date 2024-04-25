@@ -145,5 +145,23 @@ class PurchasingController extends Controller
         }
     }
 
-    public function detail(Request $request){}
+    public function detailInvoice(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'invoice_id' => 'required',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'data' => null,
+                'message' => $validator->errors(),
+                'status' => 422
+            ]);
+        }
+
+        $purchasingInvoice = $this->service->detailInvoiceItem($request);
+        if($purchasingInvoice) {
+            return $purchasingInvoice;
+        }
+    }
 }   

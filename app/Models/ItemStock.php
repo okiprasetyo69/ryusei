@@ -19,9 +19,14 @@ class ItemStock extends Model
         'sku_id',
         'qty',
         'check_in_date',
+        'warehouse_id'
     ];
 
     public function product(){
         return $this->belongsTo(Product::class, 'sku_id','id');
+    }
+
+    public function warehouse(){
+        return $this->belongsTo(Product::class, 'warehouse_id','id');
     }
 }

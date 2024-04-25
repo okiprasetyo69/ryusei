@@ -6,6 +6,7 @@ use App\Models\PurchaseInvoice;
 use App\Models\PurchasingInvoiceDetail;
 use App\Models\Product;
 use App\Models\ItemUnit;
+use App\Models\ItemStock;
 use App\Services\Constants\SalesInvoiceConstantInterface;
 use App\Services\Constants\WarehouseConstantInterface;
 use App\Services\Interfaces\PurchasingInvoiceService;
@@ -37,10 +38,14 @@ use Yajra\DataTables\Facades\DataTables;
     */
 
     private PurchaseInvoice $purchaseInvoice;
+    private ItemStock $itemStock;
+    private Product $product;
 
-    public function __construct(PurchaseInvoice $purchaseInvoice)
+    public function __construct(PurchaseInvoice $purchaseInvoice, ItemStock $itemStock, Product $product)
     {
         $this->purchaseInvoice = $purchaseInvoice;
+        $this->itemStock = $itemStock;
+        $this->product = $product;
     }
 
     public function getPurchasingInvoice(Request $request){
@@ -192,15 +197,44 @@ use Yajra\DataTables\Facades\DataTables;
                 $invoiceDetail->sku_code = $arrInvoice[$i]['sku_code'];
                 $invoiceDetail->description = $arrInvoice[$i]['description'];
                 $invoiceDetail->qty = $arrInvoice[$i]['qty'];
-                // Upsert to stock item here
-
                 $invoiceDetail->unit_id = $arrInvoice[$i]['unit_id'];
                 $invoiceDetail->price = $arrInvoice[$i]['price'];
                 $invoiceDetail->discount = $arrInvoice[$i]['discount'];
                 $invoiceDetail->total = $arrInvoice[$i]['total'];
                 $invoiceDetail->tax_code = $arrInvoice[$i]['tax_code'];
 
+                // check exist product data
+                $product = Product::where("sku",  $arrInvoice[$i]['sku_code'])->first();
+                if($product == null){
+                    return response()->json([
+                        'status' => 404 ,
+                        'message' => 'Data product with '. $arrInvoice[$i]['sku_code'].' not available. Please enter new product ! ',
+                    ]);
+                }
+               
+                // check exist item stock & Upsert to stock item here
+
+                $itemStock = ItemStock::where("sku_id",  $product->id)->first();
+                if($itemStock != null){
+                    // update stock 
+                    $currentStock =  $itemStock->qty; 
+                    $itemStock->qty =  $arrInvoice[$i]['qty'] +  $currentStock ;
+
+                    $itemStock->save();
+                }
+                if($itemStock == null) {
+                    // insert item
+                    $items = new ItemStock();
+                    $items->category_id =  $product->category_id;
+                    $items->sku_id =  $arrInvoice[$i]['sku_id'];
+                    $items->qty =  $arrInvoice[$i]['qty'];
+                    $items->check_in_date = date('Y-m-d');
+
+                    $items->save();
+                }
+
                 $invoiceDetail->save();
+               
             }
           
             return response()->json([
@@ -220,6 +254,12 @@ use Yajra\DataTables\Facades\DataTables;
 
             $purchaseInvoice = $this->purchaseInvoice;
             $purchaseInvoice->fill($request->all());
+
+            $itemStock =  $this->itemStock;
+            $itemStock->fill($request->all());
+
+            $product =  $this->product;
+            $product->fill($request->all());
 
             // Find Invoice
             if($request->id != null){
@@ -327,7 +367,7 @@ use Yajra\DataTables\Facades\DataTables;
             $purchaseInvoice->save();
 
              // insert bulk detail invoice
-             for ($i=0 ; $i < count($arrInvoice) ; $i++ ) { 
+            for ($i=0 ; $i < count($arrInvoice) ; $i++ ) { 
                 $invoiceDetail = new PurchasingInvoiceDetail();
 
                 $invoiceDetail->invoice_id = $purchaseInvoice->id;
@@ -343,8 +383,39 @@ use Yajra\DataTables\Facades\DataTables;
                 $invoiceDetail->total = $arrInvoice[$i]['total'];
                 $invoiceDetail->tax_code = $arrInvoice[$i]['tax_code'];
 
+                // check exist product data
+                $product = Product::where("sku",  $arrInvoice[$i]['sku_code'])->first();
+                if($product == null){
+                    return response()->json([
+                        'status' => 404 ,
+                        'message' => 'Data product with '. $arrInvoice[$i]['sku_code'].' not available. Please enter new product ! ',
+                    ]);
+                }
+                 
+                // check exist item stock & Upsert to stock item here
+                $itemStock = ItemStock::where("sku_id",  $product->id)->first();
+                if($itemStock != null){
+                      // update stock 
+                      $currentStock =  $itemStock->qty; 
+                      $itemStock->qty =  $arrInvoice[$i]['qty'] +  $currentStock ;
+  
+                      $itemStock->save();
+                }
+                
+                if($itemStock == null) {
+                    // insert item
+                    $items = new ItemStock();
+                    $items->category_id =  $product->category_id;
+                    $items->sku_id =  $arrInvoice[$i]['sku_id'];
+                    $items->qty =  $arrInvoice[$i]['qty'];
+                    $items->check_in_date = date('Y-m-d');
+  
+                    $items->save();
+                }
+  
                 $invoiceDetail->save();
             }
+            
             return response()->json([
                 'status' => 200,
                 'message' => true,
@@ -355,6 +426,7 @@ use Yajra\DataTables\Facades\DataTables;
             return false;
         }
     }
+    
     public function delete(Request $request){
         try{
 
@@ -385,4 +457,18 @@ use Yajra\DataTables\Facades\DataTables;
     }
     
     public function detail(Request $request){}
+
+    public function detailInvoiceItem(Request $request){
+        try{
+            $purchaseInvoiceDetail = PurchasingInvoiceDetail::with("unit")->where("invoice_id", $request->invoice_id)->get();
+            return response()->json([
+                'status' => 200,
+                'message' => true,
+                'data' => $purchaseInvoiceDetail
+            ]);
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
  }

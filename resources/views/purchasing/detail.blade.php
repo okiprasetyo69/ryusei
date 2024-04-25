@@ -946,7 +946,7 @@
     function loadDetailInvoice(invoice_id = null, invoive_form_type=null){
        $.ajax({
             type: "POST",
-            url: "/api/sales-invoice/detail-invoice-item",
+            url: "/api/purchasing-invoice/detail-invoice-item",
             data: {
                 invoice_id : invoice_id
             },
