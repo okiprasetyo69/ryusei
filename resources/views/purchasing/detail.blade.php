@@ -400,9 +400,9 @@
         $("#id").val(dataInvoice.id)
         $("#vendor_reference").val(dataInvoice.vendor_reference)
         $("#vendor_phone").val(dataInvoice.vendor_phone)
-        $('#date').val(reversedDate);
-        $('#due_date').val(reversedDueDate);
-        $("#invoice_number").val(dataInvoice.invoice_number)
+        $('#date').val(reversedDate).prop("disabled", true);
+        $('#due_date').val(reversedDueDate).prop("disabled", true);
+        $("#invoice_number").val(dataInvoice.invoice_number).prop("disabled", true)
         $("#batch_number").val(dataInvoice.batch_number)
         $("#day").val(dataInvoice.day)
         $("#journal_memo").val(dataInvoice.journal_memo)
