@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
-
+use Carbon\Carbon;
 
 /**
  * Class PurchasingInvoiceRepositoryEloquent.
@@ -169,14 +169,19 @@ use Yajra\DataTables\Facades\DataTables;
                 // genereate invoice number
                 $prefix = 'INV';
                 $date = now()->format('ym');
-                $lastId = DB::table('purchase_invoices')->latest()->value('id');
-            
-                if($lastId == null){
-                    $lastId = 0;
-                } 
-                $lastId = $lastId + 1;
-                // concate INV number
-                $invNumber = $prefix . '.' . $date . '.' . '00'. $lastId;
+                $today = Carbon::today();
+                $month = $today->format('m');
+                $year = $today->format('Y');
+                $invoice = PurchaseInvoice::whereYear('created_at', $year)->whereMonth('created_at', $month)->orderBy('id', 'desc')->first();
+                $count = 0;
+
+                if($invoice == null){
+                    $invNumber =  $prefix . '.' . $date . '.' . $count + 1 ;
+                } else {
+                    $lastInvoice =  explode(".", $invoice->invoice_number);
+                    $lastNumber = $lastInvoice[count($lastInvoice) - 1];
+                    $invNumber =  $prefix . '.' . $date . '.' . $lastNumber + 1;
+                }
             }
 
             $purchaseInvoice->invoice_number =  $invNumber;
@@ -281,6 +286,8 @@ use Yajra\DataTables\Facades\DataTables;
 
     public function update(Request $request){
         try{
+
+            DB::beginTransaction();
 
             $purchaseInvoice = $this->purchaseInvoice;
             $purchaseInvoice->fill($request->all());
@@ -396,7 +403,7 @@ use Yajra\DataTables\Facades\DataTables;
             // store to database invoices
             $purchaseInvoice->save();
 
-             // insert bulk detail invoice
+            // insert bulk detail invoice
             for ($i=0 ; $i < count($arrInvoice) ; $i++ ) { 
                 $invoiceDetail = new PurchasingInvoiceDetail();
 
@@ -451,6 +458,7 @@ use Yajra\DataTables\Facades\DataTables;
                 $invoiceDetail->save();
             }
             
+            DB::commit();
             return response()->json([
                 'status' => 200,
                 'message' => true,

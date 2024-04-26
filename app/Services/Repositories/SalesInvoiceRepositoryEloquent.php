@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
+use Carbon\Carbon;
 
 /**
  * Class SalesInvoiceRepositoryEloquent.
@@ -147,16 +148,21 @@ use Yajra\DataTables\Facades\DataTables;
                 // genereate invoice number
                 $prefix = 'INV';
                 $date = now()->format('ym');
-                $lastId = DB::table('sales_invoices')->latest()->value('id');
-            
-                if($lastId == null){
-                    $lastId = 0;
-                } 
-                $lastId = $lastId + 1;
-                // concate INV number
-                $invNumber = $prefix . '.' . $date . '.' . '00'. $lastId;
-            }
+                $today = Carbon::today();
+                $month = $today->format('m');
+                $year = $today->format('Y');
+                $invoice = SalesInvoice::whereYear('created_at', $year)->whereMonth('created_at', $month)->orderBy('id', 'desc')->first();
+                $count = 0;
 
+                if($invoice == null){
+                    $invNumber =  $prefix . '.' . $date . '.' . $count + 1 ;
+                } else {
+                    $lastInvoice =  explode(".", $invoice->invoice_number);
+                    $lastNumber = $lastInvoice[count($lastInvoice) - 1];
+                    $invNumber =  $prefix . '.' . $date . '.' . $lastNumber + 1;
+                }
+            }
+          
             $salesInvoice->invoice_number =  $invNumber;
             $salesInvoice->batch_number =  $request->batch_number;
             $salesInvoice->type =  $request->type;
