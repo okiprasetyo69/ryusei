@@ -55,7 +55,7 @@
                             </div>
                             <div class="col-md-2"> 
                                 <div class="form-group"> 
-                                    <button type="button" class="btn btn-success" style="border-radius:50px;"> <i class="bi bi-search"></i> Cari </button>
+                                    <button type="button" class="btn btn-success" style="border-radius:50px;" id="btn-filter"> <i class="bi bi-search"></i> Cari </button>
                                 </div>
                             </div>
                         </div>
@@ -63,7 +63,7 @@
                 </div>
             </div>
 
-            <div class="row">
+            <!-- <div class="row">
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-body"> 
@@ -97,7 +97,7 @@
                         </div> 
                     </div> 
                 </div> 
-            </div>
+            </div> -->
 
 
             <div class="col-md-12">
@@ -147,20 +147,51 @@
     var table
     $(document).ready(function () {
         
+        var now = new Date();
+        var month = (now.getMonth() + 1);               
+        var day = now.getDate();
+
+        if (month < 10) 
+            month = "0" + month;
+        if (day < 10) 
+            day = "0" + day;
+        var today = now.getFullYear() + '-' + month + '-' + day;
+        
+        var convertDate = day + '-' + month.toLocaleString('default', { month: 'long' }) + '-' + now.getFullYear()
+        var convertEndDate = day + '-' + month.toLocaleString('default', { month: 'long' }) + '-' + now.getFullYear()
+        
         $("#start_date").datepicker({
             format: 'dd-mm-yyyy',
             defaultDate: new Date(),
         });
+        $('#start_date').val(convertDate);
+
         $("#end_date").datepicker({
             format: 'dd-mm-yyyy',
             defaultDate: new Date(),
         });
+        $('#end_date').val(convertEndDate);
 
         loadInvoice()
 
         $("#btn-add").on("click", function(e){
             e.preventDefault()
             window.location.href = "/sales-invoice/add"
+        })
+
+        $("#btn-fiter").on("click", function(e){
+            e.preventDefault()
+            invoice_number =  $("#filter_name").val()
+            start_date = $("#start_date").val()
+            start_date = start_date.split("-").reverse().join("-")
+            end_date = $("#end_date").val()
+            end_date = end_date.split("-").reverse().join("-")
+            openState = $("#stateOpen").val()
+            closeState = $("#stateClosed").val()
+            draftState = $("#stateDraft").val()
+            voidState = $("#stateVoid").val()
+          
+            loadInvoice(invoice_number, start_date, end_date, openState, closeState, draftState, voidState)
         })
 
         // filter invoice
@@ -321,7 +352,7 @@
                             if(rowData.sales_person == null){
                                 sales_person = "-"
                             } else {
-                                sales_person = sales_person.sales_person
+                                sales_person = rowData.sales_person
                             }
                             $(td).html(sales_person);
                         },
@@ -362,25 +393,25 @@
                             var state = ""
                             if( (rowData.state == 0) && (rowData.is_deleted == 0) ){
                                 state = "Open"
-                                $("#stateOpen").prop("checked", true)
-                                $("#stateClosed").prop("checked", true)
+                                // $("#stateOpen").prop("checked", true)
+                                // $("#stateClosed").prop("checked", true)
                             }
 
                             if((rowData.state == 1) && (rowData.is_deleted == 0)){
                                 state = "Close"
-                                $("#stateClosed").prop("checked", true)
+                                // $("#stateClosed").prop("checked", true)
                             }
 
                             if((rowData.state == 2) && (rowData.is_deleted == 0)){
                                 state = "Draft"
-                                $("#stateDraft").prop("checked", true)
+                                // $("#stateDraft").prop("checked", true)
                             }
 
                             if((rowData.state == 3) && (rowData.is_deleted == 1)){
                                 state = "Void"
-                                $("#stateVoid").prop("checked", true)
-                                $("#stateOpen").prop("checked", false)
-                                $("#stateClosed").prop("checked", false)
+                                // $("#stateVoid").prop("checked", true)
+                                // $("#stateOpen").prop("checked", false)
+                                // $("#stateClosed").prop("checked", false)
                             }
 
                             $(td).html(state);
@@ -391,7 +422,7 @@
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
-                            console.log(rowData)
+                       
                             var html = "<a href='/sales-invoice/"+rowData.id+"' class='btn btn-sm btn-warning'> Detail </a> <button type='button' class='btn btn-sm btn-danger' onclick='confirm("+rowData.id+")'> Hapus </button>"
                             $(td).html(html);
                         },
@@ -448,7 +479,7 @@
             },
             dataType: "JSON",
             success: function (response) {
-                console.log(response)
+                // console.log(response)
                 if(response.status == 200){
                     $.confirm({
                         title: 'Pesan',

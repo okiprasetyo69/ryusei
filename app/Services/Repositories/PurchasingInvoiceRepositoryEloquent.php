@@ -57,6 +57,30 @@ use Yajra\DataTables\Facades\DataTables;
                 $purchaseInvoice  = $purchaseInvoice->where("invoice_number", "like", "%" . $request->invoice_number. "%");
             }
 
+            if($request->start_date != null){
+                $purchaseInvoice  = $purchaseInvoice->where("date", ">=",$request->start_date);
+            }
+
+            if($request->end_date != null){
+                $purchaseInvoice  = $purchaseInvoice->where("date", "<=", $request->end_date);
+            }
+
+            if($request->open_state != null){
+                $purchaseInvoice  = $purchaseInvoice->where("state", $request->open_state);
+            }
+
+            if($request->close_state != null){
+                $purchaseInvoice  = $purchaseInvoice->where("state", $request->close_state);
+            }
+
+            if($request->draft_state != null){
+                $purchaseInvoice  = $purchaseInvoice->where("state", $request->draft_state);
+            }
+
+            if($request->void_state != null){
+                $purchaseInvoice  = $purchaseInvoice->where("state", $request->void_state);
+            }
+
             $purchaseInvoice = $purchaseInvoice->get();
 
             $datatables = Datatables::of($purchaseInvoice);
@@ -443,6 +467,10 @@ use Yajra\DataTables\Facades\DataTables;
 
             $purchaseInvoice = $this->purchaseInvoice::where("id", $request->id)->first();
             // $salesInvoiceDetail = SalesInvoiceDetail::where("invoice_id",  $salesInvoice->id);
+            $prefix = "Void:";
+            $invoiceNumber = $purchaseInvoice->invoice_number;
+            $voidNumber =  $prefix. $invoiceNumber;
+            $purchaseInvoice->invoice_number = $voidNumber;
             $purchaseInvoice->state =  SalesInvoiceConstantInterface::VOID;
             $purchaseInvoice->is_deleted = SalesInvoiceConstantInterface::INVOICE_IS_DELETED;
 

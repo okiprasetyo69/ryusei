@@ -40,7 +40,7 @@
                         <div class="row mt-2">
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    <input type="text" name="filter_name" class="form-control" id="filter_name" placeholder="Masukkan kata kunci" autofocus/>
+                                    <input type="text" name="filter_name" class="form-control" id="filter_name" placeholder="Masukkan nomor invoice" autofocus/>
                                 </div>
                             </div>
                             <div class="col-md-2">
@@ -53,53 +53,26 @@
                                     <input type="text" name="end_date" class="form-control" id="end_date" />
                                 </div>
                             </div>
-                            <div class="col-md-2"> 
+                        </div>
+                        <!-- <div class="row mt-4"> 
+                            <div class="col-md-4">   
+                                <label> <strong><span>Status : </span></strong> </label>
+                                <input class="form-check-input" name="filter[]" type="checkbox" value="0" id="stateOpen"> Open
+                                <input class="form-check-input" name="filter[]" type="checkbox" value="1" id="stateClosed"> Closed
+                                <input class="form-check-input" name="filter[]" type="checkbox" value="2" id="stateDraft"> Draft
+                                <input class="form-check-input" name="filter[]" type="checkbox" value="3" id="stateVoid"> Void
+                            </div>
+                        </div> -->
+                        <div class="row mt-4">
+                            <div class="col-md-2">   
                                 <div class="form-group"> 
-                                    <button type="button" class="btn btn-success" style="border-radius:50px;"> <i class="bi bi-search"></i> Cari </button>
+                                    <button type="button" class="btn btn-sm btn-success" style="border-radius:50px;" id="btn-fiter"> <i class="bi bi-search"></i> Cari </button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body"> 
-                            <h5 class="card-title">Status</h5>
-                            <div class="row mt-2"> 
-                                <div class="col-md-2">
-                                    <ul class="list-group"> 
-                                        <li class="list-group-item">
-                                            <input class="form-check-input" type="checkbox" value="0" id="stateOpen">
-                                            Open
-                                        </li>
-                                        <li class="list-group-item">
-                                            <input class="form-check-input" type="checkbox" value="1" id="stateClosed">
-                                            Closed
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-2">
-                                    <ul class="list-group"> 
-                                        <li class="list-group-item">
-                                            <input class="form-check-input" type="checkbox" value="2" id="stateDraft">
-                                            Draft
-                                        </li>
-                                        <li class="list-group-item">
-                                            <input class="form-check-input" type="checkbox" value="3" id="stateVoid">
-                                            Void
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div> 
-                    </div> 
-                </div> 
-            </div>
-
-
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
@@ -142,20 +115,35 @@
 </main>
 
 <script type="text/javascript"> 
-    var name
+    var invoice_number, start_date, end_date, openState, closeState, draftState, voidState
     var table
     $(document).ready(function () {
+
+        var now = new Date();
+        var month = (now.getMonth() + 1);               
+        var day = now.getDate();
+
+        if (month < 10) 
+            month = "0" + month;
+        if (day < 10) 
+            day = "0" + day;
+        var today = now.getFullYear() + '-' + month + '-' + day;
+        
+        var convertDate = day + '-' + month.toLocaleString('default', { month: 'long' }) + '-' + now.getFullYear()
+        var convertEndDate = day + '-' + month.toLocaleString('default', { month: 'long' }) + '-' + now.getFullYear()
         
         $("#start_date").datepicker({
             format: 'dd-mm-yyyy',
             defaultDate: new Date(),
         });
+        $('#start_date').val(convertDate);
+
         $("#end_date").datepicker({
             format: 'dd-mm-yyyy',
             defaultDate: new Date(),
         });
+        $('#end_date').val(convertEndDate);
 
-        loadPurchaseInvoice()
 
         $("#btn-add").on("click", function(e){
             e.preventDefault()
@@ -163,16 +151,30 @@
         })
 
         // filter invoice
-        $("#filter_name").on("keyup", function(e){
+        $("#btn-fiter").on("click", function(e){
             e.preventDefault()
-            name = $("#filter_name").val()
-            // loadInvoice(name)
+            invoice_number =  $("#filter_name").val()
+            start_date = $("#start_date").val()
+            start_date = start_date.split("-").reverse().join("-")
+            end_date = $("#end_date").val()
+            end_date = end_date.split("-").reverse().join("-")
+            openState = $("#stateOpen").val()
+            closeState = $("#stateClosed").val()
+            draftState = $("#stateDraft").val()
+            voidState = $("#stateVoid").val()
+          
+            loadPurchaseInvoice(invoice_number, start_date, end_date, openState, closeState, draftState, voidState)
         })
 
+        start_date = $("#start_date").val()
+        start_date = start_date.split("-").reverse().join("-")
+        end_date = $("#end_date").val()
+        end_date = end_date.split("-").reverse().join("-")
+        loadPurchaseInvoice(invoice_number, start_date, end_date, openState, closeState, draftState, voidState)
 
     });
 
-    function loadPurchaseInvoice(name = null){
+    function loadPurchaseInvoice(invoice_number = null, start_date=null, end_date = null, openState=null, closeState=null, draftState= null, voidState= null){
         if (table != null) {
             table.destroy();
         }
@@ -208,7 +210,13 @@
                     url :  '/api/purchasing-invoice',
                     type: "GET",
                     data: {
-                        name: name,
+                        invoice_number: invoice_number,
+                        start_date : start_date,
+                        end_date : end_date,
+                        open_state : openState,
+                        close_state : closeState,
+                        draft_state : draftState,
+                        void_state : voidState
                         // page : 1,
                         // limit : 10
                     }
@@ -346,25 +354,25 @@
                             var state = ""
                             if( (rowData.state == 0) && (rowData.is_deleted == 0) ){
                                 state = "Open"
-                                $("#stateOpen").prop("checked", true)
-                                $("#stateClosed").prop("checked", true)
+                                // $("#stateOpen").prop("checked", true)
+                                // $("#stateClosed").prop("checked", true)
                             }
 
                             if((rowData.state == 1) && (rowData.is_deleted == 0)){
                                 state = "Close"
-                                $("#stateClosed").prop("checked", true)
+                                // $("#stateClosed").prop("checked", true)
                             }
 
                             if((rowData.state == 2) && (rowData.is_deleted == 0)){
                                 state = "Draft"
-                                $("#stateDraft").prop("checked", true)
+                                // $("#stateDraft").prop("checked", true)
                             }
 
                             if((rowData.state == 3) && (rowData.is_deleted == 1)){
                                 state = "Void"
-                                $("#stateVoid").prop("checked", true)
-                                $("#stateOpen").prop("checked", false)
-                                $("#stateClosed").prop("checked", false)
+                                // $("#stateVoid").prop("checked", true)
+                                // $("#stateOpen").prop("checked", false)
+                                // $("#stateClosed").prop("checked", false)
                             }
 
                             $(td).html(state);

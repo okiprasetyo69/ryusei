@@ -903,6 +903,14 @@
                             }
                         });
                     }
+
+                    if(response.status == 404){
+                        $.confirm({
+                            title: 'Pesan ',
+                            content: response.message,
+                        });
+                        return 
+                    }
                 }
             });
         })

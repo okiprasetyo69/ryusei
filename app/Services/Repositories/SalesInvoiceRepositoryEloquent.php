@@ -6,6 +6,7 @@ use App\Models\SalesInvoice;
 use App\Models\SalesInvoiceDetail;
 use App\Models\Product;
 use App\Models\ItemUnit;
+use App\Models\ItemStock;
 use App\Services\Constants\SalesInvoiceConstantInterface;
 use App\Services\Constants\WarehouseConstantInterface;
 use App\Services\Interfaces\SalesInvoiceService;
@@ -63,6 +64,7 @@ use Yajra\DataTables\Facades\DataTables;
 
     public function create(Request $request){
         try{
+            DB::beginTransaction();
 
             $salesInvoice = $this->salesInvoice;
             $salesInvoice->fill($request->all());
@@ -198,9 +200,6 @@ use Yajra\DataTables\Facades\DataTables;
                 $invoiceDetail->sku_code = $arrInvoice[$i]['sku_code'];
                 $invoiceDetail->description = $arrInvoice[$i]['description'];
                 $invoiceDetail->qty = $arrInvoice[$i]['qty'];
-                // upsert Item stock here
-
-
                 $invoiceDetail->unit_id = $arrInvoice[$i]['unit_id'];
                 $invoiceDetail->price = $arrInvoice[$i]['price'];
                 $invoiceDetail->discount = $arrInvoice[$i]['discount'];
@@ -208,9 +207,43 @@ use Yajra\DataTables\Facades\DataTables;
                 $invoiceDetail->tax_code = $arrInvoice[$i]['tax_code'];
                 $invoiceDetail->order_number = $arrInvoice[$i]['order_number'];
 
+                // upsert Item stock here
+                // check exist product data
+                 $product = Product::where("sku",  $arrInvoice[$i]['sku_code'])->first();
+                 if($product == null){
+                     return response()->json([
+                         'status' => 404 ,
+                         'message' => 'Data product with '. $arrInvoice[$i]['sku_code'].' not available. Please enter new product ! ',
+                     ]);
+                 }
+
+                // check exist item stock & Upsert to stock item here
+
+                $itemStock = ItemStock::where("sku_id",  $product->id)->first();
+                $currentStock =  $itemStock->qty; 
+                if($itemStock != null){
+                    // update stock 
+                    if($itemStock->qty <= 0){
+                        return response()->json([
+                            'status' => 404 ,
+                            'message' => 'Data item stock with SKU '. $arrInvoice[$i]['sku_code'].' limited stock. Please update quantity ! ',
+                        ]);
+                    }
+
+                    if (($currentStock - $arrInvoice[$i]['qty']) < 0) {
+                        return response()->json([
+                            'status' => 404 ,
+                            'message' => 'Calculate data item stock with SKU '. $arrInvoice[$i]['sku_code'].' less than 0. Please try again ! ',
+                        ]);
+                    }
+                    $itemStock->qty =  $currentStock - $arrInvoice[$i]['qty'] ;
+                    $itemStock->save();
+                }
+              
                 $invoiceDetail->save();
             }
-          
+            
+            DB::commit();
             return response()->json([
                 'status' => 200,
                 'message' => true,
@@ -225,6 +258,7 @@ use Yajra\DataTables\Facades\DataTables;
 
     public function update(Request $request){
         try{
+            DB::beginTransaction();
 
             $salesInvoice = $this->salesInvoice;
             $salesInvoice->fill($request->all());
@@ -352,8 +386,6 @@ use Yajra\DataTables\Facades\DataTables;
                 $invoiceDetail->sku_code = $arrInvoice[$i]['sku_code'];
                 $invoiceDetail->description = $arrInvoice[$i]['description'];
                 $invoiceDetail->qty = $arrInvoice[$i]['qty'];
-                // upsert Item stock here
-
                 $invoiceDetail->unit_id = $arrInvoice[$i]['unit_id'];
                 $invoiceDetail->price = $arrInvoice[$i]['price'];
                 $invoiceDetail->discount = $arrInvoice[$i]['discount'];
@@ -361,8 +393,43 @@ use Yajra\DataTables\Facades\DataTables;
                 $invoiceDetail->tax_code = $arrInvoice[$i]['tax_code'];
                 $invoiceDetail->order_number = $arrInvoice[$i]['order_number'];
 
+                // upsert Item stock here
+                // check exist product data
+                $product = Product::where("sku",  $arrInvoice[$i]['sku_code'])->first();
+                if($product == null){
+                    return response()->json([
+                        'status' => 404 ,
+                        'message' => 'Data product with '. $arrInvoice[$i]['sku_code'].' not available. Please enter new product ! ',
+                    ]);
+                }
+
+               // check exist item stock & Upsert to stock item here
+
+               $itemStock = ItemStock::where("sku_id",  $product->id)->first();
+               $currentStock =  $itemStock->qty; 
+               if($itemStock != null){
+                   // update stock 
+                   if($itemStock->qty <= 0){
+                       return response()->json([
+                           'status' => 404 ,
+                           'message' => 'Data item stock with SKU '. $arrInvoice[$i]['sku_code'].' limited stock. Please update quantity ! ',
+                       ]);
+                   }
+
+                   if (($currentStock - $arrInvoice[$i]['qty']) < 0) {
+                       return response()->json([
+                           'status' => 404 ,
+                           'message' => 'Calculate data item stock with SKU '. $arrInvoice[$i]['sku_code'].' less than 0. Please try again ! ',
+                       ]);
+                   }
+                   $itemStock->qty =  $currentStock - $arrInvoice[$i]['qty'] ;
+                   $itemStock->save();
+               }
+
                 $invoiceDetail->save();
             }
+
+            DB::commit();
             return response()->json([
                 'status' => 200,
                 'message' => true,
@@ -379,6 +446,10 @@ use Yajra\DataTables\Facades\DataTables;
 
             $salesInvoice = $this->salesInvoice::where("id", $request->id)->first();
             // $salesInvoiceDetail = SalesInvoiceDetail::where("invoice_id",  $salesInvoice->id);
+            $prefix = "Void:";
+            $invoiceNumber = $salesInvoice->invoice_number;
+            $voidNumber =  $prefix. $invoiceNumber;
+            $salesInvoice->invoice_number = $voidNumber;
             $salesInvoice->state =  SalesInvoiceConstantInterface::VOID;
             $salesInvoice->is_deleted = SalesInvoiceConstantInterface::INVOICE_IS_DELETED;
 

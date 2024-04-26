@@ -983,9 +983,8 @@
             },
             dataType: "JSON",
             success: function (response) {
-                var data = response.data
-      
-                
+                    var data = response.data
+              
                     $("#table-add-invoice-item").show()
                     $("#table-add-invoice-summary").hide()
                     $("#table-add-invoice-summary").html()
