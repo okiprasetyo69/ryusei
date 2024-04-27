@@ -245,4 +245,19 @@ class ProductController extends Controller
             return false;
         }
     }
+
+    public function getDataFromJubelio(Request $request){
+        try{
+            $userData = Auth::user();
+            $inventory = $this->service->getProductFromJubelio($request, $userData);
+            
+            if($inventory != null){
+                return $inventory;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
 }

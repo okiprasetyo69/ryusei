@@ -4,6 +4,8 @@ namespace App\Services\Repositories;
 
 use App\Models\Product;
 use App\Models\ItemUnit;
+use App\Models\User;
+use App\Models\ItemStock;
 use App\Services\Interfaces\ProductService;
 
 use Exception;
@@ -15,6 +17,8 @@ use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\File; 
 use Illuminate\Support\Str;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
 
 /**
  * Class ProductRepositoryEloquent.
@@ -385,5 +389,240 @@ use Illuminate\Support\Str;
             Log::error($ex->getMessage());
             return false;
         }
+    }
+
+    public function getProductFromJubelio(Request $request, $userData=null){
+        try{
+            // get all product with actual stock
+            $responses = Http::withHeaders([
+                'Authorization' => 'Bearer ' .$userData->api_token,
+                'Accept' => 'application/json', 
+            ])->get(env('JUBELIO_API') . '/inventory/');
+            
+            // get item detail to get price per item
+            // $itemsResponse = Http::withHeaders([
+            //     'Authorization' => 'Bearer ' .$userData->api_token,
+            //     'Accept' => 'application/json', 
+            // ])->get(env('JUBELIO_API') . '/inventory/items/');
+            
+            
+            if($responses->status() == 200){
+                $data = $responses->json()['data'];
+
+                foreach ($data as $k => $value) {
+                  
+                    $skuCode = $value['item_code'];
+                    $product = Product::where("sku", $value['item_code'])->first();
+                    $itemStock = ItemStock::where("sku_id", $product->id)->first();
+                
+                    if($product == null){
+
+                        $newProduct = new Product();
+                        $newProduct->code = $value['item_group_id'];
+                        $newProduct->sku = $value['item_code'];
+                        $newProduct->name = $value['item_name'];
+                        $newProduct->save();
+
+                        $newStock = new ItemStock();
+                        $newStock->sku_id =  $newProduct->id;
+                        $newStock->qty =  $value['total_stocks'][$k]['available'];
+                        $newStock->save();
+                    } 
+
+                    if($itemStock != null){
+                        $itemStock->qty =  $value['total_stocks'][$k]['available'];
+                        $itemStock->save();
+                    }
+                   
+                }
+            }
+
+            // if($responses->status() == 401){
+            //     // get new token here
+            //     $loginUser =  Http::post(env('JUBELIO_API') . '/login', [
+            //         'email' => env('JUBELIO_EMAIL'),
+            //         'password' => env('JUBELIO_PASSWORD')
+            //     ]);
+
+            //     if($loginUser->status() == 200){
+            //         // try auth login
+            //         $userLogin = $loginUser->json();
+            //         // find current user login
+            //         $user = User::find($userData->id);
+            //         // set new token
+            //         $user->api_token = $userLogin['token'];
+            //         // update token
+            //         $user->save();
+            //     } 
+
+            //     return response()->json([
+            //         'status' => 401,
+            //         'message' => 'Token expired, please try again !',
+            //         // 'data' => $product
+            //     ]);
+            // }
+
+            // if($itemsResponse->status() == 200){
+            //     $data = $itemsResponse->json()['data'];
+
+            //     foreach ($data as $k => $val) {
+            //         $detailItem = $val['variants'];
+
+            //         foreach ($detailItem as $key => $value) {
+            //             $product = $this->product::where("sku", $value['item_code'])->first();
+            //             if($product == null ){
+            //                 $newProduct = new Product();
+            //                 $newProduct->code = $value['item_group_id'];
+            //                 $newProduct->name = $value['item_name'];
+            //                 $newProduct->price = $value['sell_price'];
+            //             }
+            //         }
+            //     }
+            // }   
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Data product success updated !',
+                // 'data' => $product
+            ]);
+        }
+        catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    private function convertSize($data = null){
+        $size = 0;
+        switch ($value['variation_values'][$k]['value']) {
+            case 'S' :
+                $size = 1;
+                break;
+            case 'M':
+                $size = 2;
+                break;
+            case 'L':
+                $size = 3;
+                break;
+            case 'XS':
+                $size = 4;
+                break;
+            case 'XL':
+                $size = 5;
+                break;
+            case 'XXL':
+                $size = 6;
+                break;
+            case '3XL':
+                $size = 7;
+                break;
+            case 'FS':
+                $size = 8;
+                break;
+            case '26':
+                $size = 9;
+                break;
+            case '27':
+                $size = 10;
+                break;
+            case '28':
+                $size = 11;
+                break;
+            case '29':
+                $size = 12;
+                break;
+            case '30':
+                $size = 13;
+                break;
+            case '31':
+                $size = 14;
+                break;
+            case '32':
+                $size = 15;
+                break;
+            case '33':
+                $size = 16;
+                break;
+            case '34':
+                $size = 17;
+                break;
+            case '35':
+                $size = 18;
+                break;
+            case '36':
+                $size = 19;
+                break;
+            case '37':
+                $size = 20;
+                break;
+            case '38':
+                $size = 21;
+                break;
+            case '39':
+                $size = 22;
+                break;
+            case '40':
+                $size = 23;
+                break;
+            case '41':
+                $size = 24;
+                break;
+            case '42':
+                $size = 25;
+                break;
+            case '43':
+                $size = 26;
+                break;
+            case '44':
+                $size = 27;
+                break;
+            case 'All Size':
+                $size = 28;
+                break;
+            case 'A':
+                $size = 29;
+                break;
+            case 'B':
+                $size = 30;
+                break;
+            case '4':
+                $size = 31;
+                break;
+            case '5':
+                $size = 32;
+                break;
+            case '6':
+                $size = 33;
+                break;
+            case '7':
+                $size = 34;
+                break;
+            case '8':
+                $size = 35;
+                break;
+            case '9':
+                $size = 36;
+                break;
+            case '10':
+                $size = 37;
+                break;
+            case '11':
+                $size = 38;
+                break;
+            case '12':
+                $size = 39;
+                break;
+            case '13':
+                $size = 40;
+                break;
+            case '14':
+                $size = 41;
+                break;
+            default:
+                $size = 0;
+                break;
+        }
+
+        return $size;
     }
  }
