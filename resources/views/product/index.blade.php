@@ -155,9 +155,8 @@
                                                     if($item->category == null){
                                                         $category = "-";
                                                     } else {
-                                                        $category = $item->category;
+                                                        $category = $item->category->name;
                                                     }
-
                                                 ;?>
                                                 <p class="text-center fw-bold"> Kategori : {{ $category }} </p>
                                             </li>

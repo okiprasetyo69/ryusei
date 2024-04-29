@@ -406,7 +406,7 @@ use Illuminate\Support\Facades\Http;
                 'Authorization' => 'Bearer ' . $userData['api_token'],
                 'Accept' => 'application/json', 
             ])->get(env('JUBELIO_API') . '/inventory/');
-            
+
             // get item detail to get price per item
             $itemsResponse = Http::withHeaders([
                 'Authorization' => 'Bearer ' .  $userData['api_token'],
@@ -419,8 +419,7 @@ use Illuminate\Support\Facades\Http;
                 'Accept' => 'application/json', 
             ])->get(env('JUBELIO_API') . '/inventory/item-bundles/');
             
-            // $product = $this->product;
-            
+            $today = date('Y-m-d');
             if($responses->status() == 200){
                 $data = $responses->json()['data'];
                 foreach ($data as $k => $value) {
@@ -436,6 +435,7 @@ use Illuminate\Support\Facades\Http;
 
                         $newStock = new ItemStock();
                         $newStock->sku_id =  $newProduct->id;
+                        $newStock->check_in_date =  $today;
                         $newStock->qty =  $value['total_stocks']['available'];
                         $newStock->save();
                     }  
@@ -448,13 +448,12 @@ use Illuminate\Support\Facades\Http;
                             $newItemStock = new ItemStock();
                             $newItemStock->sku_code = $value['item_code'];
                             $newItemStock->qty =  $value['total_stocks']['available'];
-                            $newItemStock->check_in_date =  date('Y-m-d');
+                            $newItemStock->check_in_date =   $today;
                             $newItemStock->save();
                         } else {
-                            $itemStock->sku_id = 
                             $itemStock->sku_code = $value['item_code'];
                             $itemStock->qty =  $value['total_stocks']['available'];
-                            $itemStock->check_in_date =  date('Y-m-d');
+                            $itemStock->check_in_date =  $today;
                             $itemStock->save();
                         }
                     }
@@ -486,7 +485,6 @@ use Illuminate\Support\Facades\Http;
 
             if($itemsResponse->status() == 200){
                 $data = $itemsResponse->json()['data'];
-
                 foreach ($data as $k => $val) {
                     $detailItem = $val['variants'];
                     foreach ($detailItem as $key => $value) {
@@ -529,7 +527,6 @@ use Illuminate\Support\Facades\Http;
             return response()->json([
                 'status' => 200,
                 'message' => 'Data product success updated !',
-                // 'data' => $product
             ]);
         }
         catch(Exception $ex){

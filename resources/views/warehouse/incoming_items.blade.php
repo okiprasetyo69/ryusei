@@ -403,7 +403,7 @@
 
         table =  $("#table-stock-items").DataTable(
            {
-                lengthChange: false,
+                // lengthChange: false,
                 searching: false,
                 destroy: true,
                 processing: true,
@@ -436,7 +436,7 @@
                         start_date: start_date,
                         end_date : end_date,
                         article : article,
-                        filter_category : filter_category
+                        filter_category : filter_category,
                         // page : 1,
                         // limit : 10
                     }
@@ -501,7 +501,10 @@
                             if(rowData.sku_id == null){
                                 category_name = ""
                             } else {
-                                category_name = rowData.product.category.name
+                                if(rowData.product == null){
+                                    category_name = ""
+                                }
+                                //category_name = rowData.product.category.name
                             }
                             $(td).html(category_name);
                         },
@@ -578,7 +581,7 @@
                             month = date.toLocaleString('default', { month: 'long' })
                             year = date.getFullYear()
                             format = date.getDate() + "-"+ month +"-"+ year
-
+                          
                             $(td).html(format);
                         },
                     },
