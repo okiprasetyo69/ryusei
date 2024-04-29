@@ -112,17 +112,36 @@
                                         </div>
                                         <img class="card-img-top text-center" src="{{ asset('/uploads/product/'. $item->image_path ) }}" style="height: 200px; width: 200px" />
                                         <div class="card-body">
-                                            <h5 class="card-title text-center">{{ $item->article }}</h5>
+                                            <h5 class="card-title text-center">{{ $item->article != null ?  $item->article : "-" }}</h5>
                                         </div>
                                         <ul class="list-group list-group-flush">
                                             <li class="list-group-item">
-                                                <h3 class="card-title text-center"> SKU : {{ $item->sku }}  </h3>
+                                                <h3 class="card-title text-center"> SKU : {{ $item->sku != null ? $item->sku : "-" }}  </h3>
                                             </li>
                                             <li class="list-group-item text-center">
-                                                <p class="fst-italic fw-bold"> {{ $item->name }} </p>
+                                                <?php 
+                                                    $itemName = "";
+                                                    if($item->name == null){
+                                                        $itemName = "-";
+                                                    } else {
+                                                        $itemName = $item->name;
+                                                    }
+                             
+                                                ;?>
+                                                <p class="fst-italic fw-bold"> {{ $itemName }} </p>
                                             </li>
                                             <li class="list-group-item">
-                                                <p class="text-center fw-bold"> Size : {{ $item->sizes->name }} </p>
+                                                <?php 
+                                                    $sizeName = "";
+
+                                                    if($item->size == null){
+                                                        $sizeName = "-";
+                                                    } else {
+                                                        $sizeName =  $item->sizes->name;
+                                                    }
+                                                  
+                                                ;?>
+                                                <p class="text-center fw-bold"> Size : {{  $sizeName }} </p>
                                             </li>
                                             <li class="list-group-item">
                                                 <p class="text-center fw-bold">  Harga : Rp. {{ number_format($item->price, 0, ',', '.')}} </p>
@@ -131,7 +150,16 @@
                                                 <p class="text-center fw-bold"> Status : {{ $item->status == 1 ? "Ready" : "Not Ready"}} </p>
                                             </li>
                                             <li class="list-group-item"> 
-                                                <p class="text-center fw-bold"> Kategori : {{ $item->category->name }} </p>
+                                                <?php 
+                                                    $category = "";
+                                                    if($item->category == null){
+                                                        $category = "-";
+                                                    } else {
+                                                        $category = $item->category;
+                                                    }
+
+                                                ;?>
+                                                <p class="text-center fw-bold"> Kategori : {{ $category }} </p>
                                             </li>
                                         </ul>
                                     </div>

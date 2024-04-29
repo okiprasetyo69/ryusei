@@ -19,7 +19,8 @@ class ItemStock extends Model
         'sku_id',
         'qty',
         'check_in_date',
-        'warehouse_id'
+        'warehouse_id',
+        'sku_code'
     ];
 
     public function product(){

@@ -32,14 +32,20 @@ use Illuminate\Support\Facades\Http;
 
  class ProductRepositoryEloquent implements ProductService{
 
-       /**
+    /**
      * @var Product
      */
     private Product $product;
 
-    public function __construct(Product $product)
+    /**
+     * @var User
+     */
+    private User $user;
+
+    public function __construct(Product $product, User $user)
     {
         $this->product = $product;
+        $this->user = $user;
     }
 
     public function getProduct(Request $request){
@@ -391,32 +397,37 @@ use Illuminate\Support\Facades\Http;
         }
     }
 
-    public function getProductFromJubelio(Request $request, $userData=null){
+    public function getProductFromJubelio(Request $request, $userData){
         try{
+            DB::beginTransaction();
+
             // get all product with actual stock
             $responses = Http::withHeaders([
-                'Authorization' => 'Bearer ' .$userData->api_token,
+                'Authorization' => 'Bearer ' . $userData['api_token'],
                 'Accept' => 'application/json', 
             ])->get(env('JUBELIO_API') . '/inventory/');
             
             // get item detail to get price per item
-            // $itemsResponse = Http::withHeaders([
-            //     'Authorization' => 'Bearer ' .$userData->api_token,
-            //     'Accept' => 'application/json', 
-            // ])->get(env('JUBELIO_API') . '/inventory/items/');
+            $itemsResponse = Http::withHeaders([
+                'Authorization' => 'Bearer ' .  $userData['api_token'],
+                'Accept' => 'application/json', 
+            ])->get(env('JUBELIO_API') . '/inventory/items/');
             
+            // get price per bundle
+            $itemsBundleResponse = Http::withHeaders([
+                'Authorization' => 'Bearer ' .  $userData['api_token'],
+                'Accept' => 'application/json', 
+            ])->get(env('JUBELIO_API') . '/inventory/item-bundles/');
+            
+            // $product = $this->product;
             
             if($responses->status() == 200){
                 $data = $responses->json()['data'];
-
                 foreach ($data as $k => $value) {
-                  
-                    $skuCode = $value['item_code'];
+                    // Check exist product
                     $product = Product::where("sku", $value['item_code'])->first();
-                    $itemStock = ItemStock::where("sku_id", $product->id)->first();
-                
+                   
                     if($product == null){
-
                         $newProduct = new Product();
                         $newProduct->code = $value['item_group_id'];
                         $newProduct->sku = $value['item_code'];
@@ -425,61 +436,96 @@ use Illuminate\Support\Facades\Http;
 
                         $newStock = new ItemStock();
                         $newStock->sku_id =  $newProduct->id;
-                        $newStock->qty =  $value['total_stocks'][$k]['available'];
+                        $newStock->qty =  $value['total_stocks']['available'];
                         $newStock->save();
-                    } 
-
-                    if($itemStock != null){
-                        $itemStock->qty =  $value['total_stocks'][$k]['available'];
-                        $itemStock->save();
+                    }  
+       
+                    if($product != null){
+                        // Check exist stock item product
+                        $itemStock = ItemStock::where("sku_code", $value['item_code'])->first();
+                        // dd($itemStock);
+                        if($itemStock == null){
+                            $newItemStock = new ItemStock();
+                            $newItemStock->sku_code = $value['item_code'];
+                            $newItemStock->qty =  $value['total_stocks']['available'];
+                            $newItemStock->check_in_date =  date('Y-m-d');
+                            $newItemStock->save();
+                        } else {
+                            $itemStock->sku_id = 
+                            $itemStock->sku_code = $value['item_code'];
+                            $itemStock->qty =  $value['total_stocks']['available'];
+                            $itemStock->check_in_date =  date('Y-m-d');
+                            $itemStock->save();
+                        }
                     }
-                   
                 }
             }
 
-            // if($responses->status() == 401){
-            //     // get new token here
-            //     $loginUser =  Http::post(env('JUBELIO_API') . '/login', [
-            //         'email' => env('JUBELIO_EMAIL'),
-            //         'password' => env('JUBELIO_PASSWORD')
-            //     ]);
+            if($responses->status() == 401){
+                // find current user login
+                $user =  $this->user::where("email",  $userData['email'])->first();
+                // get new token here
+                $loginUser =  Http::post(env('JUBELIO_API') . '/login', [
+                    'email' => env('JUBELIO_EMAIL'),
+                    'password' => env('JUBELIO_PASSWORD')
+                ]);
+                if($loginUser->status() == 200){
+                    // try auth login
+                    $userLogin = $loginUser->json();
+                    // set new token
+                    $user->api_token = $userLogin['token'];
+                    // update token
+                    $user->save();
+                } 
+              
+                return response()->json([
+                    'status' => 401,
+                    'message' => 'Token expired, please try again !',
+                ]);
+            }
 
-            //     if($loginUser->status() == 200){
-            //         // try auth login
-            //         $userLogin = $loginUser->json();
-            //         // find current user login
-            //         $user = User::find($userData->id);
-            //         // set new token
-            //         $user->api_token = $userLogin['token'];
-            //         // update token
-            //         $user->save();
-            //     } 
+            if($itemsResponse->status() == 200){
+                $data = $itemsResponse->json()['data'];
 
-            //     return response()->json([
-            //         'status' => 401,
-            //         'message' => 'Token expired, please try again !',
-            //         // 'data' => $product
-            //     ]);
-            // }
+                foreach ($data as $k => $val) {
+                    $detailItem = $val['variants'];
+                    foreach ($detailItem as $key => $value) {
+                        $productPrice = Product::where("sku", $value['item_code'])->first();
+                        if($productPrice == null ){
+                            $newProductPrice = new Product();
+                            $newProductPrice->code = $value['item_group_id'];
+                            $newProductPrice->name = $value['item_name'];
+                            $newProductPrice->price = $value['sell_price'];
+                            $newProductPrice->save();
+                        } else {
+                            $productPrice->price = $value['sell_price'];
+                            $productPrice->save();
+                        }
+                    }
+                }
+            }   
 
-            // if($itemsResponse->status() == 200){
-            //     $data = $itemsResponse->json()['data'];
-
-            //     foreach ($data as $k => $val) {
-            //         $detailItem = $val['variants'];
-
-            //         foreach ($detailItem as $key => $value) {
-            //             $product = $this->product::where("sku", $value['item_code'])->first();
-            //             if($product == null ){
-            //                 $newProduct = new Product();
-            //                 $newProduct->code = $value['item_group_id'];
-            //                 $newProduct->name = $value['item_name'];
-            //                 $newProduct->price = $value['sell_price'];
-            //             }
-            //         }
-            //     }
-            // }   
-
+            if($itemsBundleResponse->status() == 200){
+                $data = $itemsBundleResponse->json()['data'];
+                foreach ($data as $k => $val) {
+                    $variants = $val['variants'];
+                    foreach ($variants as $key => $value) {
+                        $productPrice = Product::where("sku", $value['item_code'])->first();
+                        if($productPrice == null ){
+                            $newProductPrice = new Product();
+                            $newProductPrice->code = $value['item_group_id'];
+                            $newProductPrice->name = $value['item_name'];
+                            $newProductPrice->price = $value['sell_price'];
+                            $newProductPrice->save();
+                        } else {
+                            $productPrice->price = $value['sell_price'];
+                            $productPrice->save();
+                        }
+                    }
+                }
+            }
+            
+            DB::commit();
             return response()->json([
                 'status' => 200,
                 'message' => 'Data product success updated !',
