@@ -425,12 +425,20 @@ use Illuminate\Support\Facades\Http;
                 $data = $responses->json()['data'];
                 foreach ($data as $k => $value) {
                     // Check exist product
+                    // dd($value['item_name'] . ' - ' . $value['variation_values'][0]['value']);
                     $product = Product::where("sku", $value['item_code'])->first();
                    
                     if($product == null){
                         $newProduct = new Product();
                         $newProduct->code = $value['item_group_id'];
                         $newProduct->sku = $value['item_code'];
+
+                        if($value['variation_values'] != null){
+                            $newProduct->article =   $value['item_name'] . ' - ' . $value['variation_values'][0]['value'];
+                        } else {
+                            $newProduct->article  = null;
+                        }
+
                         $newProduct->name = $value['item_name'];
                         $newProduct->save();
 

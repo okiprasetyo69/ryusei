@@ -207,6 +207,9 @@
                 success: function (response) {
 
                     if(response.status == 200){
+                        $("#btn-sync").attr("disabled", false);
+                        $("#spinner-sync").attr("class", "")
+                        $("#lbl-sync").text("Sync Product")
                         $.confirm({
                             title: 'Pesan ',
                             content: response.message,
@@ -222,6 +225,9 @@
                     }
 
                     if(response.status == 401){
+                        $("#btn-sync").attr("disabled", false);
+                        $("#spinner-sync").attr("class", "")
+                        $("#lbl-sync").text("Sync Product")
                         $.confirm({
                             title: 'Pesan ',
                             content: response.message,
@@ -230,7 +236,6 @@
                                     btnClass: 'btn-success any-other-class',
                                     action: function(){
                                         updateUserToken()
-                                       
                                     }
                                 },
                             }

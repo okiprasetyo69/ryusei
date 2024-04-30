@@ -109,7 +109,7 @@
                                                 <th scope="col">Avg. Value</th>
                                                 <th scope="col">Total. Value</th>
                                                 <th scope="col">Price (PL)</th>
-                                                <th scope="col">Tgl Masuk</th>
+                                                <th scope="col">Tgl Sync</th>
                                                 <th scope="col">Aksi </th>
                                             </tr>
                                         </thead>
