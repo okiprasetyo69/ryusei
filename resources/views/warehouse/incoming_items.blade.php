@@ -471,7 +471,7 @@
                         createdCell: function (td, cellData, rowData, row, col) {
                             var sku_code = ""
                             if(rowData.sku_id == null){
-                                sku_code = ""
+                                sku_code = rowData.sku_code
                             } else {
                                 sku_code = rowData.product.sku
                             }
@@ -485,7 +485,7 @@
                         createdCell: function (td, cellData, rowData, row, col) {
                             var item_name = ""
                             if(rowData.sku_id == null){
-                                item_name = ""
+                                item_name = rowData.item.name
                             } else {
                                 item_name = rowData.product.name
                             }

@@ -69,7 +69,8 @@ Route::controller(ProductController::class)->group(function() {
     Route::get('/product/add', 'add')->name('product.add');
     Route::get('/product/edit/{code}', 'edit')->name('product.edit');
     Route::get('/product/download/import', 'downloadFormatImportProduct')->name('product.download.import');
-    Route::get('/jubelio/inventory', 'getDataFromJubelio')->name('jubelio/inventory');
+    Route::get('/jubelio/inventory', 'getDataFromJubelio')->name('jubelio-inventory');
+    Route::get('/jubelio/update-token', 'updateToken')->name('jubelio-update-token');
 });
 
 // Transaction Menu

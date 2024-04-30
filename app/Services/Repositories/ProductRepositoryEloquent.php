@@ -420,6 +420,7 @@ use Illuminate\Support\Facades\Http;
             ])->get(env('JUBELIO_API') . '/inventory/item-bundles/');
             
             $today = date('Y-m-d');
+
             if($responses->status() == 200){
                 $data = $responses->json()['data'];
                 foreach ($data as $k => $value) {
@@ -442,10 +443,10 @@ use Illuminate\Support\Facades\Http;
        
                     if($product != null){
                         // Check exist stock item product
-                        $itemStock = ItemStock::where("sku_code", $value['item_code'])->first();
-                        // dd($itemStock);
+                        $itemStock = ItemStock::where("sku_id", $product->id)->first();
                         if($itemStock == null){
                             $newItemStock = new ItemStock();
+                            $newItemStock->sku_id = $product->id;
                             $newItemStock->sku_code = $value['item_code'];
                             $newItemStock->qty =  $value['total_stocks']['available'];
                             $newItemStock->check_in_date =   $today;
@@ -461,22 +462,7 @@ use Illuminate\Support\Facades\Http;
             }
 
             if($responses->status() == 401){
-                // find current user login
-                $user =  $this->user::where("email",  $userData['email'])->first();
-                // get new token here
-                $loginUser =  Http::post(env('JUBELIO_API') . '/login', [
-                    'email' => env('JUBELIO_EMAIL'),
-                    'password' => env('JUBELIO_PASSWORD')
-                ]);
-                if($loginUser->status() == 200){
-                    // try auth login
-                    $userLogin = $loginUser->json();
-                    // set new token
-                    $user->api_token = $userLogin['token'];
-                    // update token
-                    $user->save();
-                } 
-              
+                
                 return response()->json([
                     'status' => 401,
                     'message' => 'Token expired, please try again !',
@@ -530,6 +516,35 @@ use Illuminate\Support\Facades\Http;
             ]);
         }
         catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function updateTokenApi(Request $request, $userData){
+        try{
+            // find current user login
+            $users =  User::find($userData['id'])->first();
+            // get new token here
+            $loginUser =  Http::post(env('JUBELIO_API') . '/login', [
+                'email' => env('JUBELIO_EMAIL'),
+                'password' => env('JUBELIO_PASSWORD')
+            ]);
+            
+            if($loginUser->status() == 200){
+                // try auth login
+                $userLogin = $loginUser->json();
+                // set new token
+                $users->api_token = $userLogin['token'];
+            } 
+            // update token
+            $users->save();
+            return response()->json([
+                'status' => 200,
+                'message' => "Success update token ",
+                'data' => $users
+            ]);
+        }catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;
         }

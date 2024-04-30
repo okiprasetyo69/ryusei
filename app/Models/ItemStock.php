@@ -27,6 +27,10 @@ class ItemStock extends Model
         return $this->belongsTo(Product::class, 'sku_id','id');
     }
 
+    public function item(){
+        return $this->belongsTo(Product::class, 'sku_code','sku');
+    }
+
     public function warehouse(){
         return $this->belongsTo(Product::class, 'warehouse_id','id');
     }

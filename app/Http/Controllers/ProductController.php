@@ -260,4 +260,19 @@ class ProductController extends Controller
             return false;
         }
     }
+
+    public function updateToken(Request $request){
+        try{
+            $userData = Auth::user();
+            $userUpdate = $this->service->updateTokenApi($request, $userData);
+            
+            if($userUpdate != null){
+                return $userUpdate;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
 }

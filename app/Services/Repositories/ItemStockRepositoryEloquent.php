@@ -42,7 +42,7 @@ use App\Imports\ImportItemStock;
     public function getItemStock(Request $request){
         try{
 
-            $itemStock = ItemStock::with('product', 'product.category', 'product.unit')->orderBy('id', 'ASC');
+            $itemStock = ItemStock::with('product', 'product.category', 'product.unit', 'item')->orderBy('id', 'ASC');
 
             if( ($request->limit != null) && $request->page != null){
                 $offset = ($request->page - 1) * $request->limit;
@@ -65,7 +65,6 @@ use App\Imports\ImportItemStock;
             if($request->start_date != null){
                 $itemStock = $itemStock->where("check_in_date", ">=", $request->start_date);
             }
-
             
             if($request->end_date != null){
                 $itemStock = $itemStock->where("check_in_date", "<=", $request->end_date);
@@ -173,4 +172,5 @@ use App\Imports\ImportItemStock;
             return false;
         }
     }
+    
  }

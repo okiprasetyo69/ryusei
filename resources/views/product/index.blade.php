@@ -19,13 +19,13 @@
             </ol>
         </nav>
     </div><!-- End Page Title -->
-
     <section class="section dashboard">
         <div class="row">
             <div class="col-md-12">
             <form method="GET" action="{{ route('product') }}"> 
                 <div class="card">
                     <div class="card-body">
+                        
                         <div class="row mt-2">
                            <div class="col-md-4">
                                 <label> <strong><span>Pencarian Artikel </span></strong> </label>
@@ -91,8 +91,13 @@
                     <div class="card-body">
                         <div class="row mt-2"> 
                             <div class="col md-4">
-                                <button type="button" class="btn btn-primary rounded-pill" id="btn-add">
+                                <button type="button" class="btn btn-sm btn-primary rounded-pill" id="btn-add">
                                     <i class="bi bi-plus-circle"></i> Tambah
+                                </button>
+                                <button type="button" class="btn btn-sm btn-danger rounded-pill" id="btn-sync">
+                                    <i class="ri-24-hours-fill"></i> 
+                                    <span class="" role="status" id="spinner-sync" aria-hidden="true"></span>
+                                    <label id="lbl-sync">Sync Product</label>
                                 </button>
                             </div>
                         </div>
@@ -187,6 +192,54 @@
             e.preventDefault()
             window.location.href = "/product/add"
         })
+
+        $("#btn-sync").on("click", function(e){
+            e.preventDefault()
+            $("#btn-sync").attr("disabled", true);
+            $("#spinner-sync").attr("class", "spinner-grow spinner-grow-sm")
+            $("#lbl-sync").text("Loading...")
+
+            $.ajax({
+                type: "GET",
+                url: "/jubelio/inventory",
+                data: "data",
+                dataType: "JSON",
+                success: function (response) {
+
+                    if(response.status == 200){
+                        $.confirm({
+                            title: 'Pesan ',
+                            content: response.message,
+                            buttons: {
+                                Ya: {
+                                    btnClass: 'btn-success any-other-class',
+                                    action: function(){
+                                        window.location.href = '/product'
+                                    }
+                                },
+                            }
+                        });
+                    }
+
+                    if(response.status == 401){
+                        $.confirm({
+                            title: 'Pesan ',
+                            content: response.message,
+                            buttons: {
+                                "Update Token": {
+                                    btnClass: 'btn-success any-other-class',
+                                    action: function(){
+                                        updateUserToken()
+                                       
+                                    }
+                                },
+                            }
+                        });
+                    }
+                }   
+            });
+
+        })
     });
 
     function getCategory(){
@@ -278,6 +331,31 @@
         });
     }
 
+    function updateUserToken(){
+        $.ajax({
+            type: "GET",
+            url: "/jubelio/update-token",
+            data: "data",
+            dataType: "JSON",
+            success: function (response) {
+                console.log(response)
+                if(response.status == 200){
+                    $.confirm({
+                            title: 'Pesan ',
+                            content: response.message,
+                            buttons: {
+                                Ya: {
+                                    btnClass: 'btn-success any-other-class',
+                                    action: function(){
+                                        window.location.href = '/product'
+                                    }
+                                },
+                            }
+                        });
+                }
+            }
+        });
+    }
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
