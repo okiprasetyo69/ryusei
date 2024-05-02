@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
+
 
 /**
  * Class VendorRepositoryEloquent.
@@ -210,4 +213,60 @@ use Yajra\DataTables\Facades\DataTables;
          }
     }
 
+    public function getSupplierFromJubelio(Request $request,  $userData){
+        try{
+            DB::beginTransaction();
+
+            // get all product with actual stock
+            $responses = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $userData['api_token'],
+                'Accept' => 'application/json', 
+            ])->get(env('JUBELIO_API') . '/contacts/suppliers/', [
+                'page' => 1,
+                'pageSize' => 200,
+            ]);
+
+            $supplier = $this->vendor;
+            
+            if($responses->status() == 200){
+                $data = $responses->json()['data'];
+                foreach ($data as $key => $value) {
+    
+                   $suppliers = Vendor::where("name", $value['contact_name'])->first();
+                   if($suppliers == null){
+                        $newSupplier = new Vendor();
+                        $newSupplier->name = $value['contact_name'];
+                        $newSupplier->phone = $value['phone'];
+                        $newSupplier->mobile = $value['mobile'];
+                        $newSupplier->email = $value['email'];
+
+                        $newSupplier->save();
+                   } else {
+                        $suppliers->phone = $value['phone'];
+                        $suppliers->mobile = $value['mobile'];
+                        $suppliers->email = $value['email'];
+                        $suppliers->save();
+                   }
+                }
+              
+            }
+
+            if($responses->status() == 401){
+                return response()->json([
+                    'status' => 401,
+                    'message' => 'Token expired, please try again !',
+                ]);
+            }
+
+            DB::commit();
+            return response()->json([
+                'data' =>  $supplier,
+                'message' => 'Success get suppliers !',
+                'status' => 200
+            ]);
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
  }

@@ -62,6 +62,11 @@
                                 <button type="button" class="btn btn-sm btn-primary rounded-pill" id="btn-add">
                                     <i class="bi bi-plus-circle"></i> Tambah
                                 </button>
+                                <button type="button" class="btn btn-sm btn-danger rounded-pill" id="btn-sync">
+                                    <i class="ri-24-hours-fill"></i> 
+                                    <span class="" role="status" id="spinner-sync" aria-hidden="true"></span>
+                                    <label id="lbl-sync">Sync Supplier</label>
+                                </button>
                             </div>
                         </div>
                         <div class="row mt-2">
@@ -137,6 +142,61 @@
             }
 
             loadVendor(name, vendor_code, category, phone, mobile, email)
+        })
+
+
+        // sync supplier
+        $("#btn-sync").on("click", function(e){
+            e.preventDefault()
+            $("#btn-sync").attr("disabled", true);
+            $("#spinner-sync").attr("class", "spinner-grow spinner-grow-sm")
+            $("#lbl-sync").text("Loading...")
+
+            $.ajax({
+                type: "GET",
+                url: "/jubelio/suppliers",
+                data: "data",
+                dataType: "JSON",
+                success: function (response) {
+
+                    if(response.status == 200){
+                        $("#btn-sync").attr("disabled", false);
+                        $("#spinner-sync").attr("class", "")
+                        $("#lbl-sync").text("Sync Product")
+                        $.confirm({
+                            title: 'Pesan ',
+                            content: response.message,
+                            buttons: {
+                                Ya: {
+                                    btnClass: 'btn-success any-other-class',
+                                    action: function(){
+                                        window.location.href = '/vendors'
+                                    }
+                                },
+                            }
+                        });
+                    }
+
+                    if(response.status == 401){
+                        $("#btn-sync").attr("disabled", false);
+                        $("#spinner-sync").attr("class", "")
+                        $("#lbl-sync").text("Sync Product")
+                        $.confirm({
+                            title: 'Pesan ',
+                            content: response.message,
+                            buttons: {
+                                "Update Token": {
+                                    btnClass: 'btn-success any-other-class',
+                                    action: function(){
+                                        updateUserToken()
+                                    }
+                                },
+                            }
+                        });
+                    }
+                }   
+            });
+
         })
 
     });
@@ -372,6 +432,32 @@
                             },
                         }
                     });
+                }
+            }
+        });
+    }
+
+    function updateUserToken(){
+        $.ajax({
+            type: "GET",
+            url: "/jubelio/update-token",
+            data: "data",
+            dataType: "JSON",
+            success: function (response) {
+                console.log(response)
+                if(response.status == 200){
+                    $.confirm({
+                            title: 'Pesan ',
+                            content: response.message,
+                            buttons: {
+                                Ya: {
+                                    btnClass: 'btn-success any-other-class',
+                                    action: function(){
+                                        window.location.href = '/vendors'
+                                    }
+                                },
+                            }
+                        });
                 }
             }
         });

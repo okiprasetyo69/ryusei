@@ -5,6 +5,7 @@ namespace App\Services\Repositories;
 use App\Models\PurchaseInvoice;
 use App\Models\PurchasingInvoiceDetail;
 use App\Models\Product;
+use App\Models\Vendor;
 use App\Models\ItemUnit;
 use App\Models\ItemStock;
 use App\Services\Constants\SalesInvoiceConstantInterface;
@@ -19,6 +20,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 use Carbon\Carbon;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
 
 /**
  * Class PurchasingInvoiceRepositoryEloquent.
@@ -512,6 +515,99 @@ use Carbon\Carbon;
                 'status' => 200,
                 'message' => true,
                 'data' => $purchaseInvoiceDetail
+            ]);
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function getPurchaseInvoiceFromJubelio(Request $request, $userData){
+        try{
+            DB::beginTransaction();
+
+            // get all product with actual stock
+            $responses = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $userData['api_token'],
+                'Accept' => 'application/json', 
+            ])->get(env('JUBELIO_API') . '/purchase/bills/');
+
+            if($responses->status() == 200){
+                $data = $responses->json()['data'];
+                foreach ($data as $key => $value) {
+                    // dd(date_create($value['transaction_date'])->format('Y-m-d') );
+                   $purchaseInvoice = PurchaseInvoice::where("invoice_number", $value['doc_number'])->first();
+
+                   $supplier = Vendor::where("name", $value['supplier_name'])->first();
+
+                   $convertDate = date_create($value['transaction_date'])->format('Y-m-d');
+                   if($purchaseInvoice == null){
+                        $newPurchaseInvoice = new PurchaseInvoice();
+                        $newPurchaseInvoice->invoice_number = $value['doc_number'];
+                        $newPurchaseInvoice->vendor_id =  $supplier->id;
+                        $newPurchaseInvoice->grand_total = $value['grand_total'];
+                        $newPurchaseInvoice->date =  $convertDate;
+                        $newPurchaseInvoice->due_date =  $convertDate;
+                        $newPurchaseInvoice->vendor_phone = $supplier->phone;
+                        $newPurchaseInvoice->doc_id = $value['doc_id'];
+
+                        $newPurchaseInvoice->save();
+                   } else {
+                        $purchaseInvoice->vendor_phone = $supplier->phone;
+                        $purchaseInvoice->save();
+                   }
+                }
+              
+            }
+
+            if($responses->status() == 401){
+                return response()->json([
+                    'status' => 401,
+                    'message' => 'Token expired, please try again !',
+                ]);
+            }
+            
+            DB::commit();
+            return response()->json([
+                'status' => 200,
+                'message' => "Success sync purchase bills !",
+            ]);
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function getDetailPurchaseFromJubelio(Request $request, $userData){
+        try{
+            DB::beginTransaction();
+
+            // get all product with actual stock
+            $responses = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $userData['api_token'],
+                'Accept' => 'application/json', 
+            ])->get(env('JUBELIO_API') . '/purchase/bills/'.$request->docs_id);
+
+            if($responses->status() == 200){
+                $data = $responses->json()['data'];
+                foreach ($data as $key => $value) {
+                    // dd(date_create($value['transaction_date'])->format('Y-m-d') );
+                   $purchaseInvoiceDetail = PurchasingInvoiceDetail::where("invoice_number", $value['doc_number'])->first();
+                }
+              
+            }
+
+            if($responses->status() == 401){
+                return response()->json([
+                    'status' => 401,
+                    'message' => 'Token expired, please try again !',
+                ]);
+            }
+            
+            DB::commit();
+            return response()->json([
+                'status' => 200,
+                'message' => "Success sync purchase bills !",
             ]);
         }catch(Exception $ex){
             Log::error($ex->getMessage());

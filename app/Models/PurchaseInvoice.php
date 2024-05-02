@@ -38,7 +38,8 @@ class PurchaseInvoice extends Model
         'grand_total',
         'balance_due',
         'state',
-        'is_deleted'
+        'is_deleted',
+        'doc_id'
     ];
 
     public function vendor(){

@@ -143,4 +143,19 @@ class VendorController extends Controller
             return false;
         }
     }
+
+    public function getSupplierFromJubelio(Request $request){
+        try{
+            $userData = Auth::user();
+            $suppliers = $this->service->getSupplierFromJubelio($request, $userData);
+            
+            if($suppliers != null){
+                return $suppliers;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
 }

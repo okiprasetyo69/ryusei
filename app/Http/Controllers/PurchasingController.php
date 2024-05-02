@@ -164,4 +164,20 @@ class PurchasingController extends Controller
             return $purchasingInvoice;
         }
     }
+
+    public function getPurchaseInvoiceFromJubelio(Request $request){
+        
+        try{
+            $userData = Auth::user();
+            $purchaseInvoice = $this->service->getPurchaseInvoiceFromJubelio($request, $userData);
+            
+            if($purchaseInvoice != null){
+                return $purchaseInvoice;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
 }   
