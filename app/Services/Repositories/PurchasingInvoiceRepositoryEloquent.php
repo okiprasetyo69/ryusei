@@ -526,7 +526,7 @@ use Illuminate\Support\Facades\Http;
         try{
             DB::beginTransaction();
 
-            // get all product with actual stock
+            // get purchase invoce api
             $responses = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $userData['api_token'],
                 'Accept' => 'application/json', 
@@ -534,13 +534,13 @@ use Illuminate\Support\Facades\Http;
 
             if($responses->status() == 200){
                 $data = $responses->json()['data'];
+
                 foreach ($data as $key => $value) {
-                    // dd(date_create($value['transaction_date'])->format('Y-m-d') );
+
                    $purchaseInvoice = PurchaseInvoice::where("invoice_number", $value['doc_number'])->first();
-
                    $supplier = Vendor::where("name", $value['supplier_name'])->first();
-
                    $convertDate = date_create($value['transaction_date'])->format('Y-m-d');
+
                    if($purchaseInvoice == null){
                         $newPurchaseInvoice = new PurchaseInvoice();
                         $newPurchaseInvoice->invoice_number = $value['doc_number'];
@@ -550,14 +550,25 @@ use Illuminate\Support\Facades\Http;
                         $newPurchaseInvoice->due_date =  $convertDate;
                         $newPurchaseInvoice->vendor_phone = $supplier->phone;
                         $newPurchaseInvoice->doc_id = $value['doc_id'];
-
                         $newPurchaseInvoice->save();
-                   } else {
+
+                        $this->detailPurchaseInvoice( $userData, $value, $newPurchaseInvoice->id);
+                   } 
+                   
+                   if($purchaseInvoice != null){
+                        $purchaseInvoice->invoice_number = $value['doc_number'];
+                        $purchaseInvoice->vendor_id =  $supplier->id;
+                        $purchaseInvoice->grand_total = $value['grand_total'];
+                        $purchaseInvoice->date =  $convertDate;
+                        $purchaseInvoice->due_date =  $convertDate;
                         $purchaseInvoice->vendor_phone = $supplier->phone;
+                        $purchaseInvoice->doc_id = $value['doc_id'];
                         $purchaseInvoice->save();
-                   }
+
+                        $this->detailPurchaseInvoice( $userData, $value, $purchaseInvoice->id);
+
+                    }
                 }
-              
             }
 
             if($responses->status() == 401){
@@ -578,37 +589,53 @@ use Illuminate\Support\Facades\Http;
         }
     }
 
-    public function getDetailPurchaseFromJubelio(Request $request, $userData){
+    public function detailPurchaseInvoice($userData=null, $valueData=null, $invoicePurchaseId=null){
         try{
-            DB::beginTransaction();
-
-            // get all product with actual stock
+            // get purchase invoce api
             $responses = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $userData['api_token'],
                 'Accept' => 'application/json', 
-            ])->get(env('JUBELIO_API') . '/purchase/bills/'.$request->docs_id);
+            ])->get(env('JUBELIO_API') . '/purchase/bills/'. $valueData['doc_id']);
 
             if($responses->status() == 200){
-                $data = $responses->json()['data'];
-                foreach ($data as $key => $value) {
-                    // dd(date_create($value['transaction_date'])->format('Y-m-d') );
-                   $purchaseInvoiceDetail = PurchasingInvoiceDetail::where("invoice_number", $value['doc_number'])->first();
-                }
+                $data = $responses->json()['items'];
               
+                foreach ($data as $key => $value) {
+                    $purchaseInvoiceDetail = PurchasingInvoiceDetail::where("invoice_id", $invoicePurchaseId)->first();
+
+                    if($purchaseInvoiceDetail == null){
+                        $newDetailPurchaseInvoice = new PurchasingInvoiceDetail();
+                        $newDetailPurchaseInvoice->invoive_id = $invoicePurchaseId;
+
+                        $product = Product::where("sku", $value['item_code'])->first();
+                        if($skuId != null){
+                            $newDetailPurchaseInvoice->sku_id = $product->id;
+                            $newDetailPurchaseInvoice->sku_code = $product->sku;
+                        } else {
+                            $newDetailPurchaseInvoice->sku_id = null;
+                            $newDetailPurchaseInvoice->sku_code = null;
+                        }
+                        $newDetailPurchaseInvoice->description = $valueData['description'];
+                        $newDetailPurchaseInvoice->qty = $valueData['qty'];
+                        $newDetailPurchaseInvoice->price = $valueData['price'];
+                        $newDetailPurchaseInvoice->discount = $valueData['disc'];
+                        $newDetailPurchaseInvoice->total = $valueData['amount'];
+
+                        $newDetailPurchaseInvoice->save();
+                    }
+
+                    if($purchaseInvoiceDetail != null){
+                        $purchaseInvoiceDetail->description = $valueData['description'];
+                        $purchaseInvoiceDetail->qty = $valueData['qty'];
+                        $purchaseInvoiceDetail->price = $valueData['price'];
+                        $purchaseInvoiceDetail->discount = $valueData['disc'];
+                        $purchaseInvoiceDetail->total = $valueData['amount'];
+
+                        $purchaseInvoiceDetail->save();
+                    }
+                }
             }
 
-            if($responses->status() == 401){
-                return response()->json([
-                    'status' => 401,
-                    'message' => 'Token expired, please try again !',
-                ]);
-            }
-            
-            DB::commit();
-            return response()->json([
-                'status' => 200,
-                'message' => "Success sync purchase bills !",
-            ]);
         }catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;

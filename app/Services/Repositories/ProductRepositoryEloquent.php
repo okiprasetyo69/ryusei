@@ -425,7 +425,6 @@ use Illuminate\Support\Facades\Http;
                 $data = $responses->json()['data'];
                 foreach ($data as $k => $value) {
                     // Check exist product
-                    // dd($value['item_name'] . ' - ' . $value['variation_values'][0]['value']);
                     $product = Product::where("sku", $value['item_code'])->first();
                    
                     if($product == null){
@@ -450,6 +449,7 @@ use Illuminate\Support\Facades\Http;
                     }  
        
                     if($product != null){
+
                         // Check exist stock item product
                         $itemStock = ItemStock::where("sku_id", $product->id)->first();
                         if($itemStock == null){
@@ -465,6 +465,18 @@ use Illuminate\Support\Facades\Http;
                             $itemStock->check_in_date =  $today;
                             $itemStock->save();
                         }
+
+                        $product->code = $value['item_group_id'];
+                        $product->sku = $value['item_code'];
+
+                        if($value['variation_values'] != null){
+                            $product->article =   $value['item_name'] . ' - ' . $value['variation_values'][0]['value'];
+                        } else {
+                            $product->article  = null;
+                        }
+
+                        $product->name = $value['item_name'];
+                        $product->save();
                     }
                 }
             }

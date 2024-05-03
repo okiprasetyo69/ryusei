@@ -178,7 +178,7 @@
         loadPurchaseInvoice(invoice_number, start_date, end_date, openState, closeState, draftState, voidState)
 
          // sync supplier
-         $("#btn-sync").on("click", function(e){
+        $("#btn-sync").on("click", function(e){
             e.preventDefault()
             $("#btn-sync").attr("disabled", true);
             $("#spinner-sync").attr("class", "spinner-grow spinner-grow-sm")

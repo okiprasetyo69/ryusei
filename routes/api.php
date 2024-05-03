@@ -20,6 +20,8 @@ use App\Http\Controllers\InvoiceCategoryController;
 use App\Http\Controllers\SalesInvoiceController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\PurchasingController;
+use App\Http\Controllers\WebhookController;
+use App\Http\Middleware\VerifyWebhookSecret;
 
 use App\Http\Controllers\HomePageController;
 
@@ -196,4 +198,9 @@ Route::controller(PurchasingController::class)->group(function() {
     Route::post('/purchasing-invoice/detail', 'detail')->name('purchasing-invoice.detail');
     Route::post('/purchasing-invoice/detail-invoice-item', 'detailInvoice')->name('purchasing-invoice.detail.invoice-item');
     Route::post('/purchasing-invoice/detail-invoice-item/delete', 'deleteDetailInvoice')->name('purchasing-invoice.detail.invoice-item.delete');
+});
+
+// Web Hook
+Route::controller(WebhookController::class)->group(function() {
+    Route::post('/webhook/jubelio/product', 'handleProduct')->name('webhook.jubelio.product')->middleware(VerifyWebhookSecret::class);
 });

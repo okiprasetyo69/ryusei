@@ -118,4 +118,4 @@ Route::controller(PurchasingController::class)->group(function() {
 });
 
 // Webhook
-Route::get('/jubelio/webhook', [WebhookController::class, 'handle'])->middleware(VerifyWebhookSecret::class);
+Route::post('/jubelio/webhook/product', [WebhookController::class, 'handleProduct'])->middleware(VerifyWebhookSecret::class);
