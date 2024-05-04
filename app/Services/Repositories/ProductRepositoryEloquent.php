@@ -526,7 +526,6 @@ use Illuminate\Support\Facades\Http;
                     'Authorization' => 'Bearer ' .  $userData['api_token'],
                     'Accept' => 'application/json', 
                 ])->get(env('JUBELIO_API') . '/inventory/items/');
-               
             }
 
             if($itemsResponse->status() == 200){
@@ -554,7 +553,6 @@ use Illuminate\Support\Facades\Http;
             if($itemsResponse->status() == 401){
                 $relogin = $this->updateTokenApi();
             }
-
 
             return response()->json([
                 'status' => 200,
