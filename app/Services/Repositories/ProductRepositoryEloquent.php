@@ -400,33 +400,49 @@ use Illuminate\Support\Facades\Http;
     public function getProductFromJubelio(Request $request, $userData){
         try{
             DB::beginTransaction();
+            
+            // upsert actual data product
+            // $upsertProduct = $this->updateProductItem($userData);
+            // $upsertItemProduct = $this->updateItemProduct($userData);
+            // $upsertItemBundling = $this->updateItemBundling($userData);
+            // SyncProductJob::dispatch();
 
-            // get all product with actual stock
+            DB::commit();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Data product success updated !',
+            ]);
+        }
+        catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+    
+    public function updateProductItem($userData){
+        try{
+
             $responses = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $userData['api_token'],
                 'Accept' => 'application/json', 
             ])->get(env('JUBELIO_API') . '/inventory/');
+            
+            if($responses->failed() == true){
+                $responses = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $userData['api_token'],
+                    'Accept' => 'application/json', 
+                ])->get(env('JUBELIO_API') . '/inventory/');
+            }
 
-            // get item detail to get price per item
-            $itemsResponse = Http::withHeaders([
-                'Authorization' => 'Bearer ' .  $userData['api_token'],
-                'Accept' => 'application/json', 
-            ])->get(env('JUBELIO_API') . '/inventory/items/');
-            
-            // get price per bundle
-            $itemsBundleResponse = Http::withHeaders([
-                'Authorization' => 'Bearer ' .  $userData['api_token'],
-                'Accept' => 'application/json', 
-            ])->get(env('JUBELIO_API') . '/inventory/item-bundles/');
-            
             $today = date('Y-m-d');
 
             if($responses->status() == 200){
                 $data = $responses->json()['data'];
                 foreach ($data as $k => $value) {
                     // Check exist product
+                    Log::info('Update Product with item code - ' . $value['item_code']);
+
                     $product = Product::where("sku", $value['item_code'])->first();
-                   
                     if($product == null){
                         $newProduct = new Product();
                         $newProduct->code = $value['item_group_id'];
@@ -447,7 +463,7 @@ use Illuminate\Support\Facades\Http;
                         $newStock->qty =  $value['total_stocks']['available'];
                         $newStock->save();
                     }  
-       
+    
                     if($product != null){
 
                         // Check exist stock item product
@@ -482,11 +498,35 @@ use Illuminate\Support\Facades\Http;
             }
 
             if($responses->status() == 401){
-                
-                return response()->json([
-                    'status' => 401,
-                    'message' => 'Token expired, please try again !',
-                ]);
+                $relogin = $this->updateTokenApi();
+            }
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Data product success updated !',
+            ]);
+
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function updateItemProduct($userData){
+        try{
+
+            // get item detail to get price per item
+            $itemsResponse = Http::withHeaders([
+                'Authorization' => 'Bearer ' .  $userData['api_token'],
+                'Accept' => 'application/json', 
+            ])->get(env('JUBELIO_API') . '/inventory/items/');
+
+            if($itemsResponse->failed() == true){
+                $itemsResponse = Http::withHeaders([
+                    'Authorization' => 'Bearer ' .  $userData['api_token'],
+                    'Accept' => 'application/json', 
+                ])->get(env('JUBELIO_API') . '/inventory/items/');
+               
             }
 
             if($itemsResponse->status() == 200){
@@ -494,6 +534,8 @@ use Illuminate\Support\Facades\Http;
                 foreach ($data as $k => $val) {
                     $detailItem = $val['variants'];
                     foreach ($detailItem as $key => $value) {
+                        Log::info('Update Produtct per Item with item code - ' . $value['item_code']);
+
                         $productPrice = Product::where("sku", $value['item_code'])->first();
                         if($productPrice == null ){
                             $newProductPrice = new Product();
@@ -507,13 +549,46 @@ use Illuminate\Support\Facades\Http;
                         }
                     }
                 }
-            }   
+            } 
+            
+            if($itemsResponse->status() == 401){
+                $relogin = $this->updateTokenApi();
+            }
+
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Data Item product success updated !',
+            ]);
+
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function updateItemBundling($userData){
+        try{
+            // get price per bundle
+            $itemsBundleResponse = Http::withHeaders([
+                'Authorization' => 'Bearer ' .  $userData['api_token'],
+                'Accept' => 'application/json', 
+            ])->get(env('JUBELIO_API') . '/inventory/item-bundles/');
+
+            if($itemsBundleResponse->failed() == true){
+                $itemsBundleResponse = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $userData['api_token'],
+                    'Accept' => 'application/json', 
+                ])->get(env('JUBELIO_API') . '/inventory/');
+            }
 
             if($itemsBundleResponse->status() == 200){
                 $data = $itemsBundleResponse->json()['data'];
                 foreach ($data as $k => $val) {
                     $variants = $val['variants'];
                     foreach ($variants as $key => $value) {
+                        Log::info('Update Product per Item Bundling with item code - ' . $value['item_code']);
+
                         $productPrice = Product::where("sku", $value['item_code'])->first();
                         if($productPrice == null ){
                             $newProductPrice = new Product();
@@ -528,21 +603,25 @@ use Illuminate\Support\Facades\Http;
                     }
                 }
             }
-            
-            DB::commit();
+
+            if($itemsBundleResponse->status() == 401){
+                $relogin = $this->updateTokenApi();
+            }
+
             return response()->json([
                 'status' => 200,
-                'message' => 'Data product success updated !',
+                'message' => 'Data item bundling product success updated !',
             ]);
-        }
-        catch(Exception $ex){
+
+        }catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;
         }
     }
 
-    public function updateTokenApi(Request $request, $userData){
+    public function updateTokenApi(){
         try{
+            $userData = Auth::user();
             // find current user login
             $users =  User::find($userData['id'])->first();
             // get new token here

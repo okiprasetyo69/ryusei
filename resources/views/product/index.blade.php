@@ -22,6 +22,12 @@
     <section class="section dashboard">
         <div class="row">
             <div class="col-md-12">
+                @if (session('status'))
+                    <div class="alert alert-primary" role="alert">
+                    {{ session('status') }}
+                    </div>
+                    
+                @endif
             <form method="GET" action="{{ route('product') }}"> 
                 <div class="card">
                     <div class="card-body">
@@ -193,6 +199,7 @@
             window.location.href = "/product/add"
         })
 
+
         $("#btn-sync").on("click", function(e){
             e.preventDefault()
             $("#btn-sync").attr("disabled", true);
@@ -216,31 +223,28 @@
                             buttons: {
                                 Ya: {
                                     btnClass: 'btn-success any-other-class',
-                                    action: function(){
-                                        window.location.href = '/product'
-                                    }
                                 },
                             }
                         });
                     }
 
-                    if(response.status == 401){
-                        $("#btn-sync").attr("disabled", false);
-                        $("#spinner-sync").attr("class", "")
-                        $("#lbl-sync").text("Sync Product")
-                        $.confirm({
-                            title: 'Pesan ',
-                            content: response.message,
-                            buttons: {
-                                "Update Token": {
-                                    btnClass: 'btn-success any-other-class',
-                                    action: function(){
-                                        updateUserToken()
-                                    }
-                                },
-                            }
-                        });
-                    }
+                    // if(response.status == 401){
+                    //     $("#btn-sync").attr("disabled", false);
+                    //     $("#spinner-sync").attr("class", "")
+                    //     $("#lbl-sync").text("Sync Product")
+                    //     $.confirm({
+                    //         title: 'Pesan ',
+                    //         content: response.message,
+                    //         buttons: {
+                    //             "Update Token": {
+                    //                 btnClass: 'btn-success any-other-class',
+                    //                 action: function(){
+                    //                     updateUserToken()
+                    //                 }
+                    //             },
+                    //         }
+                    //     });
+                    // }
                 }   
             });
 

@@ -15,6 +15,7 @@ use App\Models\Product;
 use App\Models\Size;
 use App\Models\Category;
 use App\Services\Interfaces\ProductService;
+use App\Jobs\SyncProductJob;
 
 class ProductController extends Controller
 {
@@ -248,13 +249,20 @@ class ProductController extends Controller
 
     public function getDataFromJubelio(Request $request){
         try{
+
             $userData = Auth::user();
-            $inventory = $this->service->getProductFromJubelio($request, $userData);
-            
-            if($inventory != null){
-                return $inventory;
+            // $inventory = $this->service->getProductFromJubelio($request, $userData);
+
+            if($userData){
+                SyncProductJob::dispatch($userData);
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Sync product on process. Please wait a few minutes !',
+                ]);
             }
+        
             return false;
+            
         }catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;
