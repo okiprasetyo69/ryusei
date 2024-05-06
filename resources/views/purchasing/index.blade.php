@@ -201,31 +201,28 @@
                             buttons: {
                                 Ya: {
                                     btnClass: 'btn-success any-other-class',
-                                    action: function(){
-                                        window.location.href = '/purchasing'
-                                    }
                                 },
                             }
                         });
                     }
 
-                    if(response.status == 401){
-                        $("#btn-sync").attr("disabled", false);
-                        $("#spinner-sync").attr("class", "")
-                        $("#lbl-sync").text("Sync Product")
-                        $.confirm({
-                            title: 'Pesan ',
-                            content: response.message,
-                            buttons: {
-                                "Update Token": {
-                                    btnClass: 'btn-success any-other-class',
-                                    action: function(){
-                                        updateUserToken()
-                                    }
-                                },
-                            }
-                        });
-                    }
+                    // if(response.status == 401){
+                    //     $("#btn-sync").attr("disabled", false);
+                    //     $("#spinner-sync").attr("class", "")
+                    //     $("#lbl-sync").text("Sync Product")
+                    //     $.confirm({
+                    //         title: 'Pesan ',
+                    //         content: response.message,
+                    //         buttons: {
+                    //             "Update Token": {
+                    //                 btnClass: 'btn-success any-other-class',
+                    //                 action: function(){
+                    //                     updateUserToken()
+                    //                 }
+                    //             },
+                    //         }
+                    //     });
+                    // }
                 }   
             });
 

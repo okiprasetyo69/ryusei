@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\PurchaseInvoice;
 use App\Models\PurchasingInvoiceDetail;
 use App\Services\Interfaces\PurchasingInvoiceService;
+use App\Jobs\SyncPurchaseInvoiceJob;
 
 class PurchasingController extends Controller
 {
@@ -169,12 +170,23 @@ class PurchasingController extends Controller
         
         try{
             $userData = Auth::user();
-            $purchaseInvoice = $this->service->getPurchaseInvoiceFromJubelio($request, $userData);
+            // $purchaseInvoice = $this->service->getPurchaseInvoiceFromJubelio($request, $userData);
             
-            if($purchaseInvoice != null){
-                return $purchaseInvoice;
+            // if($purchaseInvoice != null){
+            //     return $purchaseInvoice;
+            // }
+            // return false;
+          
+            if($userData){
+                SyncPurchaseInvoiceJob::dispatch($userData);
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Sync purchase invoice on process. Please wait a few minutes !',
+                ]);
             }
+        
             return false;
+
         }catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;

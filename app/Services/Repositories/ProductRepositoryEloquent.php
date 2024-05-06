@@ -498,7 +498,7 @@ use Illuminate\Support\Facades\Http;
             }
 
             if($responses->status() == 401){
-                $relogin = $this->updateTokenApi();
+                $relogin = $this->updateTokenApi($userData);
             }
 
             return response()->json([
@@ -551,7 +551,7 @@ use Illuminate\Support\Facades\Http;
             } 
             
             if($itemsResponse->status() == 401){
-                $relogin = $this->updateTokenApi();
+                $relogin = $this->updateTokenApi($userData);
             }
 
             return response()->json([
@@ -603,7 +603,7 @@ use Illuminate\Support\Facades\Http;
             }
 
             if($itemsBundleResponse->status() == 401){
-                $relogin = $this->updateTokenApi();
+                $relogin = $this->updateTokenApi($userData);
             }
 
             return response()->json([
@@ -617,9 +617,9 @@ use Illuminate\Support\Facades\Http;
         }
     }
 
-    public function updateTokenApi(){
+    public function updateTokenApi($userData){
         try{
-            $userData = Auth::user();
+            // $userData = Auth::user();
             // find current user login
             $users =  User::find($userData['id'])->first();
             // get new token here
