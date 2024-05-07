@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Vendor;
 use App\Models\ItemUnit;
 use App\Models\ItemStock;
+use App\Models\User;
 use App\Services\Constants\SalesInvoiceConstantInterface;
 use App\Services\Constants\WarehouseConstantInterface;
 use App\Services\Interfaces\PurchasingInvoiceService;
@@ -524,13 +525,18 @@ use Illuminate\Support\Facades\Http;
 
     public function getPurchaseInvoiceFromJubelio($userData){
         try{
+         
                 // DB::beginTransaction();
                 // get purchase invoce api
                 $responses = Http::withHeaders([
                     'Authorization' => 'Bearer ' . $userData['api_token'],
                     'Accept' => 'application/json', 
                 ])->get(env('JUBELIO_API') . '/purchase/bills/');
-    
+                
+                if($responses->status() == 401){
+                    $relogin = $this->updateTokenApi($userData);
+                }
+
                 if($responses->status() == 200){
                     $data = $responses->json()['data'];
     
@@ -541,19 +547,18 @@ use Illuminate\Support\Facades\Http;
     
                        $supplier = Vendor::where("name", $value['supplier_name'])->first();
                        $convertDate = date_create($value['transaction_date'])->format('Y-m-d');
-    
+                       $converDueDate = date_create($value['due_date'])->format('Y-m-d');
+
                        if($purchaseInvoice == null){
                             $newPurchaseInvoice = new PurchaseInvoice();
                             $newPurchaseInvoice->invoice_number = $value['doc_number'];
                             $newPurchaseInvoice->vendor_id =  $supplier->id;
                             $newPurchaseInvoice->grand_total = $value['grand_total'];
                             $newPurchaseInvoice->date =  $convertDate;
-                            $newPurchaseInvoice->due_date =  $convertDate;
+                            $newPurchaseInvoice->due_date = $converDueDate;
                             $newPurchaseInvoice->vendor_phone = $supplier->phone;
                             $newPurchaseInvoice->doc_id = $value['doc_id'];
                             $newPurchaseInvoice->save();
-    
-                            // $this->detailPurchaseInvoice( $userData);
                        } 
                        
                        if($purchaseInvoice != null){
@@ -561,20 +566,14 @@ use Illuminate\Support\Facades\Http;
                             $purchaseInvoice->vendor_id =  $supplier->id;
                             $purchaseInvoice->grand_total = $value['grand_total'];
                             $purchaseInvoice->date =  $convertDate;
-                            $purchaseInvoice->due_date =  $convertDate;
+                            $purchaseInvoice->due_date =  $converDueDate;
                             $purchaseInvoice->vendor_phone = $supplier->phone;
                             $purchaseInvoice->doc_id = $value['doc_id'];
                             $purchaseInvoice->save();
-    
-                            // $this->detailPurchaseInvoice( $userData);
                         }
                     }
                 }
-    
-                if($responses->status() == 401){
-                    $relogin = $this->updateTokenApi($userData);
-                }
-                
+            
                 // DB::commit();
                 return response()->json([
                     'status' => 200,
@@ -601,51 +600,166 @@ use Illuminate\Support\Facades\Http;
             }
     
             foreach ($arrDocId as $k => $val) {
-                // get purchase invoce api
-                $responses = Http::timeout(10)->retry(3, 1000)->withHeaders([
-                    'Authorization' => 'Bearer ' . $userData['api_token'],
-                    'Accept' => 'application/json', 
-                ])->get(env('JUBELIO_API') . '/purchase/bills/'. $val['doc_id']);
-
+                // get purchase invoice api
+                $responses = $this->endPointDetailPurchaseBill($userData, $val);
+                // get purchase bill
                 $purchaseInvoice = PurchaseInvoice::where("doc_id", $val['doc_id'])->first();
 
                 if($responses->status() == 200){
                     $data = $responses->json()['items'];
-
-                    if($purchaseInvoice != null){
-                        foreach ($data as $key => $value) {
-                            Log::info('Update Purchase Invoice Detail with SKU Code - ' .  $value['item_code']);
+                    foreach ($data as $key => $value) {
+                        // get detail purchase
+                        $purchaseInvoiceDetail = PurchasingInvoiceDetail::where("invoice_id",  $purchaseInvoice->id)->where("sku_code", $value['item_code'])->first();
+                        if($purchaseInvoiceDetail == null){
+                            Log::info('Create Purchase Invoice Detail with SKU Code - ' .  $value['item_code']);
                             $newDetailPurchaseInvoice = new PurchasingInvoiceDetail();
                             $newDetailPurchaseInvoice->invoice_id = $purchaseInvoice->id;
-                            
+                                    
                             $product = Product::where("sku", $value['item_code'])->first();
                             if($product != null){
                                 $newDetailPurchaseInvoice->sku_id = $product->id;
                                 $newDetailPurchaseInvoice->sku_code = $product->sku;
-                            } 
+                            }
                             $newDetailPurchaseInvoice->description = $value['description'];
                             $newDetailPurchaseInvoice->qty = $value['qty_in_base'];
                             $newDetailPurchaseInvoice->price = $value['price'];
                             $newDetailPurchaseInvoice->discount = $value['disc'];
                             $newDetailPurchaseInvoice->total = $value['amount'];
-        
+                
                             $newDetailPurchaseInvoice->save();
+                        } else {
+                            Log::info('Update Purchase Invoice Detail with SKU Code - ' .  $value['item_code']);
+                            $purchaseInvoiceDetail->invoice_id = $purchaseInvoice->id;
+                                    
+                            $product = Product::where("sku", $value['item_code'])->first();
+                            if($product != null){
+                                $purchaseInvoiceDetail->sku_id = $product->id;
+                                $purchaseInvoiceDetail->sku_code = $product->sku;
+                            }
+                            $purchaseInvoiceDetail->description = $value['description'];
+                            $purchaseInvoiceDetail->qty = $value['qty_in_base'];
+                            $purchaseInvoiceDetail->price = $value['price'];
+                            $purchaseInvoiceDetail->discount = $value['disc'];
+                            $purchaseInvoiceDetail->total = $value['amount'];
+                
+                            $purchaseInvoiceDetail->save();
                         }
                     }
                 }
+
+                // check condition null invoice
+                // if($purchaseInvoiceDetail == null){
+                //     foreach ($data as $key => $value) {
+                //         Log::info('Create Purchase Invoice Detail with SKU Code - ' .  $value['item_code']);
+                //         $newDetailPurchaseInvoice = new PurchasingInvoiceDetail();
+                //         $newDetailPurchaseInvoice->invoice_id = $purchaseInvoice->id;
+                                
+                //         $product = Product::where("sku", $value['item_code'])->first();
+                //         if($product != null){
+                //             $newDetailPurchaseInvoice->sku_id = $product->id;
+                //                 newDetailPurchaseInvoice->sku_code = $product->sku;
+                //          }
+                //         $newDetailPurchaseInvoice->description = $value['description'];
+                //         $newDetailPurchaseInvoice->qty = $value['qty_in_base'];
+                //         $newDetailPurchaseInvoice->price = $value['price'];
+                //         $newDetailPurchaseInvoice->discount = $value['disc'];
+                //         $newDetailPurchaseInvoice->total = $value['amount'];
+            
+                //         $newDetailPurchaseInvoice->save();
+                //      }
+                // }
+
+                    // check condition exist invoice
+                // if($purchaseInvoiceDetail != null){
+                //     $data =  $responses->json()['items'];
+                //     foreach ($purchaseInvoiceDetail as $idx => $v) {
+                //         $updatePurchaseDetail = PurchasingInvoiceDetail::where("id", $v["id"])->first();
+
+                //         foreach ($data as $key => $value) {
+                //             Log::info('Update Purchase Invoice Detail with SKU Code - ' .  $value['item_code']);
+                //             $product = Product::where("sku", $value['item_code'])->first();
+                //             if($product != null){
+                //                 $updatePurchaseDetail->sku_id = $product->id;
+                //                 $updatePurchaseDetail->sku_code = $product->sku;
+                //             }
+                //             $updatePurchaseDetail->description = $value['description'];
+                //             $updatePurchaseDetail->qty = $value['qty_in_base'];
+                //             $updatePurchaseDetail->price = $value['price'];
+                //             $updatePurchaseDetail->discount = $value['disc'];
+                //             $updatePurchaseDetail->total = $value['amount'];
+                    
+                //             $updatePurchaseDetail->save();
+                //         }
+                //     }
+                // }
+                
+
+
+                // if($responses->status() == 200){
+                //     $data = $responses->json()['items'];
+
+                //     if($purchaseInvoice != null){
+                //         foreach ($data as $key => $value) {
+                //             Log::info('Update Purchase Invoice Detail with SKU Code - ' .  $value['item_code']);
+                //             $newDetailPurchaseInvoice = new PurchasingInvoiceDetail();
+                //             $newDetailPurchaseInvoice->invoice_id = $purchaseInvoice->id;
+                            
+                //             $product = Product::where("sku", $value['item_code'])->first();
+                //             if($product != null){
+                //                 $newDetailPurchaseInvoice->sku_id = $product->id;
+                //                 $newDetailPurchaseInvoice->sku_code = $product->sku;
+                //             } 
+                //             $newDetailPurchaseInvoice->description = $value['description'];
+                //             $newDetailPurchaseInvoice->qty = $value['qty_in_base'];
+                //             $newDetailPurchaseInvoice->price = $value['price'];
+                //             $newDetailPurchaseInvoice->discount = $value['disc'];
+                //             $newDetailPurchaseInvoice->total = $value['amount'];
+        
+                //             $newDetailPurchaseInvoice->save();
+                //         }
+                //     }
+
+                //     $purchaseInvoiceDetail = PurchasingInvoiceDetail::where("invoice_id",  $purchaseInvoice->id)->get();
+
+                //     if($purchaseInvoiceDetail != null){
+                //            foreach ($purchaseInvoiceDetail as $idx => $v) {
+                //               foreach ($data as $key => $value) {
+                                   
+                //             }
+                //         }
+                //     } 
+                // }
+
+
             }
         }catch(Exception $ex){
             Log::error($ex->getMessage());
             Log::info("Error Code : ". $ex->getCode());
+            if($ex->getCode() == 0){
+                $responses = $this->endPointDetailPurchaseBill($userData, $val);
+                Log::info("Retry on process ... ");
+            }
             return false;
         }
     }
 
+    public function endPointDetailPurchaseBill($userData, $val){
+        $responses = Http::timeout(10)->retry(3, 1000)->withHeaders([
+            'Authorization' => 'Bearer ' . $userData['api_token'],
+            'Accept' => 'application/json', 
+        ])->get(env('JUBELIO_API') . '/purchase/bills/'. $val['doc_id']);
+        return $responses;
+
+    }
+
     public function updateTokenApi($userData){
         try{
+           
             // $userData = Auth::user();
             // find current user login
+           
             $users =  User::find($userData['id'])->first();
+
             // get new token here
             $loginUser =  Http::post(env('JUBELIO_API') . '/login', [
                 'email' => env('JUBELIO_EMAIL'),

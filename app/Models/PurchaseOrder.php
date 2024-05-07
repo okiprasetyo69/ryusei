@@ -5,29 +5,27 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PurchaseInvoice extends Model
+class PurchaseOrder extends Model
 {
     use HasFactory;
 
-    /**
+     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'invoice_number',
+        'purchaseorder_number',
         'batch_number',
         'type',
         'vendor_id',
-        'vendor_reference',
-        'vendor_phone',
+        'vendor__reference',
+        'vendor__phone',
         'category_invoice_id',
         'date',
-        'due_date',
+        'delivery_date',
         'day',
         'warehouse_id',
-        'sales_person',
-        'journal_memo',
         'note',
         'additional_char',
         'down_pmt',
