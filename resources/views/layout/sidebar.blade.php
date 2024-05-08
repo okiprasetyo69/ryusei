@@ -164,6 +164,10 @@
       <i class="bi bi-wallet2"></i><span>Pembelian</span><i class="bi bi-chevron-down ms-auto"></i>
     </a>
     <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+       <li>
+        <a href="/purchase/order">
+          <i class="bi bi-circle"></i><span>Purchase Order</span>
+        </a>
       <li>
         <a href="/purchasing">
           <i class="bi bi-circle"></i><span>Purchase Invoice</span>

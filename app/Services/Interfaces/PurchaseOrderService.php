@@ -23,4 +23,13 @@ use Illuminate\Http\Request;
     * @param Illuminate\Support\Facades\Request
     */
    public function getPurchaseOrder(Request $request);
+
+    /**
+    * @author Oki Prasetyo <oki.prasetyo45@gmail.com>
+    * @since   2024.05.07
+    * Function for handle requests get purchasing order.
+    * 
+    * @param Illuminate\Support\Facades\Request
+    */
+   public function purchaseOrderDetail(Request $request);
  }

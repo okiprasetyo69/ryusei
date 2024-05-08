@@ -1,6 +1,6 @@
 
 @extends('layout.home')
-@section('title','Purchase Invoice')
+@section('title','Purchase Order')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.css" rel="stylesheet" />
@@ -15,7 +15,7 @@
                     <a href="#">Pembelian</a>
                 </li>
                 <li class="breadcrumb-item active">
-                    <a href="#">Purchase Invoice</a>
+                    <a href="#">Purchase Order</a>
                 </li>
             </ol>
         </nav>
@@ -84,7 +84,7 @@
                                 <button type="button" class="btn btn-sm btn-danger rounded-pill" id="btn-sync">
                                     <i class="ri-24-hours-fill"></i> 
                                     <span class="" role="status" id="spinner-sync" aria-hidden="true"></span>
-                                    <label id="lbl-sync">Sync Purchase Invoice</label>
+                                    <label id="lbl-sync">Sync Purchase Order</label>
                                 </button>
                             </div>
                         </div>
@@ -96,12 +96,10 @@
                                             <tr>
                                                 <th scope="col">#</th>
                                                 <th scope="col">Doc No.</th>
-                                                <th scope="col">Date</th>
-                                                <th scope="col">Due Date</th>
+                                                <th scope="col">Transaction Date</th>
                                                 <th scope="col">Vendor</th>
                                                 <th scope="col">Amount</th>
-                                                <th scope="col">Amt Due</th>
-                                                <th scope="col">State</th>
+                                                <th scope="col">Receipt Number</th>
                                                 <th scope="col">Aksi</th>
                                             </tr>
                                         </thead>
@@ -152,7 +150,7 @@
 
         $("#btn-add").on("click", function(e){
             e.preventDefault()
-            window.location.href = "/purchasing/invoice/add"
+            window.location.href = "/purchase/order/add"
         })
 
         // filter invoice
@@ -175,18 +173,19 @@
         start_date = start_date.split("-").reverse().join("-")
         end_date = $("#end_date").val()
         end_date = end_date.split("-").reverse().join("-")
-        loadPurchaseInvoice(invoice_number, start_date, end_date, openState, closeState, draftState, voidState)
+        loadPurchaseOrder(invoice_number, start_date, end_date, openState, closeState, draftState, voidState)
 
-         // sync supplier
+         // sync purchase order
         $("#btn-sync").on("click", function(e){
             e.preventDefault()
+           
             $("#btn-sync").attr("disabled", true);
             $("#spinner-sync").attr("class", "spinner-grow spinner-grow-sm")
             $("#lbl-sync").text("Loading...")
 
             $.ajax({
                 type: "GET",
-                url: "/jubelio/purchase/invoice",
+                url: "/jubelio/purchase/order",
                 data: "data",
                 dataType: "JSON",
                 success: function (response) {
@@ -194,7 +193,7 @@
                     if(response.status == 200){
                         $("#btn-sync").attr("disabled", false);
                         $("#spinner-sync").attr("class", "")
-                        $("#lbl-sync").text("Sync Product")
+                        $("#lbl-sync").text("Sync Purchase Order")
                         $.confirm({
                             title: 'Pesan ',
                             content: response.message,
@@ -205,33 +204,13 @@
                             }
                         });
                     }
-
-                    // if(response.status == 401){
-                    //     $("#btn-sync").attr("disabled", false);
-                    //     $("#spinner-sync").attr("class", "")
-                    //     $("#lbl-sync").text("Sync Product")
-                    //     $.confirm({
-                    //         title: 'Pesan ',
-                    //         content: response.message,
-                    //         buttons: {
-                    //             "Update Token": {
-                    //                 btnClass: 'btn-success any-other-class',
-                    //                 action: function(){
-                    //                     updateUserToken()
-                    //                 }
-                    //             },
-                    //         }
-                    //     });
-                    // }
                 }   
             });
 
         })
-
-
     });
 
-    function loadPurchaseInvoice(invoice_number = null, start_date=null, end_date = null, openState=null, closeState=null, draftState= null, voidState= null){
+    function loadPurchaseOrder(invoice_number = null, start_date=null, end_date = null, openState=null, closeState=null, draftState= null, voidState= null){
         if (table != null) {
             table.destroy();
         }
@@ -255,7 +234,7 @@
                     previous: "‹",
                     next: "›",
                 },
-                info: "Menampilkan _START_ dari _END_ dari _TOTAL_ Purchase Invoice",
+                info: "Menampilkan _START_ dari _END_ dari _TOTAL_ Purchase Order",
                 aria: {
                         paginate: {
                             previous: "Previous",
@@ -264,7 +243,7 @@
                     },
                 },
                 ajax:{
-                    url :  '/api/purchasing-invoice',
+                    url :  '/api/purchase/order',
                     type: "GET",
                     data: {
                         invoice_number: invoice_number,
@@ -281,12 +260,6 @@
                 columns: [
                     {
                         data: null, width: "5%"
-                    },
-                    {
-                        data: null,
-                    },
-                    {
-                        data: null,
                     },
                     {
                         data: null,
@@ -323,13 +296,13 @@
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
-                            var invoice_number = ""
-                            if(rowData.invoice_number == null){
-                                invoice_number = "-"
+                            var purchaseorder_number = ""
+                            if(rowData.purchaseorder_number == null){
+                                purchaseorder_number = "-"
                             } else {
-                                invoice_number = rowData.invoice_number
+                                purchaseorder_number = rowData.purchaseorder_number
                             }
-                            $(td).html(invoice_number);
+                            $(td).html(purchaseorder_number);
                         },
                     },
                     {
@@ -337,8 +310,8 @@
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
-                            var dates = rowData.date
-                            date = new Date(dates)
+                            var transaction_date = rowData.transaction_date
+                            date = new Date(transaction_date)
                             month = date.toLocaleString('default', { month: 'long' })
                             year = date.getFullYear()
                             format = date.getDate() + "-"+ month +"-"+ year
@@ -346,22 +319,9 @@
                             $(td).html(format);
                         },
                     },
+                    
                     {
                         targets: 3,
-                        searchable: false,
-                        orderable: false,
-                        createdCell: function (td, cellData, rowData, row, col) {
-                            var due_date = rowData.due_date
-                            date = new Date(due_date)
-                            month = date.toLocaleString('default', { month: 'long' })
-                            year = date.getFullYear()
-                            format = date.getDate() + "-"+ month +"-"+ year
-
-                            $(td).html(format);
-                        },
-                    },
-                    {
-                        targets: 4,
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
@@ -374,9 +334,8 @@
                             $(td).html(vendorName);
                         },
                     },
-                    
                     {
-                        targets: 5,
+                        targets: 4,
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
@@ -387,6 +346,20 @@
                                 grand_total = rowData.grand_total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })
                             }
                             $(td).html(grand_total);
+                        },
+                    },
+                    {
+                        targets: 5,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var bills = ""
+                            if(rowData.bills == null){
+                                bills = "-"
+                            } else {
+                                bills = rowData.bills
+                            }
+                            $(td).html(bills);
                         },
                     },
                     {
@@ -394,54 +367,8 @@
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
-                            var grand_total = ""
-                            if(rowData.grand_total == null){
-                                grand_total = "-"
-                            } else {
-                                grand_total = rowData.grand_total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })
-                            }
-                            $(td).html(grand_total);
-                        },
-                    },
-                    {
-                        targets: 7,
-                        searchable: false,
-                        orderable: false,
-                        createdCell: function (td, cellData, rowData, row, col) {
-                            var state = ""
-                            if( (rowData.state == 0) && (rowData.is_deleted == 0) ){
-                                state = "Open"
-                                // $("#stateOpen").prop("checked", true)
-                                // $("#stateClosed").prop("checked", true)
-                            }
-
-                            if((rowData.state == 1) && (rowData.is_deleted == 0)){
-                                state = "Close"
-                                // $("#stateClosed").prop("checked", true)
-                            }
-
-                            if((rowData.state == 2) && (rowData.is_deleted == 0)){
-                                state = "Draft"
-                                // $("#stateDraft").prop("checked", true)
-                            }
-
-                            if((rowData.state == 3) && (rowData.is_deleted == 1)){
-                                state = "Void"
-                                // $("#stateVoid").prop("checked", true)
-                                // $("#stateOpen").prop("checked", false)
-                                // $("#stateClosed").prop("checked", false)
-                            }
-
-                            $(td).html(state);
-                        },
-                    },
-                    {
-                        targets: 8,
-                        searchable: false,
-                        orderable: false,
-                        createdCell: function (td, cellData, rowData, row, col) {
            
-                            var html = "<a href='/purchasing/invoice/"+rowData.id+"' class='btn btn-sm btn-warning'> Detail </a> <button type='button' class='btn btn-sm btn-danger' onclick='confirm("+rowData.id+")'> Hapus </button>"
+                            var html = "<a href='/purchase/order/"+rowData.id+"' class='btn btn-sm btn-warning'> Detail </a> <button type='button' class='btn btn-sm btn-danger' onclick='confirm("+rowData.id+")'> Hapus </button>"
                             $(td).html(html);
                         },
                     },

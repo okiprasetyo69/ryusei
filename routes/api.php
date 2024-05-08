@@ -20,6 +20,8 @@ use App\Http\Controllers\InvoiceCategoryController;
 use App\Http\Controllers\SalesInvoiceController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\PurchasingController;
+use App\Http\Controllers\PurchaseOrderController;
+
 use App\Http\Controllers\WebhookController;
 use App\Http\Middleware\VerifyWebhookSecret;
 
@@ -198,6 +200,17 @@ Route::controller(PurchasingController::class)->group(function() {
     Route::post('/purchasing-invoice/detail', 'detail')->name('purchasing-invoice.detail');
     Route::post('/purchasing-invoice/detail-invoice-item', 'detailInvoice')->name('purchasing-invoice.detail.invoice-item');
     Route::post('/purchasing-invoice/detail-invoice-item/delete', 'deleteDetailInvoice')->name('purchasing-invoice.detail.invoice-item.delete');
+});
+
+// Manage purchase order
+Route::controller(PurchaseOrderController::class)->group(function() {
+    Route::get('/purchase/order', 'getPurchaseOrder')->name('purchase-order.data');
+    // Route::post('/purchasing-invoice/create', 'create')->name('purchasing-invoice.create');
+    // Route::post('/purchasing-invoice/update', 'update')->name('purchasing-invoice.update');
+    // Route::post('/purchasing-invoice/delete', 'delete')->name('purchasing-invoice.delete');
+    // Route::post('/purchasing-invoice/detail', 'detail')->name('purchasing-invoice.detail');
+    Route::post('/purchase/order/detail', 'detailPurchaseOrder')->name('purchase.order.detail');
+    // Route::post('/purchasing-invoice/detail-invoice-item/delete', 'deleteDetailInvoice')->name('purchasing-invoice.detail.invoice-item.delete');
 });
 
 // Web Hook

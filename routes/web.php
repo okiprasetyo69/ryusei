@@ -15,6 +15,8 @@ use App\Http\Controllers\SalesInvoiceController;
 use App\Http\Controllers\ItemStockController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\PurchasingController;
+use App\Http\Controllers\PurchaseOrderController;
+
 use App\Http\Controllers\WebhookController;
 use App\Http\Middleware\VerifyWebhookSecret;
 
@@ -116,6 +118,15 @@ Route::controller(PurchasingController::class)->group(function() {
     Route::get('/purchasing/invoice/{id}', 'edit')->name('purchasing-invoice.edit');
     Route::get('/jubelio/purchase/invoice', 'getPurchaseInvoiceFromJubelio')->name('jubelio.purchase.invoice');
 });
+
+// Purchase Order
+Route::controller(PurchaseOrderController::class)->group(function() {
+    Route::get('/purchase/order', 'index')->name('purchase.order');
+    Route::get('/purchase/order/add', 'add')->name('purchase.order.add');
+    Route::get('/purchase/order/{id}', 'edit')->name('purchase.order.edit');
+    Route::get('/jubelio/purchase/order', 'getPurchaseOrderFromJubelio')->name('jubelio.purchase.order');
+});
+
 
 // Webhook
 Route::post('/jubelio/webhook/product', [WebhookController::class, 'handleProduct'])->middleware(VerifyWebhookSecret::class);
