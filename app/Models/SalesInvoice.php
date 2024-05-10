@@ -37,7 +37,8 @@ class SalesInvoice extends Model
         'grand_total',
         'balance_due',
         'state',
-        'is_deleted'
+        'is_deleted',
+        'sync_date',
     ];
 
     public function customer(){

@@ -537,6 +537,7 @@ use Illuminate\Support\Facades\Http;
                     $relogin = $this->updateTokenApi($userData);
                 }
 
+                $today = date('Y-m-d');
                 if($responses->status() == 200){
                     $data = $responses->json()['data'];
     
@@ -558,6 +559,7 @@ use Illuminate\Support\Facades\Http;
                             $newPurchaseInvoice->due_date = $converDueDate;
                             $newPurchaseInvoice->vendor_phone = $supplier->phone;
                             $newPurchaseInvoice->doc_id = $value['doc_id'];
+                            $newPurchaseInvoice->sync_date =  $today;
                             $newPurchaseInvoice->save();
                        } 
                        
@@ -569,6 +571,7 @@ use Illuminate\Support\Facades\Http;
                             $purchaseInvoice->due_date =  $converDueDate;
                             $purchaseInvoice->vendor_phone = $supplier->phone;
                             $purchaseInvoice->doc_id = $value['doc_id'];
+                            $purchaseInvoice->sync_date =  $today;
                             $purchaseInvoice->save();
                         }
                     }
@@ -601,6 +604,7 @@ use Illuminate\Support\Facades\Http;
     
             foreach ($arrDocId as $k => $val) {
                 // get purchase invoice api
+                Log::info('Get detail purchase invoice detail with Doc ID : ' . $val['doc_id']);
                 $responses = $this->endPointDetailPurchaseBill($userData, $val);
                 // get purchase bill
                 $purchaseInvoice = PurchaseInvoice::where("doc_id", $val['doc_id'])->first();
@@ -628,7 +632,7 @@ use Illuminate\Support\Facades\Http;
                 
                             $newDetailPurchaseInvoice->save();
                         } else {
-                            Log::info('Update Purchase Invoice Detail with SKU Code - ' .  $value['item_code']);
+                            Log::info('Update Purchase Invoice Detail with SKU Code - ' .  $value['item_code'] . ' With Doc ID : ' . $val['doc_id']);
                             $purchaseInvoiceDetail->invoice_id = $purchaseInvoice->id;
                                     
                             $product = Product::where("sku", $value['item_code'])->first();
@@ -650,7 +654,7 @@ use Illuminate\Support\Facades\Http;
         }catch(Exception $ex){
             Log::error($ex->getMessage());
             Log::info("Error Code : ". $ex->getCode());
-            if($ex->getCode() == 0){
+            if($ex->getCode() == 0 || $ex->getCode() == 404){
                 $responses = $this->endPointDetailPurchaseBill($userData, $val);
                 Log::info("Retry on process ... ");
             }

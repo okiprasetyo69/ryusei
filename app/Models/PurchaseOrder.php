@@ -39,6 +39,7 @@ class PurchaseOrder extends Model
         'bills',
         'purchaseorder_id',
         'status',
+        'sync_date',
     ];
 
     public function vendor(){

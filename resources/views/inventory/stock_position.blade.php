@@ -12,11 +12,11 @@
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
+                    <a href="#">Persediaan</a>
+                </li>
+                <li class="breadcrumb-item active">
                     <a href="#">Posisi Stock</a>
                 </li>
-                <!-- <li class="breadcrumb-item active">
-                    <a href="#">Barang Masuk</a>
-                </li> -->
             </ol>
         </nav>
     </div><!-- End Page Title -->

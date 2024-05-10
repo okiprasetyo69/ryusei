@@ -102,6 +102,7 @@
                                                 <th scope="col">Amount</th>
                                                 <th scope="col">Amt Due</th>
                                                 <th scope="col">State</th>
+                                                <th scope="col">Sync Date</th>
                                                 <th scope="col">Aksi</th>
                                             </tr>
                                         </thead>
@@ -306,6 +307,9 @@
                     {
                         data: null,
                     },
+                    {
+                        data: null,
+                    },
                     
                 ],
                 columnDefs: [
@@ -437,6 +441,20 @@
                     },
                     {
                         targets: 8,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var dates = rowData.sync_date
+                            date = new Date(dates)
+                            month = date.toLocaleString('default', { month: 'long' })
+                            year = date.getFullYear()
+                            format = date.getDate() + "-"+ month +"-"+ year
+
+                            $(td).html(format);
+                        },
+                    },
+                    {
+                        targets: 9,
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {

@@ -86,6 +86,7 @@ use Illuminate\Support\Facades\Http;
                 $relogin = $this->updateTokenApi($userData);
             }
 
+            $today = date('Y-m-d');
             if($responses->status() == 200){
                 $data = $responses->json()['data'];
                 foreach ($data as $key => $value) {
@@ -111,7 +112,8 @@ use Illuminate\Support\Facades\Http;
                         } else {
                             $newPurchaseOrder->status = null;
                         }
-                       
+                        $newPurchaseOrder->sync_date =  $today;
+                        
                         $newPurchaseOrder->save();
                     }
 
@@ -129,6 +131,7 @@ use Illuminate\Support\Facades\Http;
                         } else {
                             $purchaseInvoice->status = null;
                         }
+                        $purchaseInvoice->sync_date =  $today;
 
                         $purchaseInvoice->save();
                     }

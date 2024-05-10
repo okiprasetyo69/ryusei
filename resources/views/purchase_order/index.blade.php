@@ -100,6 +100,7 @@
                                                 <th scope="col">Vendor</th>
                                                 <th scope="col">Amount</th>
                                                 <th scope="col">Receipt Number</th>
+                                                <th scope="col">Sync Date</th>
                                                 <th scope="col">Aksi</th>
                                             </tr>
                                         </thead>
@@ -279,6 +280,9 @@
                     {
                         data: null,
                     },
+                    {
+                        data: null,
+                    },
                     
                 ],
                 columnDefs: [
@@ -364,6 +368,20 @@
                     },
                     {
                         targets: 6,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var dates = rowData.sync_date
+                            date = new Date(dates)
+                            month = date.toLocaleString('default', { month: 'long' })
+                            year = date.getFullYear()
+                            format = date.getDate() + "-"+ month +"-"+ year
+
+                            $(td).html(format);
+                        },
+                    },
+                    {
+                        targets: 7,
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {

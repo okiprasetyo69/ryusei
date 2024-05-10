@@ -59,7 +59,7 @@
     </a>
     <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
       <li>
-        <a href="#">
+        <a href="/stock-position">
           <i class="bi bi-circle"></i><span>Posisi Stock</span>
         </a>
       </li>
@@ -94,7 +94,7 @@
         </a>
       </li>
       <li>
-        <a href="/items-incoming">
+        <a href="#">
           <i class="bi bi-circle"></i><span>Barang Masuk</span>
         </a>
       </li>

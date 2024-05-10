@@ -32,6 +32,10 @@ class ItemStockController extends Controller
         return view("warehouse.incoming_items");
     }
 
+    public function stockPosition(Request $request){
+        return view("inventory.stock_position");
+    }
+
     public function downloadFormatImportStockItems(){
         $path = public_path('/import/Format_Import_Stock_Items.xlsx');
         return response()->download($path);

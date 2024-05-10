@@ -92,7 +92,7 @@ Route::controller(WarehouseController::class)->group(function() {
 
 // Item Stock
 Route::controller(ItemStockController::class)->group(function() {
-    Route::get('/items-incoming', 'index')->name('items_incoming');
+    Route::get('/stock-position', 'stockPosition')->name('stock-position');
     Route::get('/items-incoming/download/import', 'downloadFormatImportStockItems')->name('items_incoming.download.import');
 });
 
