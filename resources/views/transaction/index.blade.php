@@ -24,9 +24,7 @@
                 <li class="breadcrumb-item active">
                     <a href="/transaction">Transaksi Penjualan</a>
                 </li>
-                <li class="breadcrumb-item">
-                    <a href="/transaction/add">Tambah</a>
-                </li>
+
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -108,7 +106,10 @@
                     <div class="card-body">
                         <div class="row mt-2"> 
                             <div class="col-md-12">
-                                <div class="table-responsive">
+                                <button type="button" class="btn btn-sm btn-primary rounded-pill mt-2" id="btn-add">
+                                    <i class="bi bi-plus-circle"></i> Tambah
+                                </button>
+                                <div class="table-responsive mt-2">
                                     <table class="table table-striped row-border order-column" id="table-transaction" style="width:100%">
                                         <thead>
                                             <tr>
@@ -200,6 +201,12 @@
         $('#process_order_date').val(convertProcessOrderDate);
 
         $("#filter_name").hide()
+
+        // add form
+        $("#btn-add").on("click", function(e){
+            e.preventDefault();
+            window.location.href = "/transaction/add"
+        })
 
         // filter type
         $("#search_type").change(function (e) { 

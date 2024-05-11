@@ -117,7 +117,7 @@
   </li>
   <!-- End Gudang Nav -->
 
-  <li class="nav-heading">Management Transaksi</li>
+  <li class="nav-heading">Management Penjualan</li>
   <!-- Start Penjualan Nav -->
   <li class="nav-item">
     <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
@@ -158,6 +158,7 @@
   </li>
   <!-- End Penjualan Nav -->
 
+  <li class="nav-heading">Management Pembelian</li>
   <!-- Start Pembelian Nav -->
   <li class="nav-item">
     <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">

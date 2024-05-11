@@ -508,6 +508,10 @@ use Illuminate\Support\Facades\Http;
 
         }catch(Exception $ex){
             Log::error($ex->getMessage());
+            if($ex->getCode() == 0 || $ex->getCode() == 404){
+                $responses = $this->endPointProductItem($userData);
+                Log::info("Retry on process ... ");
+            }
             return false;
         }
     }
@@ -617,6 +621,16 @@ use Illuminate\Support\Facades\Http;
         }
     }
 
+    public function endPointProductItem($userData){
+        $responses = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $userData['api_token'],
+            'Accept' => 'application/json', 
+        ])->get(env('JUBELIO_API') . '/inventory/');
+        
+        return $responses;
+
+    }
+
     public function updateTokenApi($userData){
         try{
             // $userData = Auth::user();
@@ -636,11 +650,6 @@ use Illuminate\Support\Facades\Http;
             } 
             // update token
             $users->save();
-            return response()->json([
-                'status' => 200,
-                'message' => "Success update token ",
-                'data' => $users
-            ]);
         }catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;

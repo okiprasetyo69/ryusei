@@ -83,6 +83,7 @@ Route::controller(TransactionController::class)->group(function() {
     Route::get('/transaction/add', 'add')->name('transaction.add');
     Route::get('/transaction/edit/{id}', 'edit')->name('transaction.edit');
     Route::get('/transaction/download/import', 'downloadFormatImportTransaksi')->name('transaction.download.import');
+    Route::get('/jubelio/transaction/invoice', 'getInvoiceTransactionFromJubelio')->name('jubelio.transaction.invoice');
 });
 
 // Warehouse Menu

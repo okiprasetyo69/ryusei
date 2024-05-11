@@ -4,6 +4,12 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.css" rel="stylesheet" />
+<style> 
+    .datepicker {
+        z-index: 1050; /* Nilai z-index lebih tinggi dari nilai z-index modal */
+        position: absolute;
+    }
+</style>
 @section('content')
 
 <main id="main" class="main">
@@ -55,7 +61,12 @@
                             </div>
                             <div class="col-md-2"> 
                                 <div class="form-group"> 
-                                    <button type="button" class="btn btn-success" style="border-radius:50px;" id="btn-filter"> <i class="bi bi-search"></i> Cari </button>
+                                    <button type="button" class="btn btn-sm  btn-success" style="border-radius:50px;" id="btn-filter"> <i class="bi bi-search"></i> Cari </button>
+                                    <button type="button" class="btn btn-sm btn-danger rounded-pill" id="btn-sync">
+                                        <i class="ri-24-hours-fill"></i> 
+                                        <span class="" role="status" id="spinner-sync" aria-hidden="true"></span>
+                                        <label id="lbl-sync">Sync Invoice</label>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -105,7 +116,7 @@
                     <div class="card-body">
                         <div class="row mt-2"> 
                             <div class="col md-4">
-                                <button type="button" class="btn btn-primary rounded-pill" id="btn-add">
+                                <button type="button" class="btn btn-md btn-primary rounded-pill" id="btn-add">
                                     <i class="bi bi-plus-circle"></i> Tambah
                                 </button>
                             </div>
@@ -142,6 +153,8 @@
     </section>
 </main>
 
+
+
 <script type="text/javascript"> 
     var name
     var table
@@ -171,6 +184,7 @@
             defaultDate: new Date(),
         });
         $('#end_date').val(convertEndDate);
+      
 
         loadInvoice()
 
@@ -194,6 +208,41 @@
             loadInvoice(invoice_number, start_date, end_date, openState, closeState, draftState, voidState)
         })
 
+        // sync to jubelio
+        $("#btn-sync").on("click", function(e){
+            e.preventDefault()
+            var transactionDateFrom =  $('#start_date').val().split("-").reverse().join("-")
+            var transactionDateTo =  $('#end_date').val().split("-").reverse().join("-")
+            $("#btn-sync").attr("disabled", true);
+            $("#spinner-sync").attr("class", "spinner-grow spinner-grow-sm")
+            $("#lbl-sync").text("Loading...")
+            $.ajax({
+                type: "GET",
+                url: "/jubelio/transaction/invoice",
+                data: {
+                    start_date : transactionDateFrom,
+                    end_date : transactionDateTo
+                },
+                dataType: "JSON",
+                success: function (response) {
+                    if(response.status == 200){
+                        $("#btn-sync").attr("disabled", false);
+                        $("#spinner-sync").attr("class", "")
+                        $("#lbl-sync").text("Sync Invoice")
+                        $.confirm({
+                            title: 'Pesan',
+                            content: response.message,
+                            buttons: {
+                                Ya: {
+                                    btnClass: 'btn-success any-other-class',
+                                },
+                            }
+                        });
+                    }
+                }
+            });
+          
+        })
         // filter invoice
         $("#filter_name").on("keyup", function(e){
             e.preventDefault()

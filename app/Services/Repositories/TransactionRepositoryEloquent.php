@@ -17,6 +17,9 @@ use Yajra\DataTables\Facades\DataTables;
 
 use Excel;
 use App\Imports\ImportTransaction;
+use Carbon\Carbon;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
 
 /**
  * Class TransactionRepositoryEloquent.
@@ -297,4 +300,36 @@ use App\Imports\ImportTransaction;
             return false;
         }
     }
+
+    public function upsertInvoiceTransactionSync($userData, $transactionDateFrom = null, $transactionDateTo = null){
+        try{
+
+            $transactionDateFrom = $transactionDateFrom."T17%3A00%3A00.000Z";
+            $transactionDateTo = $transactionDateTo."T16%3A59%3A00.000Z&q=";
+            
+            $responses = $this->endPointSalesInvoiceTransaction($userData, $transactionDateFrom, $transactionDateTo);
+            dd($responses->json());
+           
+           
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            Log::info("Error Code : ". $ex->getCode());
+            if($ex->getCode() == 0){
+                $responses = $this->endPointSalesInvoiceTransaction($userData);
+                Log::info("Retry on process ... ");
+            }
+            return false;
+        }
+    }
+
+    public function endPointSalesInvoiceTransaction($userData, $transactionDateFrom, $transactionDateTo){
+        
+        $responses = Http::timeout(10)->retry(3, 1000)->withHeaders([
+            'Authorization' => 'Bearer ' . $userData['api_token'],
+            'Accept' => 'application/json', 
+        ])->get(env('JUBELIO_API') . '/sales/invoices/?page=1&pageSize=200&transactionDateFrom='.$transactionDateFrom.'&transactionDateTo='.$transactionDateTo);
+        return $responses;
+
+    }
+
  }

@@ -693,11 +693,7 @@ use Illuminate\Support\Facades\Http;
             } 
             // update token
             $users->save();
-            return response()->json([
-                'status' => 200,
-                'message' => "Success update token ",
-                'data' => $users
-            ]);
+
         }catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;

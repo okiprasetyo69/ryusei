@@ -15,6 +15,7 @@ use App\Models\Transaction;
 use App\Models\SalesChannel;
 use App\Models\PaymentMethod;
 use App\Services\Interfaces\TransactionService;
+use App\Jobs\SyncTransactionInvoice;
 
 class TransactionController extends Controller
 {
@@ -182,5 +183,40 @@ class TransactionController extends Controller
             Log::error($ex->getMessage());
             return false;
        }
+    }
+
+    public function getInvoiceTransactionFromJubelio(Request $request){
+        try{
+            $validator = Validator::make(
+                $request->all(), [
+                    'start_date' => 'required',
+                    'end_date' => 'required',
+                ]
+            );
+            if($validator->fails()){
+                return response()->json([
+                    'data' => null,
+                    'message' => $validator->errors()->first(),
+                    'status' => 422
+                ]);
+            }
+
+            $userData = Auth::user();
+            $startDate = date('Y-m-d', strtotime($request->start_date . ' -1 day'));
+            $endDate =  $request->end_date;
+            if($userData){
+                SyncTransactionInvoice::dispatch($userData, $startDate, $endDate);
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Sync transaction invoice on process. Please wait a few minutes !',
+                ]);
+            }
+        
+            return false;
+            
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
     }
 }
