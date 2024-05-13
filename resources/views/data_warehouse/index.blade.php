@@ -244,7 +244,8 @@
             dataType: "JSON",
             success: function (response) {
                 var data = response.data
-                $("#lbl-total").text(data.total_invoice)
+                var total_invoice = data.total_invoice.toLocaleString('id', { style: 'decimal', useGrouping: true, minimumFractionDigits: 0 })
+                $("#lbl-total").text(total_invoice)
             }
         });
       }
@@ -522,7 +523,7 @@
                 }
             });
       }
-      
+
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
