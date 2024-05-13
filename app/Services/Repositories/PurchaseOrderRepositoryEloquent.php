@@ -81,7 +81,7 @@ use Illuminate\Support\Facades\Http;
                 'Authorization' => 'Bearer ' . $userData['api_token'],
                 'Accept' => 'application/json', 
             ])->get(env('JUBELIO_API') . '/purchase/orders/');
-
+            
             if($responses->status() == 401){
                 $relogin = $this->updateTokenApi($userData);
             }
@@ -97,8 +97,8 @@ use Illuminate\Support\Facades\Http;
                    
                     Log::info('Upsert Purchase Order Number - ' .   $value['purchaseorder_no']);
                     if($purchaseInvoice == null){
-
                         $newPurchaseOrder = new PurchaseOrder();
+                        
                         $newPurchaseOrder->purchaseorder_number = $value['purchaseorder_no'];
                         $newPurchaseOrder->vendor_id = $supplier->id;
                         $newPurchaseOrder->transaction_date = $convertTransactionDate ;

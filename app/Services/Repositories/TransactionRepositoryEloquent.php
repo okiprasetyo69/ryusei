@@ -248,9 +248,7 @@ use Illuminate\Support\Facades\Http;
                     // total bersih
                     $transaction->total_net = intval($transaction->total - ($transaction->total * ($adminCharge/100)));
                 }
-            
             }
-
             // discount
             $unitPrice = $transactions[0]['unit_price'];
             if($transactions[0]['sku_id'] != null){
@@ -310,7 +308,10 @@ use Illuminate\Support\Facades\Http;
             $responses = $this->endPointSalesInvoiceTransaction($userData, $transactionDateFrom, $transactionDateTo);
             dd($responses->json());
            
-           
+            return response()->json([
+                'status' => 200,
+                'message' => "Success sync data faktur !",
+            ]); 
         }catch(Exception $ex){
             Log::error($ex->getMessage());
             Log::info("Error Code : ". $ex->getCode());

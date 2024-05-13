@@ -11,8 +11,8 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Illuminate\Support\Facades\Log;
 
-use App\Models\Transaction;
-use App\Services\Repositories\TransactionRepositoryEloquent;
+use App\Models\DataWareHouseInvoice;
+use App\Services\Repositories\DataWarehouseInvoiceRepositoryEloquent;
 
 class SyncTransactionInvoice implements ShouldQueue
 {
@@ -34,10 +34,10 @@ class SyncTransactionInvoice implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(TransactionRepositoryEloquent $service): void
+    public function handle(DataWarehouseInvoiceRepositoryEloquent $service): void
     {
         Log::info('Sync Process Upsert Invoice Transaction...');
-        $upsertInvoiceTransaction = $service->upsertInvoiceTransactionSync($this->userData, $this->transactionDateFrom, $this->transactionDateTo);
+        $upsertInvoiceTransaction = $service->getDataWareHouseInvoiceFromJubelio($this->userData, $this->transactionDateFrom, $this->transactionDateTo);
         Log::info('Finish Sync Process Upsert Invoice Transaction...');
     }
 }

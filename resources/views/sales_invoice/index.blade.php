@@ -62,11 +62,11 @@
                             <div class="col-md-2"> 
                                 <div class="form-group"> 
                                     <button type="button" class="btn btn-sm  btn-success" style="border-radius:50px;" id="btn-filter"> <i class="bi bi-search"></i> Cari </button>
-                                    <button type="button" class="btn btn-sm btn-danger rounded-pill" id="btn-sync">
+                                    <!-- <button type="button" class="btn btn-sm btn-danger rounded-pill" id="btn-sync">
                                         <i class="ri-24-hours-fill"></i> 
                                         <span class="" role="status" id="spinner-sync" aria-hidden="true"></span>
                                         <label id="lbl-sync">Sync Invoice</label>
-                                    </button>
+                                    </button> -->
                                 </div>
                             </div>
                         </div>

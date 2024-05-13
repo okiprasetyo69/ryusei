@@ -21,6 +21,7 @@ use App\Http\Controllers\SalesInvoiceController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\PurchasingController;
 use App\Http\Controllers\PurchaseOrderController;
+use App\Http\Controllers\DataWarehouseInvoiceController;
 
 use App\Http\Controllers\WebhookController;
 use App\Http\Middleware\VerifyWebhookSecret;
@@ -211,6 +212,14 @@ Route::controller(PurchaseOrderController::class)->group(function() {
     // Route::post('/purchasing-invoice/detail', 'detail')->name('purchasing-invoice.detail');
     Route::post('/purchase/order/detail', 'detailPurchaseOrder')->name('purchase.order.detail');
     // Route::post('/purchasing-invoice/detail-invoice-item/delete', 'deleteDetailInvoice')->name('purchasing-invoice.detail.invoice-item.delete');
+});
+
+// Manage Datawarehouse
+
+// Manage Payment Method
+Route::controller(DataWarehouseInvoiceController::class)->group(function() {
+    Route::get('/data-warehouse/invoice', 'getAllDataWarehouseInvoice')->name('data-warehouse.invoice');
+    Route::get('/data-warehouse/invoice/total', 'totalInvoiceTransaction')->name('data-warehouse.invoice.total');
 });
 
 // Web Hook

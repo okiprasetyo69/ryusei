@@ -156,6 +156,24 @@
       </li>
     </ul>
   </li>
+  <li class="nav-item">
+    <a class="nav-link collapsed" data-bs-target="#warehouse-data-nav" data-bs-toggle="collapse" href="#">
+    <i class="bx bxs-data"></i></i><span>Gudang Data</span><i class="bi bi-chevron-down ms-auto"></i>
+    </a>
+    <ul id="warehouse-data-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+      <li>
+        <a href="/data-warehouse/invoice">
+          <i class="bi bi-circle"></i><span>Gudang Data Faktur</span>
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <i class="bi bi-circle"></i><span>Gudang Data Retur</span>
+        </a>
+      </li>
+    </ul>
+  </li>
+
   <!-- End Penjualan Nav -->
 
   <li class="nav-heading">Management Pembelian</li>

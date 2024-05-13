@@ -16,6 +16,7 @@ use App\Http\Controllers\ItemStockController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\PurchasingController;
 use App\Http\Controllers\PurchaseOrderController;
+use App\Http\Controllers\DataWarehouseInvoiceController;
 
 use App\Http\Controllers\WebhookController;
 use App\Http\Middleware\VerifyWebhookSecret;
@@ -117,7 +118,7 @@ Route::controller(PurchasingController::class)->group(function() {
     Route::get('/purchasing', 'index')->name('purchasing');
     Route::get('/purchasing/invoice/add', 'add')->name('purchasing-invoice.add');
     Route::get('/purchasing/invoice/{id}', 'edit')->name('purchasing-invoice.edit');
-    Route::get('/jubelio/purchase/invoice', 'getPurchaseInvoiceFromJubelio')->name('jubelio.purchase.invoice');
+    //Route::get('/jubelio/purchase/invoice', 'getPurchaseInvoiceFromJubelio')->name('jubelio.purchase.invoice');
 });
 
 // Purchase Order
@@ -126,6 +127,12 @@ Route::controller(PurchaseOrderController::class)->group(function() {
     Route::get('/purchase/order/add', 'add')->name('purchase.order.add');
     Route::get('/purchase/order/{id}', 'edit')->name('purchase.order.edit');
     Route::get('/jubelio/purchase/order', 'getPurchaseOrderFromJubelio')->name('jubelio.purchase.order');
+});
+
+// Data Warehouse Invoice
+Route::controller(DataWarehouseInvoiceController::class)->group(function() {
+    Route::get('/data-warehouse/invoice', 'index')->name('data-warehouse.invoice');
+    Route::get('/jubelio/transaction/invoice', 'getInvoiceFromJubelio')->name('jubelio.transaction.invoice');
 });
 
 
