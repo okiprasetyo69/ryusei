@@ -132,6 +132,7 @@ Route::controller(PurchaseOrderController::class)->group(function() {
 // Data Warehouse Invoice
 Route::controller(DataWarehouseInvoiceController::class)->group(function() {
     Route::get('/data-warehouse/invoice', 'index')->name('data-warehouse.invoice');
+    Route::get('/data-warehouse/invoice/detail/{id}', 'detail')->name('data-warehouse.invoice.detail');
     Route::get('/jubelio/transaction/invoice', 'getInvoiceFromJubelio')->name('jubelio.transaction.invoice');
 });
 

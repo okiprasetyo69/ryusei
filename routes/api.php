@@ -220,6 +220,7 @@ Route::controller(PurchaseOrderController::class)->group(function() {
 Route::controller(DataWarehouseInvoiceController::class)->group(function() {
     Route::get('/data-warehouse/invoice', 'getAllDataWarehouseInvoice')->name('data-warehouse.invoice');
     Route::get('/data-warehouse/invoice/total', 'totalInvoiceTransaction')->name('data-warehouse.invoice.total');
+    Route::get('/data-warehouse/invoice/detail', 'detailInvoice')->name('data-warehouse.invoice.detail');
 });
 
 // Web Hook

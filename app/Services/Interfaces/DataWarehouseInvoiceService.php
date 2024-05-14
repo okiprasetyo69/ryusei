@@ -25,13 +25,4 @@ use Illuminate\Http\Request;
    */
   public function getDataWareHouseInvoice(Request $request);
 
-    /**
-   * @author Oki Prasetyo <oki.prasetyo45@gmail.com>
-   * @since   2024.05.13
-   * Function for handle requests get data warehouse invoice.
-   * 
-   * @param Illuminate\Support\Facades\Request
-   */
-  public function getDetailWareHouseInvoice(Request $request);
-
 }

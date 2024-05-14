@@ -39,5 +39,9 @@ class SyncTransactionInvoice implements ShouldQueue
         Log::info('Sync Process Upsert Invoice Transaction...');
         $upsertInvoiceTransaction = $service->getDataWareHouseInvoiceFromJubelio($this->userData, $this->transactionDateFrom, $this->transactionDateTo);
         Log::info('Finish Sync Process Upsert Invoice Transaction...');
+
+        Log::info('Sync Process Upsert Detail Invoice Transaction...');
+        $upsertDetailInvoiceTransaction = $service->getDataWarehouseDetailInvoiceFromJUbelio($this->userData, $this->transactionDateFrom, $this->transactionDateTo);
+        Log::info('Finish Sync Process Upsert Detail Invoice Transaction...');
     }
 }

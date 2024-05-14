@@ -423,7 +423,7 @@
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
                             var html = ""
-                            html = "<button type='button' class='btn btn-sm btn-warning' onclick='detail("+rowData.id+")'> Detail </button>"
+                            html = "<a href='/data-warehouse/invoice/detail/"+ rowData.id +"' class='btn btn-sm btn-warning'> Detail </button>"
                             $(td).html(html);
                         },
                     },

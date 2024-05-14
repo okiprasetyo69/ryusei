@@ -3,6 +3,8 @@
 namespace App\Services\Repositories;
 
 use App\Models\DataWarehouseInvoice;
+use App\Models\DataWarehouseDetailInvoice;
+use App\Models\Product;
 use App\Services\Interfaces\DataWarehouseInvoiceService;
 use App\Models\SalesChannel;
 
@@ -65,30 +67,44 @@ class DataWarehouseInvoiceRepositoryEloquent implements DataWarehouseInvoiceServ
         catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;
-         }
+        }
     }
 
-    public function getDetailWareHouseInvoice(Request $request){}
+    public function detailInvoice(Request $request){
+
+        try{
+            $dataWarehouseInvoiceDetail = DataWarehouseDetailInvoice::orderBy("id", "ASC");
+
+            if($request->invoice_id != null){
+                $dataWarehouseInvoiceDetail = $dataWarehouseInvoiceDetail->where("invoice_id", $request->invoice_id);
+            }
+
+            $dataWarehouseInvoiceDetail = $dataWarehouseInvoiceDetail->get();
+            $datatables = Datatables::of($dataWarehouseInvoiceDetail);
+            return $datatables->make( true );
+
+        } catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
 
     public function getDataWareHouseInvoiceFromJubelio($userData, $transactionDateFrom, $transactionDateTo){
         try{
 
+            // String date ISO UTC
             $transactionDateFrom = $transactionDateFrom."T17%3A00%3A00.000Z";
             $transactionDateTo = $transactionDateTo."T16%3A59%3A00.000Z&q=";
-
             $firstPage = 1;
             $pageSize = 4000;
+            
             $responses = $this->endPointSalesInvoiceTransaction($userData, $firstPage,  $pageSize, $transactionDateFrom, $transactionDateTo);
+            
             $today = date('Y-m-d');
-
-            if($responses->status() == 401){
-                $this->updateTokenApi();
-            }
 
             if($responses->status() == 200){
                 $totalData = $responses->json()['totalCount'];
                 $totalPage = ceil($totalData /  $pageSize);
-                
                 // Loop every page data
                 for($i = 0; $i <= $totalPage; $i++) { 
                     Log::info("Loop Response page: ". $firstPage);
@@ -150,6 +166,11 @@ class DataWarehouseInvoiceRepositoryEloquent implements DataWarehouseInvoiceServ
                 }
                
             }
+
+            if($responses->status() == 401){
+                $relogin =  $this->updateTokenApi($userData);
+            }
+
             return response()->json([
                 'status' => 200,
                 'message' => "Success sync data faktur !",
@@ -158,13 +179,106 @@ class DataWarehouseInvoiceRepositoryEloquent implements DataWarehouseInvoiceServ
         }catch(Exception $ex){
             Log::error($ex->getMessage());
             Log::info("Error Code : ". $ex->getCode());
-            if($ex->getCode() == 0){
+            if($ex->getCode() == 0  || $ex->getCode() == 404 ){
                 $responses = $this->endPointSalesInvoiceTransaction($userData,  $firstPage,  $pageSize, $transactionDateFrom, $transactionDateTo);
                 Log::info("Retry on process ... ");
             }
             return false;
         }
     }
+
+    public function getDataWarehouseDetailInvoiceFromJUbelio($userData, $transactionDateFrom, $transactionDateTo){
+        try{
+
+            $arrDocId = [];
+            $dwhInvoices = DataWarehouseInvoice::where("transaction_date" , ">=",  $transactionDateFrom)
+                        ->where("transaction_date" , "<=",  $transactionDateTo)->get();
+
+            $today = date('Y-m-d');
+            foreach ($dwhInvoices as $key => $value) {
+                array_push($arrDocId, [
+                    'id' => $value['id'],
+                    'doc_id' => $value['doc_id']
+                ]);
+            }
+
+            foreach ($arrDocId as $k => $val) {
+
+                Log::info('Get detail transaction invoice detail with Doc ID : ' . $val['doc_id']);
+                $responses = $this->endPointDetailSalesInvoceTransaction($userData,  $val);
+                $dwhInvoice = DataWarehouseInvoice::where("doc_id", $val['doc_id'])->first();
+
+                if($responses->status() == 200){
+                    $data = $responses->json()['items'];
+                    foreach ($data as $key => $value){
+                        $detailInvoice = DataWarehouseDetailInvoice::where("invoice_id",  $dwhInvoice->id)->where("sku_code", $value['item_code'])->first();
+                        $product = Product::where("sku", $value['item_code'])->first();
+                        if($detailInvoice == null){
+                            Log::info('Create DWH Invoice Detail with SKU Code - ' .  $value['item_code']);
+                            $newDetailInvoice = new DataWarehouseDetailInvoice();
+                            $newDetailInvoice->invoice_id =  $dwhInvoice->id;
+                            if($product != null){
+                                $newDetailInvoice->sku_id = $product->id;
+                                $newDetailInvoice->sku_code = $product->sku;
+                            }
+                            $newDetailInvoice->name = $value['item_name'];
+                            $newDetailInvoice->description = $value['description'];
+                            $newDetailInvoice->qty = $value['qty_in_base'];
+                            $newDetailInvoice->price = $value['price'];
+                            $newDetailInvoice->discount = $value['disc'];
+                            $newDetailInvoice->disc_amount = $value['disc_amount'];
+                            $newDetailInvoice->unit = $value['unit'];
+                            $newDetailInvoice->amount = $value['amount']; // total
+                            $newDetailInvoice->tax_amount = $value['tax_amount'];
+                            $newDetailInvoice->sell_price = $value['sell_price'];
+                            $newDetailInvoice->original_price = $value['original_price'];
+                            $newDetailInvoice->sync_date =  $today;
+
+                            $newDetailInvoice->save();
+                        }
+
+                        if($detailInvoice != null){
+                            Log::info('Update DWH Invoice Detail with SKU Code - ' .  $value['item_code']);
+                            $detailInvoice->invoice_id =  $dwhInvoice->id;
+                            if($product != null){
+                                $detailInvoice->sku_id = $product->id;
+                                $detailInvoice->sku_code = $product->sku;
+                            }
+                            $detailInvoice->description = $value['description'];
+                            $detailInvoice->name = $value['item_name'];
+                            $detailInvoice->qty = $value['qty_in_base'];
+                            $detailInvoice->price = $value['price'];
+                            $detailInvoice->discount = $value['disc'];
+                            $detailInvoice->disc_amount = $value['disc_amount'];
+                            $detailInvoice->unit = $value['unit'];
+                            $detailInvoice->amount = $value['amount']; // total
+                            $detailInvoice->tax_amount = $value['tax_amount'];
+                            $detailInvoice->sell_price = $value['sell_price'];
+                            $detailInvoice->original_price = $value['original_price'];
+                            $detailInvoice->sync_date =  $today;
+
+                            $detailInvoice->save();
+                        }
+                    }
+                }
+            }   
+
+            return response()->json([
+                'status' => 200,
+                'message' => "Success sync detail invoice transaction !",
+            ]);
+           
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            Log::info("Error Code : ". $ex->getCode());
+            if($ex->getCode() == 0  || $ex->getCode() == 404 ){
+                Log::info("Retry on process ... ");
+                $responses = $this->endPointDetailSalesInvoceTransaction($userData,  $val);
+            }
+            return false;
+        }
+    }
+
     public function getTotalInvoiceTrxDataWareHouse($request){
         try{
             $totalInvoice = DB::table("data_ware_house_invoices")->select(DB::raw("COUNT(*) as total_invoice"))->first();
@@ -179,7 +293,6 @@ class DataWarehouseInvoiceRepositoryEloquent implements DataWarehouseInvoiceServ
             return false;
         }
     }
-    public function getDataWareHouseInvoiceDetailFromJubelio($userData){}
 
     public function endPointSalesInvoiceTransaction($userData, $firstPage, $pageSize, $transactionDateFrom, $transactionDateTo){
         $responses = Http::timeout(10)->retry(3, 1000)->withHeaders([
@@ -188,6 +301,14 @@ class DataWarehouseInvoiceRepositoryEloquent implements DataWarehouseInvoiceServ
         ])->get(env('JUBELIO_API') . '/sales/invoices/?page='.$firstPage.'&pageSize='.$pageSize.'&transactionDateFrom='.$transactionDateFrom.'&transactionDateTo='.$transactionDateTo);
         return $responses;
 
+    }
+
+    public function endPointDetailSalesInvoceTransaction($userData , $val){
+        $responses = Http::timeout(10)->retry(3, 1000)->withHeaders([
+            'Authorization' => 'Bearer ' . $userData['api_token'],
+            'Accept' => 'application/json', 
+        ])->get(env('JUBELIO_API') . '/sales/invoices/'.$val['doc_id']);
+        return $responses;
     }
 
     public function updateTokenApi($userData){

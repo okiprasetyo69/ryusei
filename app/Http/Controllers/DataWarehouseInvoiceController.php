@@ -12,6 +12,7 @@ use Exception;
 use Illuminate\Support\Facades\Log;
 
 use App\Models\DataWareHouseInvoice;
+use App\Models\DataWareHouseDetailInvoice;
 use App\Services\Repositories\DataWarehouseInvoiceRepositoryEloquent;
 use App\Jobs\SyncTransactionInvoice;
 
@@ -32,7 +33,27 @@ class DataWarehouseInvoiceController extends Controller
         return view("data_warehouse.index");
     }
 
+    public function detail(Request $request){
+        $invoice = DataWareHouseInvoice::where("id", $request->id)->first();
+        $detailInvoice = DataWareHouseDetailInvoice::where("invoice_id", $request->id)->get();
+        $detailInvoice = json_encode($detailInvoice);
+        return view("data_warehouse.detail", compact("invoice", "detailInvoice"));
+    }
+
     // API
+    public function detailInvoice(Request $request){
+        try{
+            $detail = $this->service->detailInvoice($request);
+            if($detail != null){
+                return $detail;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
     public function getAllDataWarehouseInvoice(Request $request){
         try{
             $dataInvoice = $this->service->getDataWareHouseInvoice($request);
@@ -65,11 +86,10 @@ class DataWarehouseInvoiceController extends Controller
             $userData = Auth::user();
             $startDate = date('Y-m-d', strtotime($request->start_date . ' -1 day'));
             $endDate =  $request->end_date;
-            // $result = $this->service->getDataWareHouseInvoiceFromJubelio($userData,  $startDate,   $endDate );
             if($userData){
                 SyncTransactionInvoice::dispatch($userData, $startDate, $endDate);
             }
-
+            // $result = $this->service->getDataWareHouseInvoiceFromJubelio($userData,  $startDate,   $endDate );
             // if($result){
             //     return true;
             // }
