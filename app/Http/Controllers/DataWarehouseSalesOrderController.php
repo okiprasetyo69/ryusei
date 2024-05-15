@@ -1,0 +1,95 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Closure;
+use Illuminate\Support\Facades\Auth;
+use Exception;
+use Illuminate\Support\Facades\Log;
+
+use App\Models\DataWareHouseOrder;
+use App\Models\DataWareHouseOrderDetail;
+use App\Services\Repositories\DataWarehouseSalesOrderRepositoryEloquent;
+use App\Jobs\SyncSalesOrderJob;
+
+class DataWarehouseSalesOrderController extends Controller
+{
+    /**
+    * @var DataWareHouseOrder
+    */
+    private DataWarehouseSalesOrderRepositoryEloquent $service;
+
+    public function __construct(DataWarehouseSalesOrderRepositoryEloquent $service) 
+    {
+        $this->service = $service;
+    }
+
+    public function index(Request $request){
+        return view("data_warehouse.sales_order.index");
+    }
+
+    public function detail(Request $request){
+        return view("data_warehouse.sales_order.detail");
+    }
+
+    public function getAllDataWarehouseOrder(Request $request){
+        try{
+            $dataOrder = $this->service->getDataWareHouseSalesOrder($request);
+            if($dataOrder != null){
+                return $dataOrder;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function getSalesOrderCompletedFromJubelio(Request $request){
+        try{
+            $validator = Validator::make(
+                $request->all(), [
+                    'start_date' => 'required',
+                    'end_date' => 'required',
+                ]
+            );
+            if($validator->fails()){
+                return response()->json([
+                    'data' => null,
+                    'message' => $validator->errors()->first(),
+                    'status' => 422
+                ]);
+            }
+
+            $userData = Auth::user();
+            $startDate = date('Y-m-d', strtotime($request->start_date . ' -1 day'));
+            $endDate =  $request->end_date;
+            if($userData){
+                SyncSalesOrderJob::dispatch($userData, $startDate, $endDate);
+            }
+        
+            return false;
+            
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function totalOrderTransaction(Request $request){
+        try{
+            $totalOrder = $this->service->getTotalInvoiceTrxDataWareHouse($request);
+            if($totalOrder != null){
+                return $totalOrder;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+}

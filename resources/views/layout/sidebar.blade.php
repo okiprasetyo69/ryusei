@@ -83,6 +83,7 @@
   <!-- End Persediaan Nav -->
 
   <!-- Start Gudang Nav -->
+  <li class="nav-heading">Management Gudang</li>
   <li class="nav-item">
     <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
       <i class="bi bi-building"></i><span>Gudang</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -111,6 +112,18 @@
       <li>
         <a href="/warehouse">
           <i class="bi bi-circle"></i><span>Pengaturan</span>
+        </a>
+      </li>
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link collapsed" data-bs-target="#warehouse-data-sales-order-nav" data-bs-toggle="collapse" href="#">
+    <i class="bx bxs-data"></i></i><span>Data Warehouse</span><i class="bi bi-chevron-down ms-auto"></i>
+    </a>
+    <ul id="warehouse-data-sales-order-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+      <li>
+        <a href="/data-warehouse/sales/order">
+          <i class="bi bi-circle"></i><span>Pesanan Selesai</span>
         </a>
       </li>
     </ul>
@@ -158,17 +171,17 @@
   </li>
   <li class="nav-item">
     <a class="nav-link collapsed" data-bs-target="#warehouse-data-nav" data-bs-toggle="collapse" href="#">
-    <i class="bx bxs-data"></i></i><span>Gudang Data</span><i class="bi bi-chevron-down ms-auto"></i>
+    <i class="bx bxs-data"></i></i><span>Data Warehouse</span><i class="bi bi-chevron-down ms-auto"></i>
     </a>
     <ul id="warehouse-data-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
       <li>
         <a href="/data-warehouse/invoice">
-          <i class="bi bi-circle"></i><span>Gudang Data Faktur</span>
+          <i class="bi bi-circle"></i><span>Faktur</span>
         </a>
       </li>
       <li>
         <a href="#">
-          <i class="bi bi-circle"></i><span>Gudang Data Retur</span>
+          <i class="bi bi-circle"></i><span> Retur</span>
         </a>
       </li>
     </ul>

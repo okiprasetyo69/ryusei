@@ -108,59 +108,60 @@ class DataWarehouseInvoiceRepositoryEloquent implements DataWarehouseInvoiceServ
                 // Loop every page data
                 for($i = 0; $i <= $totalPage; $i++) { 
                     Log::info("Loop Response page: ". $firstPage);
+
                     $respons = $this->endPointSalesInvoiceTransaction($userData, $firstPage,  $pageSize, $transactionDateFrom, $transactionDateTo);
                     $firstPage = $firstPage + 1;
-                    
-                    $data = $respons->json()['data'];
-
-                    foreach ($data as $key => $value) {
-                        $dataWarehouseInvoice = DataWarehouseInvoice::where("invoice_number", $value['doc_number'])->first();
-                        $customer = SalesChannel::where("name" , $value['customer_name'])->first();
-                        $type = 0;
-
-                        if($dataWarehouseInvoice == null){
-                            Log::info('Insert Invoice Trx with Doc ID : ' .$value['doc_id'] . ' and Inv Number : '.$value['doc_number']);
-                            $newDataWarehouseInvoice = new DataWarehouseInvoice();
-                           
-                            if( $value['doc_type'] == "invoice"){
-                                $type = 1;
+                    if($respons->status() == 200){
+                        $data = $respons->json()['data'];
+                        foreach ($data as $key => $value) {
+                            $dataWarehouseInvoice = DataWarehouseInvoice::where("invoice_number", $value['doc_number'])->first();
+                            $customer = SalesChannel::where("name" , $value['customer_name'])->first();
+                            $type = 0;
+    
+                            if($dataWarehouseInvoice == null){
+                                Log::info('Insert Invoice Trx with Doc ID : ' .$value['doc_id'] . ' and Inv Number : '.$value['doc_number']);
+                                $newDataWarehouseInvoice = new DataWarehouseInvoice();
+                               
+                                if( $value['doc_type'] == "invoice"){
+                                    $type = 1;
+                                }
+                                $newDataWarehouseInvoice->doc_id = $value['doc_id'];
+                                $newDataWarehouseInvoice->invoice_number = $value['doc_number'];
+                                if($customer != null){
+                                    $newDataWarehouseInvoice->customer_id = $customer->id;
+                                    $newDataWarehouseInvoice->customer_name = $customer->name;
+                                }
+                                $newDataWarehouseInvoice->customer_reference = $value['ref_no'];
+                                $newDataWarehouseInvoice->transaction_date = date_create($value['transaction_date'])->format('Y-m-d');
+                                $newDataWarehouseInvoice->due_date = date_create($value['due_date'])->format('Y-m-d');
+                                $newDataWarehouseInvoice->grand_total = $value['grand_total'];
+                                $newDataWarehouseInvoice->type = $type;
+                                $newDataWarehouseInvoice->due = $value['due'];
+                                $newDataWarehouseInvoice->sync_date =  $today;
+    
+                                $newDataWarehouseInvoice->save();
                             }
-                            $newDataWarehouseInvoice->doc_id = $value['doc_id'];
-                            $newDataWarehouseInvoice->invoice_number = $value['doc_number'];
-                            if($customer != null){
-                                $newDataWarehouseInvoice->customer_id = $customer->id;
-                                $newDataWarehouseInvoice->customer_name = $customer->name;
+    
+                            if($dataWarehouseInvoice != null){
+                                Log::info('Update Invoice Trx with Doc ID : ' .$value['doc_id'] . ' and Inv Number : '.$value['doc_number']);
+                                if( $value['doc_type'] == "invoice"){
+                                    $type = 1;
+                                }
+                                $dataWarehouseInvoice->doc_id = $value['doc_id'];
+                                $dataWarehouseInvoice->invoice_number = $value['doc_number'];
+                                if($customer != null){
+                                    $dataWarehouseInvoice->customer_id = $customer->id;
+                                    $dataWarehouseInvoice->customer_name = $customer->name;
+                                }
+                                $dataWarehouseInvoice->customer_reference = $value['ref_no'];
+                                $dataWarehouseInvoice->transaction_date = date_create($value['transaction_date'])->format('Y-m-d');
+                                $dataWarehouseInvoice->due_date = date_create($value['due_date'])->format('Y-m-d');
+                                $dataWarehouseInvoice->grand_total = $value['grand_total'];
+                                $dataWarehouseInvoice->type = $type;
+                                $dataWarehouseInvoice->due = $value['due'];
+                                // $dataWarehouseInvoice->sync_date =  $today;
+                                $dataWarehouseInvoice->save();
                             }
-                            $newDataWarehouseInvoice->customer_reference = $value['ref_no'];
-                            $newDataWarehouseInvoice->transaction_date = date_create($value['transaction_date'])->format('Y-m-d');
-                            $newDataWarehouseInvoice->due_date = date_create($value['due_date'])->format('Y-m-d');
-                            $newDataWarehouseInvoice->grand_total = $value['grand_total'];
-                            $newDataWarehouseInvoice->type = $type;
-                            $newDataWarehouseInvoice->due = $value['due'];
-                            $newDataWarehouseInvoice->sync_date =  $today;
-
-                            $newDataWarehouseInvoice->save();
-                        }
-
-                        if($dataWarehouseInvoice != null){
-                            Log::info('Update Invoice Trx with Doc ID : ' .$value['doc_id'] . ' and Inv Number : '.$value['doc_number']);
-                            if( $value['doc_type'] == "invoice"){
-                                $type = 1;
-                            }
-                            $dataWarehouseInvoice->doc_id = $value['doc_id'];
-                            $dataWarehouseInvoice->invoice_number = $value['doc_number'];
-                            if($customer != null){
-                                $dataWarehouseInvoice->customer_id = $customer->id;
-                                $dataWarehouseInvoice->customer_name = $customer->name;
-                            }
-                            $dataWarehouseInvoice->customer_reference = $value['ref_no'];
-                            $dataWarehouseInvoice->transaction_date = date_create($value['transaction_date'])->format('Y-m-d');
-                            $dataWarehouseInvoice->due_date = date_create($value['due_date'])->format('Y-m-d');
-                            $dataWarehouseInvoice->grand_total = $value['grand_total'];
-                            $dataWarehouseInvoice->type = $type;
-                            $dataWarehouseInvoice->due = $value['due'];
-                            // $dataWarehouseInvoice->sync_date =  $today;
-                            $dataWarehouseInvoice->save();
                         }
                     }
                 }

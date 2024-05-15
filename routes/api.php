@@ -22,6 +22,7 @@ use App\Http\Controllers\VendorController;
 use App\Http\Controllers\PurchasingController;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\DataWarehouseInvoiceController;
+use App\Http\Controllers\DataWarehouseSalesOrderController;
 
 use App\Http\Controllers\WebhookController;
 use App\Http\Middleware\VerifyWebhookSecret;
@@ -215,13 +216,18 @@ Route::controller(PurchaseOrderController::class)->group(function() {
 });
 
 // Manage Datawarehouse
-
-// Manage Payment Method
 Route::controller(DataWarehouseInvoiceController::class)->group(function() {
     Route::get('/data-warehouse/invoice', 'getAllDataWarehouseInvoice')->name('data-warehouse.invoice');
     Route::get('/data-warehouse/invoice/total', 'totalInvoiceTransaction')->name('data-warehouse.invoice.total');
     Route::get('/data-warehouse/invoice/detail', 'detailInvoice')->name('data-warehouse.invoice.detail');
 });
+
+Route::controller(DataWarehouseSalesOrderController::class)->group(function() {
+    Route::get('/data-warehouse/order', 'getAllDataWarehouseOrder')->name('data-warehouse.order');
+    Route::get('/data-warehouse/order/total', 'totalOrderTransaction')->name('data-warehouse.order.total');
+    Route::get('/data-warehouse/order/detail', 'detailOrder')->name('data-warehouse.order.detail');
+});
+
 
 // Web Hook
 Route::controller(WebhookController::class)->group(function() {

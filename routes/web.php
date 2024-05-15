@@ -17,6 +17,7 @@ use App\Http\Controllers\VendorController;
 use App\Http\Controllers\PurchasingController;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\DataWarehouseInvoiceController;
+use App\Http\Controllers\DataWarehouseSalesOrderController;
 
 use App\Http\Controllers\WebhookController;
 use App\Http\Middleware\VerifyWebhookSecret;
@@ -136,6 +137,12 @@ Route::controller(DataWarehouseInvoiceController::class)->group(function() {
     Route::get('/jubelio/transaction/invoice', 'getInvoiceFromJubelio')->name('jubelio.transaction.invoice');
 });
 
+// Data Warehouse Sales Order
+Route::controller(DataWarehouseSalesOrderController::class)->group(function() {
+    Route::get('/data-warehouse/sales/order', 'index')->name('data-warehouse.order');
+    Route::get('/data-warehouse/sales/order/detail/{id}', 'detail')->name('data-warehouse.order.detail');
+    Route::get('/jubelio/sales/order/completed', 'getSalesOrderCompletedFromJubelio')->name('jubelio.transaction.order');
+});
 
 // Webhook
 Route::post('/jubelio/webhook/product', [WebhookController::class, 'handleProduct'])->middleware(VerifyWebhookSecret::class);
