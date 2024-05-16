@@ -119,7 +119,7 @@ Route::controller(PurchasingController::class)->group(function() {
     Route::get('/purchasing', 'index')->name('purchasing');
     Route::get('/purchasing/invoice/add', 'add')->name('purchasing-invoice.add');
     Route::get('/purchasing/invoice/{id}', 'edit')->name('purchasing-invoice.edit');
-    //Route::get('/jubelio/purchase/invoice', 'getPurchaseInvoiceFromJubelio')->name('jubelio.purchase.invoice');
+    Route::get('/jubelio/purchase/invoice', 'getPurchaseInvoiceFromJubelio')->name('jubelio.purchase.invoice');
 });
 
 // Purchase Order
