@@ -12,7 +12,7 @@
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Data Warehouse</a></li>
-                <li class="breadcrumb-item"><a href="/data-warehouse/order">Pesanan Selesai</a></li>
+                <li class="breadcrumb-item"><a href="/data-warehouse/sales/order/completed">Pesanan Selesai</a></li>
                 <li class="breadcrumb-item active"><a href="#">Detail</a></li>
             </ol>
         </nav>
@@ -27,10 +27,10 @@
                     </div> 
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="card">
                     <div class="card-body info-card sales-card"> 
-                        <h5 class="card-title">  No Ref </span> <h6 id="lbl-ref"> - </h6> </h5>
+                        <h5 class="card-title">  No Pesanan </span> <h6 id="lbl-order-number"> - </h6> </h5>
                     </div> 
                 </div>
             </div>
@@ -41,7 +41,13 @@
                     </div> 
                 </div>
             </div>
-           
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body info-card sales-card"> 
+                        <h5 class="card-title">  No Ref  </span> <h6 id="lbl-no-ref"> - </h6> </h5>
+                    </div> 
+                </div>
+            </div>
         </div>
         <div class="row">
             <div class="col-md-2">
@@ -65,7 +71,7 @@
                 <div class="card-body">
                     <div class="row mt-2"> 
                         <div class="table-responsive mt-4">
-                            <table class="table table-striped" id="table-data-warehouse-detail-invoice">
+                            <table class="table table-striped" id="table-data-warehouse-detail-sales-order">
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
@@ -74,7 +80,7 @@
                                         <th scope="col">Harga</th>
                                         <th scope="col">Qty</th>
                                         <th scope="col">Diskon %</th>
-                                        <th scope="col">Diskon (Rp)</th>
+                                        <th scope="col">Nilai Diskon</th>
                                         <th scope="col">Total</th>
                                     </tr>
                                 </thead>
@@ -93,48 +99,51 @@
 <!-- End #main -->
 
 <script type="text/javascript"> 
-    var invoice = '<?php echo $invoice ;?>'
-    var table, invoice_id
+    var salesOrder = '<?php echo $salesOrder ;?>'
+    var table, dwh_order_id, invoice_number
 
       $(document).ready(function(){
 
-        invoice = $.parseJSON(invoice)
+        salesOrder = $.parseJSON(salesOrder)
 
-        invoice_id = invoice.id
-        loadDetailInvoice(invoice_id)
-        var transaction_date = invoice.transaction_date
+        dwh_order_id = salesOrder.id
+        loadDetailSalesOrder(dwh_order_id)
+        var transaction_date = salesOrder.transaction_date
         var date = new Date(transaction_date)
         var month = date.toLocaleString('default', { month: 'long' })
         var year = date.getFullYear()
         var format = date.getDate() + "-"+ month +"-"+ year
+        invoice_number = salesOrder.invoice_number ? salesOrder.invoice_number : "-"
 
-        $("#lbl-invoice").text(invoice.invoice_number)
-        $("#lbl-ref").text(invoice.customer_reference)
+        $("#lbl-invoice").text(invoice_number)
+        $("#lbl-order-number").text(salesOrder.salesorder_no)
+        $("#lbl-cust-name").text(salesOrder.customer_name)
         $("#lbl-trx-date").text(format)
-        $("#lbl-cust-name").text(invoice.customer_name)
-        $("#lbl-total").text(invoice.grand_total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }))
+        $("#lbl-no-ref").text(salesOrder.ref_no)
+        $("#lbl-total").text(salesOrder.grand_total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }))
+
       })
 
       function getTotalInvoice(){
         $.ajax({
             type: "GET",
-            url: "/api/data-warehouse/invoice/total",
+            url: "/api/data-warehouse/sales/order/total",
             data: "data",
             dataType: "JSON",
             success: function (response) {
-                // var data = response.data
-                // var total_invoice = data.total_invoice.toLocaleString('id', { style: 'decimal', useGrouping: true, minimumFractionDigits: 0 })
-                // $("#lbl-total").text(total_invoice)
+                var data = response.data
+                var total_sales_order = data.total_invoice.toLocaleString('id', { style: 'decimal', useGrouping: true, minimumFractionDigits: 0 })
+                $("#lbl-total").text(total_sales_order)
             }
         });
       }
 
-    function loadDetailInvoice(invoice_id){
+    function loadDetailSalesOrder(dwh_order_id){
         if (table != null) {
             table.destroy();
         }
 
-        table =  $("#table-data-warehouse-detail-invoice").DataTable({
+        table =  $("#table-data-warehouse-detail-sales-order").DataTable({
             lengthChange: false,
             searching: false,
             destroy: true,
@@ -152,19 +161,19 @@
                 previous: "‹",
                 next: "›",
             },
-            info: "Menampilkan _START_ dari _END_ dari _TOTAL_ Detail Invoice",
+            info: "Menampilkan _START_ dari _END_ dari _TOTAL_ Detail Pesanan",
             aria: {
                     paginate: {
-                            previous: "Previous",
-                            next: "Next",
+                        previous: "Previous",
+                        next: "Next",
                     },
                 },
             },
             ajax:{
-                url : '/api/data-warehouse/invoice/detail',
+                url : '/api/data-warehouse/sales/order/detail',
                 type: "GET",
                 data: {
-                    invoice_id : invoice_id
+                    dwh_order_id : dwh_order_id
                 }
             },
             columns: [
@@ -219,7 +228,13 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html(rowData.description);
+                        var description = ""
+                        if(rowData.description != "" ){
+                            description = rowData.description
+                        } else {
+                            description = rowData.name
+                        }
+                        $(td).html(description);
                     },
                 },
                 {

@@ -76,6 +76,26 @@ class DataWarehouseSalesOrderRepositoryEloquent implements DataWarehouseSalesOrd
         }
     }
 
+    public function detailSalesOrderCompleted(Request $request){
+        try{
+            $dataWarehouseSalesOrderCompletedDetail = DataWareHouseOrderDetail::orderBy("id", "ASC");
+
+            if($request->dwh_order_id != null){
+                $dataWarehouseSalesOrderCompletedDetail = $dataWarehouseSalesOrderCompletedDetail->where("dwh_order_id", $request->dwh_order_id);
+            }
+
+            $dataWarehouseSalesOrderCompletedDetail = $dataWarehouseSalesOrderCompletedDetail->get();
+           
+            $datatables = Datatables::of($dataWarehouseSalesOrderCompletedDetail);
+
+            return $datatables->make( true );
+
+        } catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
     public function getDataWareHouseOrderFromJubelio($userData, $transactionDateFrom, $transactionDateTo){
         try{
             // String date ISO UTC
@@ -191,10 +211,7 @@ class DataWarehouseSalesOrderRepositoryEloquent implements DataWarehouseSalesOrd
             $today = date('Y-m-d');
             foreach ($dwhSalesOrder as $key => $value) {
                 array_push($arrSalesOrder, [
-                    'id' => $value['id'],
                     'salesorder_id' => $value['salesorder_id'],
-                    'salesorder_no' => $value['salesorder_no'],
-                    'invoice_number' => $value['invoice_number']
                 ]);
             }
 
@@ -204,6 +221,17 @@ class DataWarehouseSalesOrderRepositoryEloquent implements DataWarehouseSalesOrd
                 $responses = $this->endPointDetailSalesOrderTransaction($userData,  $val);
                 
                 if($responses->status() == 200){
+                    
+                    // update sales order completed
+                    $dataSalesOrderCompleted = DataWareHouseOrder::where("salesorder_id",  $val['salesorder_id'])->first();
+                    if($dataSalesOrderCompleted != null){
+                        $dataSalesOrderCompleted->sub_total = $responses->json()['sub_total'];
+                        $dataSalesOrderCompleted->total_disc = $responses->json()['total_disc'];
+                        $dataSalesOrderCompleted->total_tax = $responses->json()['total_tax'];
+                        $dataSalesOrderCompleted->payment_method = $responses->json()['payment_method'];
+                        $dataSalesOrderCompleted->save();
+                    }
+                    // upsert sales order detail completed
                     $data = $responses->json()['items'];
                     foreach ($data as $key => $value) {
                         $detailOrder = $this->dataWarehouseOrderDetail::where("dwh_order_id", $dwhOrder->id)
@@ -270,11 +298,14 @@ class DataWarehouseSalesOrderRepositoryEloquent implements DataWarehouseSalesOrd
 
                             $detailOrder->save();
                         }
-
                     }
+
+                    return response()->json([
+                        'status' => 200,
+                        'message' => 'Success sync Sales Order Completed !',
+                    ]); 
                 }
             }
-
 
         }catch(Exception $ex){
             Log::error($ex->getMessage());
@@ -303,13 +334,13 @@ class DataWarehouseSalesOrderRepositoryEloquent implements DataWarehouseSalesOrd
         return $responses;
     }
 
-    public function getTotalOrderTrxDataWareHouse(Request $request){
+    public function getTotalSalesOrderCompleted(Request $request){
         try{
-            $totalOrder = DB::table("data_ware_house_orders")->select(DB::raw("COUNT(*) as total_order"))->first();
+            $totalSalesOrder = DB::table("data_ware_house_orders")->select(DB::raw("COUNT(*) as total_order"))->first();
             return response()->json([
                 'status' => 200,
                 'message' => "Success get total order !",
-                'data' => $totalOrder 
+                'data' => $totalSalesOrder 
             ]); 
            
         }catch(Exception $ex){
@@ -333,6 +364,8 @@ class DataWarehouseSalesOrderRepositoryEloquent implements DataWarehouseSalesOrd
             } 
 
             $users->save();
+
+            return $user;
         
         }catch(Exception $ex){
             Log::error($ex->getMessage());

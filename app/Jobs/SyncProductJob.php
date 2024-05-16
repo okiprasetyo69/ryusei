@@ -11,7 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Illuminate\Support\Facades\Log;
-use App\Events\QueueJobCompleted;
+use App\Events\JobCompleted;
 
 use App\Models\Product;
 use App\Services\Repositories\ProductRepositoryEloquent;
@@ -46,7 +46,7 @@ class SyncProductJob implements ShouldQueue
         $upsertItemProductBundle = $service->updateItemBundling($this->userData);
         Log::info('Finish Process Upsert Item Product Bundle...');
 
-        // Setelah pekerjaan selesai, picu event
-        // event(new QueueJobCompleted($jobId));
+        // Message queue job has done
+        broadcast(new JobCompleted('Sync Product has been successed !'));
     }
 }

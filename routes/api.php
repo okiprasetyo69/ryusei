@@ -223,9 +223,9 @@ Route::controller(DataWarehouseInvoiceController::class)->group(function() {
 });
 
 Route::controller(DataWarehouseSalesOrderController::class)->group(function() {
-    Route::get('/data-warehouse/order', 'getAllDataWarehouseOrder')->name('data-warehouse.order');
-    Route::get('/data-warehouse/order/total', 'totalOrderTransaction')->name('data-warehouse.order.total');
-    Route::get('/data-warehouse/order/detail', 'detailOrder')->name('data-warehouse.order.detail');
+    Route::get('/data-warehouse/sales/order/completed', 'getAllDataWarehouseOrder')->name('data-warehouse.sales.order.completed');
+    Route::get('/data-warehouse/sales/order/total', 'totalSalesOrderCompleted')->name('data-warehouse.sales.order.completed.total');
+    Route::get('/data-warehouse/sales/order/detail', 'detailSalesOrderCompleted')->name('data-warehouse.sales.order.completed.detail');
 });
 
 

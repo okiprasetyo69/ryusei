@@ -4,6 +4,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.css" rel="stylesheet" />
 <link href="https://cdn.datatables.net/fixedcolumns/5.0.0/css/fixedColumns.dataTables.css" rel="stylesheet" />
+
 @section('content')
 
 <main id="main" class="main">
@@ -85,11 +86,11 @@
                                     <i class="bi bi-star me-1"></i>
                                         Total Pesanan : 
                                     <label id="lbl-total">-</label> 
-
                                 </div>
                             </div>
+                         
                             <div class="table-responsive mt-4">
-                                <table class="table table-striped" id="table-data-warehouse-invoice">
+                                <table class="table table-striped" id="table-data-warehouse-sales-order">
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
@@ -228,20 +229,47 @@
 
         start_date = $("#filter_start_date" ).val().split("-").reverse().join("-")
         end_date = $("#filter_end_date" ).val().split("-").reverse().join("-")
-        //loadSalesOrderCompleted(invoice_number, start_date, end_date)
-        //getTotalOrder()
+        loadSalesOrderCompleted(invoice_number, start_date, end_date)
+        getTotalSalesOrder()
+
+        // Inisialisasi Pusher
+        Pusher.logToConsole = true;
+        var pusher = new Pusher('12979774488ee33d9ff9', {
+            cluster: 'ap1',
+            forceTLS: true
+        });
+
+        var channel = pusher.subscribe('jobs');
+        channel.bind('job.completed', function(data) {
+            // Tampilkan pesan saat event diterima
+            console.log(data)
+                $("#btn-sync").attr("disabled", false);
+                $("#spinner-sync").attr("class", "")
+                $("#lbl-sync").text("Sync Order")
+                $.confirm({
+                    title: 'Pesan !',
+                    content: data.message,
+                    type: 'orange',
+                    typeAnimated: true,
+                    buttons: {
+                        close: function () {
+                        }
+                    }
+                });
+        });
+
       })
 
-      function getTotalOrder(){
+      function getTotalSalesOrder(){
         $.ajax({
             type: "GET",
-            url: "/api/data-warehouse/invoice/total",
+            url: "/api/data-warehouse/sales/order/total",
             data: "data",
             dataType: "JSON",
             success: function (response) {
                 var data = response.data
-                var total_invoice = data.total_invoice.toLocaleString('id', { style: 'decimal', useGrouping: true, minimumFractionDigits: 0 })
-                $("#lbl-total").text(total_invoice)
+                var total_order = data.total_order.toLocaleString('id', { style: 'decimal', useGrouping: true, minimumFractionDigits: 0 })
+                $("#lbl-total").text(total_order)
             }
         });
       }
@@ -251,7 +279,7 @@
                 table.destroy();
             }
 
-            table =  $("#table-data-warehouse-invoice").DataTable({
+            table =  $("#table-data-warehouse-sales-order").DataTable({
                 // lengthChange: false,
                 searching: false,
                 destroy: true,
@@ -269,7 +297,7 @@
                     previous: "‹",
                     next: "›",
                 },
-                info: "Menampilkan _START_ dari _END_ dari _TOTAL_ Invoice",
+                info: "Menampilkan _START_ dari _END_ dari _TOTAL_ Pesanan",
                 aria: {
                         paginate: {
                             previous: "Previous",
@@ -278,7 +306,7 @@
                     },
                 },
                 ajax:{
-                    url : '/api/data-warehouse/invoice',
+                    url : '/api/data-warehouse/sales/order/completed',
                     type: "GET",
                     data: {
                         invoice_number: invoice_number,
@@ -292,6 +320,9 @@
                     {
                         data: null,
                         width: "5%",
+                    },
+                    {
+                        data: null,
                     },
                     {
                         data: null,
@@ -336,27 +367,12 @@
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
-                            $(td).html(rowData.invoice_number);
+                           
+                            $(td).html(rowData.salesorder_no);
                         },
                     },
                     {
                         targets: 2,
-                        searchable: false,
-                        orderable: false,
-                        createdCell: function (td, cellData, rowData, row, col) {
-                            $(td).html(rowData.customer_name);
-                        },
-                    },
-                    {
-                        targets: 3,
-                        searchable: false,
-                        orderable: false,
-                        createdCell: function (td, cellData, rowData, row, col) {
-                            $(td).html(rowData.customer_reference);
-                        },
-                    },
-                    {
-                        targets: 4,
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
@@ -370,17 +386,27 @@
                         },
                     },
                     {
+                        targets: 3,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html(rowData.shipping_full_name);
+                        },
+                    },
+                    {
+                        targets: 4,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                           $(td).html(rowData.grand_total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }));
+                        },
+                    },
+                    {
                         targets: 5,
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
-                            var due_date = rowData.due_date
-                            date = new Date(due_date)
-                            month = date.toLocaleString('default', { month: 'long' })
-                            year = date.getFullYear()
-                            format = date.getDate() + "-"+ month +"-"+ year
-
-                            $(td).html(format);
+                            $(td).html(rowData.store);
                         },
                     },
                     {
@@ -388,8 +414,7 @@
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
-                            
-                            $(td).html(rowData.grand_total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }));
+                            $(td).html(rowData.shipper);
                         },
                     },
                     {
@@ -397,11 +422,19 @@
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
-                            $(td).html(rowData.due.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }));
+                            $(td).html(rowData.wms_status);
                         },
                     },
                     {
                         targets: 8,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            $(td).html(rowData.invoice_number);
+                        },
+                    },
+                    {
+                        targets: 9,
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
@@ -414,12 +447,12 @@
                         },
                     },
                     {
-                        targets: 9,
+                        targets: 10,
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
                             var html = ""
-                            html = "<a href='/data-warehouse/sales/order/detail/"+ rowData.id +"' class='btn btn-sm btn-warning'> Detail </button>"
+                            html = "<a href='/data-warehouse/sales/order/completed/detail/"+ rowData.id +"' class='btn btn-sm btn-warning'> Detail </button>"
                             $(td).html(html);
                         },
                     },
@@ -455,6 +488,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.js"></script>
 <script src="https://cdn.datatables.net/fixedcolumns/5.0.0/js/fixedColumns.dataTables.js"></script>
 <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 @endsection
 @section('pagespecificscripts')
    

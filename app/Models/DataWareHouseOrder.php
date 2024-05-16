@@ -39,7 +39,11 @@ class DataWareHouseOrder extends Model
         'ref_no',
         'tracking_number',
         'is_cod',
-        'sync_date'
+        'sync_date',
+        'sub_total',
+        'total_disc',
+        'total_tax',
+        'payment_method'
    ];
 
    public function channel(){

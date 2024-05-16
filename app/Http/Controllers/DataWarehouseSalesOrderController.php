@@ -28,19 +28,37 @@ class DataWarehouseSalesOrderController extends Controller
         $this->service = $service;
     }
 
+    // WEB
     public function index(Request $request){
         return view("data_warehouse.sales_order.index");
     }
 
     public function detail(Request $request){
-        return view("data_warehouse.sales_order.detail");
+        $salesOrder = DataWareHouseOrder::where("id", $request->id)->first();
+        $detailSalesOrder = DataWareHouseOrderDetail::where("dwh_order_id", $request->id)->get();
+        $detailSalesOrder = json_encode($detailSalesOrder);
+        return view("data_warehouse.sales_order.detail", compact("salesOrder", "detailSalesOrder"));
     }
 
+    // API
     public function getAllDataWarehouseOrder(Request $request){
         try{
             $dataOrder = $this->service->getDataWareHouseSalesOrder($request);
             if($dataOrder != null){
                 return $dataOrder;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function detailSalesOrderCompleted(Request $request){
+        try{
+            $detail = $this->service->detailSalesOrderCompleted($request);
+            if($detail != null){
+                return $detail;
             }
             return false;
         }catch(Exception $ex){
@@ -70,6 +88,10 @@ class DataWarehouseSalesOrderController extends Controller
             $endDate =  $request->end_date;
             if($userData){
                 SyncSalesOrderJob::dispatch($userData, $startDate, $endDate);
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Sync product on process. Please wait a few minutes !',
+                ]);
             }
         
             return false;
@@ -80,9 +102,9 @@ class DataWarehouseSalesOrderController extends Controller
         }
     }
 
-    public function totalOrderTransaction(Request $request){
+    public function totalSalesOrderCompleted(Request $request){
         try{
-            $totalOrder = $this->service->getTotalInvoiceTrxDataWareHouse($request);
+            $totalOrder = $this->service->getTotalSalesOrderCompleted($request);
             if($totalOrder != null){
                 return $totalOrder;
             }

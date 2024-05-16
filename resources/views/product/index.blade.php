@@ -102,7 +102,7 @@
                                 </button>
                                 <button type="button" class="btn btn-sm btn-danger rounded-pill" id="btn-sync">
                                     <i class="ri-24-hours-fill"></i> 
-                                    <span class="" role="status" id="spinner-sync" aria-hidden="true"></span>
+                                        <span class="" role="status" id="spinner-sync" aria-hidden="true"></span>
                                     <label id="lbl-sync">Sync Product</label>
                                 </button>
                             </div>
@@ -199,7 +199,6 @@
             window.location.href = "/product/add"
         })
 
-
         $("#btn-sync").on("click", function(e){
             e.preventDefault()
             $("#btn-sync").attr("disabled", true);
@@ -214,9 +213,6 @@
                 success: function (response) {
 
                     if(response.status == 200){
-                        $("#btn-sync").attr("disabled", false);
-                        $("#spinner-sync").attr("class", "")
-                        $("#lbl-sync").text("Sync Product")
                         $.confirm({
                             title: 'Pesan ',
                             content: response.message,
@@ -227,28 +223,35 @@
                             }
                         });
                     }
-
-                    // if(response.status == 401){
-                    //     $("#btn-sync").attr("disabled", false);
-                    //     $("#spinner-sync").attr("class", "")
-                    //     $("#lbl-sync").text("Sync Product")
-                    //     $.confirm({
-                    //         title: 'Pesan ',
-                    //         content: response.message,
-                    //         buttons: {
-                    //             "Update Token": {
-                    //                 btnClass: 'btn-success any-other-class',
-                    //                 action: function(){
-                    //                     updateUserToken()
-                    //                 }
-                    //             },
-                    //         }
-                    //     });
-                    // }
                 }   
             });
 
         })
+
+        // alert pusher
+        Pusher.logToConsole = true;
+        var pusher = new Pusher('12979774488ee33d9ff9', {
+            cluster: 'ap1',
+            forceTLS: true
+        });
+
+        var channel = pusher.subscribe('jobs');
+        channel.bind('job.completed', function(data) {
+            // Tampilkan pesan saat event diterima
+            $("#btn-sync").attr("disabled", false);
+            $("#spinner-sync").attr("class", "")
+            $("#lbl-sync").text("Sync Order")
+            $.confirm({
+                title: 'Pesan !',
+                content: data.message,
+                type: 'orange',
+                typeAnimated: true,
+                buttons: {
+                    close: function () {
+                    }
+                }
+            });
+        });
     });
 
     function getCategory(){
@@ -368,6 +371,7 @@
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 @endsection
 @section('pagespecificscripts')
    

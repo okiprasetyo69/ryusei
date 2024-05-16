@@ -122,7 +122,7 @@
     </a>
     <ul id="warehouse-data-sales-order-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
       <li>
-        <a href="/data-warehouse/sales/order">
+        <a href="/data-warehouse/sales/order/completed">
           <i class="bi bi-circle"></i><span>Pesanan Selesai</span>
         </a>
       </li>

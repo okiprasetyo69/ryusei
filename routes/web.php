@@ -139,8 +139,8 @@ Route::controller(DataWarehouseInvoiceController::class)->group(function() {
 
 // Data Warehouse Sales Order
 Route::controller(DataWarehouseSalesOrderController::class)->group(function() {
-    Route::get('/data-warehouse/sales/order', 'index')->name('data-warehouse.order');
-    Route::get('/data-warehouse/sales/order/detail/{id}', 'detail')->name('data-warehouse.order.detail');
+    Route::get('/data-warehouse/sales/order/completed', 'index')->name('data-warehouse.order');
+    Route::get('/data-warehouse/sales/order/completed/detail/{id}', 'detail')->name('data-warehouse.order.detail');
     Route::get('/jubelio/sales/order/completed', 'getSalesOrderCompletedFromJubelio')->name('jubelio.transaction.order');
 });
 
