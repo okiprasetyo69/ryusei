@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 
 use App\Models\Vendor;
 use App\Services\Interfaces\VendorService;
+use App\Jobs\SyncVendorsJob;
 
 class VendorController extends Controller
 {
@@ -147,10 +148,13 @@ class VendorController extends Controller
     public function getSupplierFromJubelio(Request $request){
         try{
             $userData = Auth::user();
-            $suppliers = $this->service->getSupplierFromJubelio($request, $userData);
-            
-            if($suppliers != null){
-                return $suppliers;
+            // $suppliers = $this->service->getSupplierFromJubelio($request, $userData);
+            if($userData != null){
+                SyncVendorsJob::dispatch($userData);
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Sync suppliers or vendors on process. Please wait a few minutes !',
+                ]);
             }
             return false;
         }catch(Exception $ex){
@@ -158,4 +162,5 @@ class VendorController extends Controller
             return false;
         }
     }
+    
 }

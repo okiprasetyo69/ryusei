@@ -4,6 +4,7 @@ namespace App\Services\Repositories;
 
 use App\Models\Vendor;
 use App\Services\Interfaces\VendorService;
+use App\Models\User;
 
 use Exception;
 use Illuminate\Http\Request;
@@ -213,19 +214,12 @@ use Illuminate\Support\Facades\Http;
          }
     }
 
-    public function getSupplierFromJubelio(Request $request,  $userData){
+    public function getSupplierFromJubelio($userData){
         try{
-            DB::beginTransaction();
+            // DB::beginTransaction();
 
             // get all product with actual stock
-            $responses = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $userData['api_token'],
-                'Accept' => 'application/json', 
-            ])->get(env('JUBELIO_API') . '/contacts/suppliers/', [
-                'page' => 1,
-                'pageSize' => 200,
-            ]);
-
+            $responses = $this->endPointGetSupplier($userData);
             $supplier = $this->vendor;
             
             if($responses->status() == 200){
@@ -248,25 +242,67 @@ use Illuminate\Support\Facades\Http;
                         $suppliers->save();
                    }
                 }
-              
             }
 
             if($responses->status() == 401){
-                return response()->json([
-                    'status' => 401,
-                    'message' => 'Token expired, please try again !',
-                ]);
+                // $userData = User::where("name" , "Super Admin")->first();
+                $relogin = $this->updateTokenApi($userData);
+                $responses =  $this->endPointGetSupplier($userData);
             }
 
-            DB::commit();
+            // DB::commit();
             return response()->json([
                 'data' =>  $supplier,
-                'message' => 'Success get suppliers !',
+                'message' => 'Success upsert suppliers !',
                 'status' => 200
             ]);
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            if($ex->getCode() == 401){
+                $relogin = $this->updateTokenApi($userData);
+            }
+            if($ex->getCode() == 0 || $ex->getCode() == 404){
+                $responses = $this->endPointProductItem($userData);
+                Log::info("Retry on process ... ");
+            }
+            return false;
+        }
+    }
+
+    public function endPointGetSupplier($userData){
+        $responses = Http::timeout(10)->retry(3, 1000)->withHeaders([
+                        'Authorization' => 'Bearer ' . $userData['api_token'],
+                        'Accept' => 'application/json', 
+                    ])->get(env('JUBELIO_API') . '/contacts/suppliers/', [
+                        'page' => 1,
+                        'pageSize' => 200,
+                    ]);
+        return $responses;
+    }
+
+    public function updateTokenApi($userData){
+        try{
+            // $userData = Auth::user();
+            // find current user login
+            $users =  User::find($userData['id'])->first();
+            // get new token here
+            $loginUser =  Http::post(env('JUBELIO_API') . '/login', [
+                'email' => env('JUBELIO_EMAIL'),
+                'password' => env('JUBELIO_PASSWORD')
+            ]);
+            
+            if($loginUser->status() == 200){
+                // try auth login
+                $userLogin = $loginUser->json();
+                // set new token
+                $users->api_token = $userLogin['token'];
+            } 
+            // update token
+            $users->save();
         }catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;
         }
     }
+
  }

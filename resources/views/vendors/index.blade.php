@@ -144,7 +144,6 @@
             loadVendor(name, vendor_code, category, phone, mobile, email)
         })
 
-
         // sync supplier
         $("#btn-sync").on("click", function(e){
             e.preventDefault()
@@ -158,11 +157,7 @@
                 data: "data",
                 dataType: "JSON",
                 success: function (response) {
-
                     if(response.status == 200){
-                        $("#btn-sync").attr("disabled", false);
-                        $("#spinner-sync").attr("class", "")
-                        $("#lbl-sync").text("Sync Product")
                         $.confirm({
                             title: 'Pesan ',
                             content: response.message,
@@ -170,25 +165,7 @@
                                 Ya: {
                                     btnClass: 'btn-success any-other-class',
                                     action: function(){
-                                        window.location.href = '/vendors'
-                                    }
-                                },
-                            }
-                        });
-                    }
-
-                    if(response.status == 401){
-                        $("#btn-sync").attr("disabled", false);
-                        $("#spinner-sync").attr("class", "")
-                        $("#lbl-sync").text("Sync Product")
-                        $.confirm({
-                            title: 'Pesan ',
-                            content: response.message,
-                            buttons: {
-                                "Update Token": {
-                                    btnClass: 'btn-success any-other-class',
-                                    action: function(){
-                                        updateUserToken()
+                                        loadVendor()
                                     }
                                 },
                             }
@@ -198,6 +175,32 @@
             });
 
         })
+
+        // Inisialisasi Pusher
+        Pusher.logToConsole = true;
+        var pusher = new Pusher('12979774488ee33d9ff9', {
+            cluster: 'ap1',
+            forceTLS: true
+        });
+
+        var channel = pusher.subscribe('jobs');
+        channel.bind('job.completed', function(data) {
+            // Tampilkan pesan saat event diterima
+            console.log(data)
+                $("#btn-sync").attr("disabled", false);
+                $("#spinner-sync").attr("class", "")
+                $("#lbl-sync").text("Sync Supplier")
+                $.confirm({
+                    title: 'Pesan !',
+                    content: data.message,
+                    type: 'orange',
+                    typeAnimated: true,
+                    buttons: {
+                        close: function () {
+                        }
+                    }
+                });
+        });
 
     });
 
@@ -468,6 +471,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.js"></script>
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 @endsection
 @section('pagespecificscripts')
    
