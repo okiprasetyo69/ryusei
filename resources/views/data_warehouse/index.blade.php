@@ -234,6 +234,34 @@
         end_date = $("#filter_end_date" ).val().split("-").reverse().join("-")
         loadInvoiceWarehouseData(invoice_number, start_date, end_date)
         getTotalInvoice()
+
+        // Inisialisasi Pusher
+        Pusher.logToConsole = true;
+        var pusher = new Pusher('12979774488ee33d9ff9', {
+            cluster: 'ap1',
+            forceTLS: true
+        });
+
+        var channel = pusher.subscribe('jobs');
+        channel.bind('job.completed', function(data) {
+            // Tampilkan pesan saat event diterima
+            console.log(data)
+            $("#btn-sync").attr("disabled", false);
+            $("#spinner-sync").attr("class", "")
+            $("#lbl-sync").text("Sync Faktur")
+            $.confirm({
+                title: 'Pesan !',
+                content: data.message,
+                type: 'orange',
+                typeAnimated: true,
+                buttons: {
+                    close: function () {
+                    }
+                }
+            });
+        });
+
+
       })
 
       function getTotalInvoice(){
@@ -530,6 +558,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.js"></script>
 <script src="https://cdn.datatables.net/fixedcolumns/5.0.0/js/fixedColumns.dataTables.js"></script>
 <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 @endsection
 @section('pagespecificscripts')
    

@@ -40,7 +40,7 @@
                         <div class="row mt-2">
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    <input type="text" name="filter_name" class="form-control" id="filter_name" placeholder="Masukkan nomor invoice" autofocus/>
+                                    <input type="text" name="filter_name" class="form-control" id="filter_name" placeholder="Masukkan nomor pesanan" autofocus/>
                                 </div>
                             </div>
                             <div class="col-md-2">
@@ -119,7 +119,7 @@
 </main>
 
 <script type="text/javascript"> 
-    var invoice_number, start_date, end_date, openState, closeState, draftState, voidState
+    var order_number, start_date, end_date, openState, closeState, draftState, voidState
     var table
     $(document).ready(function () {
 
@@ -157,7 +157,7 @@
         // filter invoice
         $("#btn-fiter").on("click", function(e){
             e.preventDefault()
-            invoice_number =  $("#filter_name").val()
+            order_number =  $("#filter_name").val()
             start_date = $("#start_date").val()
             start_date = start_date.split("-").reverse().join("-")
             end_date = $("#end_date").val()
@@ -167,14 +167,14 @@
             draftState = $("#stateDraft").val()
             voidState = $("#stateVoid").val()
           
-            loadPurchaseInvoice(invoice_number, start_date, end_date, openState, closeState, draftState, voidState)
+            loadPurchaseOrder(order_number, start_date, end_date, openState, closeState, draftState, voidState)
         })
 
         start_date = $("#start_date").val()
         start_date = start_date.split("-").reverse().join("-")
         end_date = $("#end_date").val()
         end_date = end_date.split("-").reverse().join("-")
-        loadPurchaseOrder(invoice_number, start_date, end_date, openState, closeState, draftState, voidState)
+        loadPurchaseOrder(order_number, start_date, end_date, openState, closeState, draftState, voidState)
 
          // sync purchase order
         $("#btn-sync").on("click", function(e){
@@ -192,9 +192,6 @@
                 success: function (response) {
 
                     if(response.status == 200){
-                        $("#btn-sync").attr("disabled", false);
-                        $("#spinner-sync").attr("class", "")
-                        $("#lbl-sync").text("Sync Purchase Order")
                         $.confirm({
                             title: 'Pesan ',
                             content: response.message,
@@ -209,9 +206,35 @@
             });
 
         })
+
+        // Inisialisasi Pusher
+        Pusher.logToConsole = true;
+        var pusher = new Pusher('12979774488ee33d9ff9', {
+            cluster: 'ap1',
+            forceTLS: true
+        });
+
+        var channel = pusher.subscribe('jobs');
+        channel.bind('job.completed', function(data) {
+            // Tampilkan pesan saat event diterima
+            console.log(data)
+                $("#btn-sync").attr("disabled", false);
+                $("#spinner-sync").attr("class", "")
+                $("#lbl-sync").text("Sync Purchase Order")
+                $.confirm({
+                    title: 'Pesan !',
+                    content: data.message,
+                    type: 'orange',
+                    typeAnimated: true,
+                    buttons: {
+                        close: function () {
+                        }
+                    }
+                });
+        });
     });
 
-    function loadPurchaseOrder(invoice_number = null, start_date=null, end_date = null, openState=null, closeState=null, draftState= null, voidState= null){
+    function loadPurchaseOrder(order_number = null, start_date=null, end_date = null, openState=null, closeState=null, draftState= null, voidState= null){
         if (table != null) {
             table.destroy();
         }
@@ -247,13 +270,13 @@
                     url :  '/api/purchase/order',
                     type: "GET",
                     data: {
-                        invoice_number: invoice_number,
+                        order_number: order_number,
                         start_date : start_date,
                         end_date : end_date,
-                        open_state : openState,
-                        close_state : closeState,
-                        draft_state : draftState,
-                        void_state : voidState
+                        // open_state : openState,
+                        // close_state : closeState,
+                        // draft_state : draftState,
+                        // void_state : voidState
                         // page : 1,
                         // limit : 10
                     }
@@ -471,6 +494,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.js"></script>
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 @endsection
 @section('pagespecificscripts')
    

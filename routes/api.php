@@ -23,6 +23,7 @@ use App\Http\Controllers\PurchasingController;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\DataWarehouseInvoiceController;
 use App\Http\Controllers\DataWarehouseSalesOrderController;
+use App\Http\Controllers\SalesReturnController;
 
 use App\Http\Controllers\WebhookController;
 use App\Http\Middleware\VerifyWebhookSecret;
@@ -228,6 +229,9 @@ Route::controller(DataWarehouseSalesOrderController::class)->group(function() {
     Route::get('/data-warehouse/sales/order/detail', 'detailSalesOrderCompleted')->name('data-warehouse.sales.order.completed.detail');
 });
 
+Route::controller(SalesReturnController::class)->group(function() {
+    Route::get('/sales/return', 'getAllSalesReturn')->name('sales.return');
+});
 
 // Web Hook
 Route::controller(WebhookController::class)->group(function() {

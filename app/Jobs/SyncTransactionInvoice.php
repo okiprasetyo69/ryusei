@@ -10,6 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Illuminate\Support\Facades\Log;
+use App\Events\JobCompleted;
 
 use App\Models\DataWareHouseInvoice;
 use App\Services\Repositories\DataWarehouseInvoiceRepositoryEloquent;
@@ -43,5 +44,7 @@ class SyncTransactionInvoice implements ShouldQueue
         Log::info('Sync Process Upsert Detail Invoice Transaction...');
         $upsertDetailInvoiceTransaction = $service->getDataWarehouseDetailInvoiceFromJUbelio($this->userData, $this->transactionDateFrom, $this->transactionDateTo);
         Log::info('Finish Sync Process Upsert Detail Invoice Transaction...');
+
+        broadcast(new JobCompleted('Sync Transaction Invoice has been successed !'));
     }
 }

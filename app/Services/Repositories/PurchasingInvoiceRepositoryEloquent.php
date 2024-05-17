@@ -55,7 +55,7 @@ use Illuminate\Support\Facades\Http;
     public function getPurchasingInvoice(Request $request){
         try{
             
-            $purchaseInvoice = $this->purchaseInvoice::with('vendor')->orderBy('date', 'ASC');
+            $purchaseInvoice = $this->purchaseInvoice::with('vendor')->orderBy('date', 'DESC');
           
             if($request->invoice_number != null){
                 $purchaseInvoice  = $purchaseInvoice->where("invoice_number", "like", "%" . $request->invoice_number. "%");

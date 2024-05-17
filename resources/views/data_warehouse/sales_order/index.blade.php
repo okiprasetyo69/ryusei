@@ -77,7 +77,7 @@
                                 <button type="button" class="btn btn-sm btn-danger rounded-pill" id="btn-sync">
                                     <i class="ri-24-hours-fill"></i> 
                                         <span class="" role="status" id="spinner-sync" aria-hidden="true"></span>
-                                    <label id="lbl-sync">Sync Order</label>
+                                    <label id="lbl-sync">Sync Sales Order</label>
                                 </button>
                             </div>
                             <div class="col-md-2"> </div>
@@ -245,7 +245,7 @@
             console.log(data)
                 $("#btn-sync").attr("disabled", false);
                 $("#spinner-sync").attr("class", "")
-                $("#lbl-sync").text("Sync Order")
+                $("#lbl-sync").text("Sync Sales Order")
                 $.confirm({
                     title: 'Pesan !',
                     content: data.message,

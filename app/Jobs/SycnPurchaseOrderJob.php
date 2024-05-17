@@ -10,6 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Illuminate\Support\Facades\Log;
+use App\Events\JobCompleted;
 
 use App\Services\Repositories\PurchaseOrderRepositoryEloquent;
 
@@ -38,5 +39,7 @@ class SycnPurchaseOrderJob implements ShouldQueue
         Log::info('Sync Process Upsert Detail Purchase Order...');
         $upsertDetailPurchaseOrder = $service->updateDetailPurchaseOrderSync($this->userData);
         Log::info('Finish Sync Process Upsert Detail Purchase Order...');
+
+        broadcast(new JobCompleted('Sync Purchase Order has been successed !'));
     }
 }

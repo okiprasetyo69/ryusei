@@ -48,7 +48,22 @@ use Illuminate\Support\Facades\Http;
 
     public function getPurchaseOrder(Request $request){
         try{
-            $purchaseOrder = $this->purchaseOrder::with('vendor')->orderBy('date', 'ASC');
+         
+
+            $purchaseOrder = $this->purchaseOrder::with("vendor")->orderBy("transaction_date", "DESC");
+
+            if($request->order_number != null){
+                $purchaseOrder =  $purchaseOrder->where("purchaseorder_number", "like", "%" . $request->order_number. "%");
+            }
+           
+            if($request->start_date != null){
+                $purchaseOrder =  $purchaseOrder->whereDate("transaction_date", ">=",  $request->start_date);
+            }
+
+            if($request->end_date != null){
+                $purchaseOrder =  $purchaseOrder->whereDate("transaction_date", "<=", $request->end_date);
+            }
+
             $purchaseOrder = $purchaseOrder->get();
 
             $datatables = Datatables::of($purchaseOrder);
