@@ -230,7 +230,9 @@ Route::controller(DataWarehouseSalesOrderController::class)->group(function() {
 });
 
 Route::controller(SalesReturnController::class)->group(function() {
-    Route::get('/sales/return', 'getAllSalesReturn')->name('sales.return');
+    Route::get('/data-warehouse/sales/return', 'getAllSalesReturn')->name('sales.return');
+    Route::get('/data-warehouse/sales/return/total', 'totalSalesReturn')->name('data-warehouse.sales.return.total');
+    Route::get('/data-warehouse/sales/return/detail', 'detailSalesReturn')->name('data-warehouse.sales.return.detail');
 });
 
 // Web Hook

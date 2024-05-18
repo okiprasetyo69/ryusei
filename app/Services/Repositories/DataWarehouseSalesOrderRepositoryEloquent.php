@@ -152,7 +152,7 @@ class DataWarehouseSalesOrderRepositoryEloquent implements DataWarehouseSalesOrd
                                 $newOrderData->ref_no = $value['ref_no'];
                                 $newOrderData->tracking_number = $value['tracking_number'];
                                 $newOrderData->is_cod = $value['is_cod'];
-                                $newOrderData->sync_date =  $today = date('Y-m-d');
+                                $newOrderData->sync_date =  $today;
 
                                 $newOrderData->save();
                             }

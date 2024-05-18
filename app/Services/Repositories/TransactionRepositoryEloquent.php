@@ -306,7 +306,7 @@ use Illuminate\Support\Facades\Http;
             $transactionDateTo = $transactionDateTo."T16%3A59%3A00.000Z&q=";
             
             $responses = $this->endPointSalesInvoiceTransaction($userData, $transactionDateFrom, $transactionDateTo);
-            dd($responses->json());
+            // dd($responses->json());
            
             return response()->json([
                 'status' => 200,
