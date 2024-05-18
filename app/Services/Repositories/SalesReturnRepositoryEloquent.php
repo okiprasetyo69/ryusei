@@ -192,6 +192,106 @@ class SalesReturnRepositoryEloquent implements SalesReturnService {
                 ]);
             }
 
+            // foreach ($salesReturn as $key => $value) {
+            //     array_push($arrSalesReturn, $value['doc_id']);
+            // }
+
+            // $i = 0;
+            // while(!empty($arrSalesReturn)){
+            //     dd($arrSalesReturn[$i]);
+            //     Log::info('Get detail sales return with Doc ID : ' . $arrSalesReturn[$i]);
+            //     $salesReturn =  $this->salesReturn::where("doc_id", $arrSalesReturn[$i])->first();
+            //     $responses = $this->endPointDetailSalesReturnFromJubelio($userData, $arrSalesReturn[$i]);
+
+            //     if($responses->status() == 200){
+
+            //         if (isset($arrSalesReturn[$i])){
+            //             $data = $responses->json()['items'];
+            //             if($salesReturn != null){
+            //                 $salesReturn->sub_total = $responses->json()['sub_total'];
+            //                 $salesReturn->total_disc = $responses->json()['total_disc'];
+            //                 $salesReturn->total_tax = $responses->json()['total_tax'];
+            //                 $salesReturn->add_disc = $responses->json()['add_disc'];
+            //                 $salesReturn->add_fee = $responses->json()['add_fee'];
+            //                 $salesReturn->service_fee = $responses->json()['service_fee'];
+            //                 $salesReturn->salesorder_no = $responses->json()['salesorder_no'];
+                            
+            //                 $salesReturn->save();
+            //             }
+    
+            //             foreach ($data as $key => $value) {
+            //                 $detailSalesReturn = SalesReturnDetail::where("sales_return_id",  $salesReturn->id)
+            //                                     ->where("sku_code", $value['item_code'])->first();
+            //                 $product = Product::where("sku", $value['item_code'])->first();
+    
+            //                 if($detailSalesReturn == null){
+            //                     Log::info('Create Sales Order Detail with SKU Code - ' .  $value['item_code']);
+            //                     $newDetailSalesReturn = new SalesReturnDetail();
+            //                     $newDetailSalesReturn->sales_return_id =  $salesReturn->id;
+            //                     if($product != null){
+            //                         $newDetailSalesReturn->sku_id = $product->id;
+            //                         $newDetailSalesReturn->sku_code = $product->sku;
+            //                         $newDetailSalesReturn->name = $product->name;
+            //                     } 
+            //                     $newDetailSalesReturn->tax_id = $value['tax_id'];
+            //                     $newDetailSalesReturn->description = $value['description'];
+            //                     $newDetailSalesReturn->price = $value['price'];
+            //                     $newDetailSalesReturn->qty = $value['qty'];
+            //                     $newDetailSalesReturn->unit = $value['unit'];
+            //                     $newDetailSalesReturn->qty_in_base = $value['qty_in_base'];
+            //                     $newDetailSalesReturn->amount = $value['amount'];
+            //                     $newDetailSalesReturn->cogs = $value['cogs'];
+            //                     $newDetailSalesReturn->tax_amount = $value['tax_amount'];
+            //                     $newDetailSalesReturn->discount = $value['disc'];
+            //                     $newDetailSalesReturn->disc_amount = $value['disc_amount'];
+            //                     $newDetailSalesReturn->sell_price = $value['sell_price'];
+            //                     $newDetailSalesReturn->original_price = $value['original_price'];
+            //                     $newDetailSalesReturn->rate = $value['rate'];
+            //                     $newDetailSalesReturn->tax_name = $value['tax_name'];
+            //                     $newDetailSalesReturn->available_qty = $value['available_qty'];
+    
+            //                     $newDetailSalesReturn->sync_date = $today;
+    
+            //                     $newDetailSalesReturn->save();
+            //                 }    
+                            
+            //                 if($detailSalesReturn != null){
+            //                     Log::info('Update Sales Return Detail with SKU Code - ' .  $value['item_code']);
+            //                     if($product != null){
+            //                         $detailSalesReturn->sku_id = $product->id;
+            //                         $detailSalesReturn->sku_code = $product->sku;
+            //                         $detailSalesReturn->name = $product->name;
+            //                     } 
+    
+            //                     $detailSalesReturn->tax_id = $value['tax_id'];
+            //                     $detailSalesReturn->price = $value['price'];
+            //                     $detailSalesReturn->qty = $value['qty'];
+            //                     $detailSalesReturn->unit = $value['unit'];
+            //                     $detailSalesReturn->qty_in_base = $value['qty_in_base'];
+            //                     $detailSalesReturn->amount = $value['amount'];
+            //                     $detailSalesReturn->cogs = $value['cogs'];
+            //                     $detailSalesReturn->tax_amount = $value['tax_amount'];
+            //                     $detailSalesReturn->discount = $value['disc'];
+            //                     $detailSalesReturn->disc_amount = $value['disc_amount'];
+            //                     $detailSalesReturn->sell_price = $value['sell_price'];
+            //                     $detailSalesReturn->original_price = $value['original_price'];
+            //                     $detailSalesReturn->rate = $value['rate'];
+            //                     $detailSalesReturn->tax_name = $value['tax_name'];
+            //                     $detailSalesReturn->available_qty = $value['available_qty'];
+    
+            //                     $detailSalesReturn->save();
+            //                 }
+            //             }
+            //             // remove array index
+            //             unset($arrSalesReturn[$i]);
+            //             Log::info('Remove array : ' .  $arrSalesReturn[$i]);
+            //             $arrSalesReturn = array_values($arrSalesReturn);
+                        
+            //         }
+
+            //     }
+            // }
+
             foreach ($arrSalesReturn as $k => $val) {
                 Log::info('Get detail sales return with Doc ID : ' . $val['doc_id']);
                 $salesReturn =  $this->salesReturn::where("doc_id", $val['doc_id'])->first();
@@ -298,7 +398,7 @@ class SalesReturnRepositoryEloquent implements SalesReturnService {
         $responses = Http::timeout(10)->retry(3, 1000)->withHeaders([
             'Authorization' => 'Bearer ' . $userData['api_token'],
             'Accept' => 'application/json', 
-        ])->get(env('JUBELIO_API') . '/sales/sales-returns/'.$val['doc_id']);
+        ])->get(env('JUBELIO_API') . '/sales/sales-returns/'.$val);
         return $responses;
     }
 

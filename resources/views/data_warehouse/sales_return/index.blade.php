@@ -136,7 +136,7 @@
 
 <script type="text/javascript"> 
     var name
-    var table
+    var table, doc_number
     $(document).ready(function () {
         
         var now = new Date();
@@ -176,9 +176,7 @@
             defaultDate: new Date(),
         });
 
-        getTotalSalesReturn()
-        loadSalesReturn()
-
+       
         $("#btn-filter").on("click", function(e){
             e.preventDefault()
             doc_number =  $("#filter_doc_number").val()
@@ -222,6 +220,10 @@
           
         })
         
+        start_date = $("#filter_start_date" ).val().split("-").reverse().join("-")
+        end_date = $("#filter_end_date" ).val().split("-").reverse().join("-")
+        getTotalSalesReturn()
+        loadSalesReturn(doc_number, start_date, end_date)
         // Inisialisasi Pusher
         Pusher.logToConsole = true;
         var pusher = new Pusher('12979774488ee33d9ff9', {
