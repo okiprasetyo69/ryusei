@@ -150,6 +150,7 @@ Route::controller(DashboardController::class)->group(function() {
     Route::get('/analytics/best-store', 'bestSellingChannelStore')->name('analytics.best_store');
     Route::get('/analytics/best-product', 'bestSellingProduct')->name('analytics.best_product');
     Route::get('/analytics/chart-performance', 'getChartSelling')->name('analytics.chart_performance');
+    Route::get('/analytics/monitoring-stock', 'monitoringStock')->name('analytics.monitoring-stock');
 });
 
 // Warehouse

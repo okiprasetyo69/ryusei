@@ -3,6 +3,8 @@
 namespace App\Services\Repositories;
 
 use App\Models\Transaction;
+use App\Models\ItemStock;
+use App\Services\Interfaces\ItemStockService;
 use App\Services\Interfaces\DashboardService;
 
 use Exception;
@@ -11,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
-
+use Yajra\DataTables\Facades\DataTables;
 /**
  * Class DashboardRepositoryEloquent.
  * 
@@ -25,13 +27,19 @@ use Illuminate\Support\Facades\Auth;
  class DashboardRepositoryEloquent implements DashboardService {
 
     /**
+     * @var ItemStock
+     */
+    private ItemStock $itemStock;
+
+    /**
     * @var Transaction
     */
     private Transaction $transaction;
 
-    public function __construct(Transaction $transaction)
+    public function __construct(Transaction $transaction, ItemStock $itemStock)
     {
         $this->transaction = $transaction;
+        $this->itemStock = $itemStock;
     }
 
     public function totalQty(Request $request){
@@ -199,6 +207,25 @@ use Illuminate\Support\Facades\Auth;
                 ]
             ];
             }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function monitoringStock(Request $request){
+        try{
+            $itemStock = ItemStock::with('product', 'product.category', 'product.unit', 'item')->orderBy('qty', 'DESC');
+
+            if($request->category_name != null ){
+                $itemStock = $itemStock->whereHas("product", function($q) use ($request){
+                    $q->where("article", "like", "%" . $request->category_name. "%");
+                });
+            }
+            $itemStock = $itemStock->get();
+
+            $datatables = Datatables::of($itemStock);
+            return $datatables->make( true );
+        }catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;
         }

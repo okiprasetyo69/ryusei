@@ -21,11 +21,8 @@
     <div class="card"> 
         <div class="card-body "> 
             <div class="row">
-                <div class="col-md-5"> 
-                    <label class="card-title text-center"> Tanggal Awal Order</label>
-                </div>
-                <div class="col-md-5">
-                    <label class="card-title text-center"> Tanggal Akhir Order</label>
+                <div class="col-md-10 text-center"> 
+                    <label class="card-title text-center"> Range Tanggal Order</label>
                 </div>
                 <div class="col-md-2"> </div>
             </div>
@@ -171,7 +168,6 @@
 
                         <div class="card-body pb-0">
                         <h5 class="card-title">Produk Paling Laku</h5>
-
                         <table class="table table-striped" id="table-most-product">
                             <thead>
                             <tr class="text-center">
@@ -196,29 +192,117 @@
 
         <!-- Right side columns -->
         <div class="col-lg-4">
-            <!-- Ratio Selling -->
-            <div class="card">
+
+          <!-- Monitoring Stock -->
+          <div class="card">
                 <div class="filter">
                     <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                         <li class="dropdown-header text-start">
-                        <h6>Filter</h6>
+                            <h6>Filter</h6>
                         </li>
-
                         <li><a class="dropdown-item" href="#">Today</a></li>
                         <li><a class="dropdown-item" href="#">This Month</a></li>
                         <li><a class="dropdown-item" href="#">This Year</a></li>
                     </ul>
+                </div>
+
+                <div class="card-body pb-0">
+                    <h5 class="card-title"> Monitoring Stock </h5>
+                    <div class="col-md-4"> 
+                        <label> <strong><span> Cari Kategori : </span></strong> </label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8 mt-1">
+                            <input type="text" class="form-control" name="search_category" id="search_category" placeholder="TShirt" autofocus/>
+                        </div>
+                        <div class="col-md-4"> 
+                            <button type="button" class="btn btn-sm btn-success mt-1" style="border-radius:50px;" id="btn-search-stock"> <i class="bi bi-search"></i> Cari</button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsinve mt-4">
+                        <table class="table table-striped" id="table-stock-items">
+                            <thead class="text-center">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">SKU</th>
+                                    <th scope="col">Nama Produk</th>
+                                    <th scope="col">Stock</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                        
+                            </tbody>
+                        </table>
                     </div>
 
-                    <div class="card-body pb-0">
-                        <h5 class="card-title">Apapun <span>| Today</span></h5>
-                    <div id="trafficChart" style="min-height: 400px;" class=""></div>
+                </div>
+          </div>
+          <!-- End Monitoring Stock -->
+
+          <!-- Sale Stock Ratio Report -->
+          <div class="card">
+                <div class="filter">
+                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                        <li class="dropdown-header text-start">
+                            <h6>Filter</h6>
+                        </li>
+                        <li><a class="dropdown-item" href="#">Today</a></li>
+                        <li><a class="dropdown-item" href="#">This Month</a></li>
+                        <li><a class="dropdown-item" href="#">This Year</a></li>
+                    </ul>
+                </div>
+
+                <div class="card-body pb-0">
+                    <h5 class="card-title">Sale Stock Ratio</h5>
+                </div>
+          </div>
+          <!-- Sale Stock Ratio Report -->
+
+          <!-- Sell Through Traffic -->
+          <div class="card">
+                <div class="filter">
+                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                        <li class="dropdown-header text-start">
+                            <h6>Filter</h6>
+                        </li>
+                        <li><a class="dropdown-item" href="#">Today</a></li>
+                        <li><a class="dropdown-item" href="#">This Month</a></li>
+                        <li><a class="dropdown-item" href="#">This Year</a></li>
+                    </ul>
+                </div>
+
+                <div class="card-body pb-0">
+                    <h5 class="card-title">Sell Through</h5>
+                </div>
+          </div>
+          <!-- End Sell Through Report -->
+
+          <!-- News & Updates Traffic -->
+          <div class="card">
+                <div class="filter">
+                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                        <li class="dropdown-header text-start">
+                            <h6>Filter</h6>
+                        </li>
+                        <li><a class="dropdown-item" href="#">Today</a></li>
+                        <li><a class="dropdown-item" href="#">This Month</a></li>
+                        <li><a class="dropdown-item" href="#">This Year</a></li>
+                    </ul>
+                </div>
+
+                <div class="card-body pb-0">
+                    <h5 class="card-title">AOV</h5>
 
                 </div>
-            </div><!-- End Website Traffic -->
-        
-        </div><!-- End Right side columns -->
+          </div>
+          <!-- End News & Updates -->
+
+        </div>
 
     </div>
 </section>
@@ -233,17 +317,14 @@
     var year = today.getFullYear(); // Tahun
     // Format tanggal dalam bentuk string YYYY-MM-DD
     var formattedDate = year + '-' + month + '-' + day;
-    var now
-    var currentMonth
-    var this_year
-    var myChart
-    var start_date, end_date , convertStartDate, convertEndDate
+    var now, currentMonth, this_year, myChart, start_date, end_date , convertStartDate, convertEndDate, table, category_name
     $(document).ready(function () {
       
         totalSoldWithQty()
         bestStoreChannelSeller()
         bestProductSeller()
         loadChart()
+        monitoringStock()
 
         $("#start_date").datepicker({
             format: 'dd-mm-yyyy',
@@ -347,6 +428,14 @@
         })
         // --------------------------------------------------------------- //
         
+        // --------------------------------------------------------------- //
+        $("#btn-search-stock").on("click", function(e){
+            console.log("Masuk")
+            e.preventDefault()
+            category_name = $("#search_category").val()
+            monitoringStock(category_name)
+        })
+        // --------------------------------------------------------------- //
     });
 
     function totalSoldWithQty(start_date = null, end_date = null, today=null, this_month=null, this_year=null){
@@ -540,6 +629,88 @@
                 );
             }
         });
+    }
+
+    function monitoringStock(category_name = null){
+        if (table != null) {
+            table.destroy();
+        }
+        table =  $("#table-stock-items").DataTable({
+            // lengthChange: false,
+            searching: false,
+            destroy: true,
+            processing: true,
+            serverSide: true,
+            bAutoWidth: true,
+            scrollCollapse : true,
+            ordering: false,
+            language: {
+                emptyTable: "Data tidak tersedia",
+                zeroRecords: "Tidak ada data yang ditemukan",
+                infoFiltered: "",
+                infoEmpty: "",
+                paginate: {
+                    previous: "‹",
+                    next: "›",
+                },
+                info: "Menampilkan _START_ s/d _END_ dari _TOTAL_ Stock",
+                aria: {
+                    paginate: {
+                        previous: "Previous",
+                        next: "Next",
+                    },
+                },
+            },
+            columns: [
+                { data: null, width: "2%" },
+                { data: null, width: "5%"},
+                { data: null },
+                { data: null, width: "5%" },
+            ],
+            columnDefs: [
+                {
+                    targets: 0,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).addClass("text-center");
+                        $(td).html(table.page.info().start + row + 1);
+                    },
+                },
+                {
+                    targets: 1,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.sku_code);
+                    },
+                },
+                {
+                    targets: 2,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                      
+                        $(td).html(rowData.product.name);
+                    },
+                },
+                {
+                    targets: 3,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.qty);
+                    },
+                },
+            ],
+            ajax:{
+                url :  '/api/analytics/monitoring-stock',
+                type: "GET",
+                data: {
+                    category_name: category_name,
+                }
+            },
+        })
     }
              
 </script>

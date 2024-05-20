@@ -76,4 +76,17 @@ class DashboardController extends Controller
             return false;
         }
     }
+
+    public function monitoringStock(Request $request){
+        try{
+            $monitoringStock = $this->service->monitoringStock($request);
+            if($monitoringStock != null){
+                return $monitoringStock;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
 }

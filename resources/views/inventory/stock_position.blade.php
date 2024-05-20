@@ -38,16 +38,13 @@
                         </div>
                         <div class="row mt-2">
                             <div class="col-md-4"> 
-                                <label> <strong><span>Pencarian : </span></strong> </label>
+                                <label> <strong><span>Kata Kunci Pencarian</span></strong> </label>
                             </div>
-                            <div class="col-md-2"> 
+                            <!-- <div class="col-md-2"> 
                                 <label> <strong><span>Kategori : </span></strong> </label>
-                            </div>
-                            <div class="col-md-2"> 
-                                <label> <strong><span>Tanggal Awal : </span></strong> </label>
-                            </div>
-                            <div class="col-md-2"> 
-                                <label> <strong><span>Tanggal Akhir : </span></strong> </label>
+                            </div> -->
+                            <div class="col-md-4 text-center"> 
+                                <label> <strong><span>Tanggal</span></strong> </label>
                             </div>
                         </div>
                         <div class="row mt-2">
@@ -56,13 +53,13 @@
                                     <input type="text" name="filter_name" class="form-control" id="filter_name" placeholder="Masukkan kata kunci tipe pencarian" autofocus/>
                                 </div>
                             </div>
-                            <div class="col-md-2"> 
+                            <!-- <div class="col-md-2"> 
                                 <div class="form-group">
                                     <select class="form-control" name="filter_category" id="filter_category"> 
                                         <option value="">  - Filter Kategori -  </option>
                                     </select>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="col-md-2"> 
                                 <div class="form-group">
                                     <input type="text" name="start_date" class="form-control" id="start_date"/>
@@ -103,7 +100,7 @@
                                                 <th scope="col">#</th>
                                                 <th scope="col">Kode SKU</th>
                                                 <th scope="col">Nama Item</th>
-                                                <th scope="col">Kategori</th>
+                                                <!-- <th scope="col">Kategori</th> -->
                                                 <th scope="col">Qty</th>
                                                 <th scope="col">Satuan</th>
                                                 <th scope="col">Avg. Value</th>
@@ -445,7 +442,7 @@
                     { data: null,  width: "5%"},
                     { data: null},
                     { data: null, width: "20%" },
-                    { data: null },
+                    // { data: null },
                     { data: null },
                     { data: null },
                     { data: null },
@@ -492,25 +489,24 @@
                             $(td).html(item_name);
                         },
                     },
+                    // {
+                    //     targets: 3,
+                    //     searchable: false,
+                    //     orderable: false,
+                    //     createdCell: function (td, cellData, rowData, row, col) {
+                    //         var category_name = ""
+                    //         if(rowData.sku_id == null){
+                    //             category_name = ""
+                    //         } else {
+                    //             if(rowData.product == null){
+                    //                 category_name = ""
+                    //             }
+                    //         }
+                    //         $(td).html(category_name);
+                    //     },
+                    // },
                     {
                         targets: 3,
-                        searchable: false,
-                        orderable: false,
-                        createdCell: function (td, cellData, rowData, row, col) {
-                            var category_name = ""
-                            if(rowData.sku_id == null){
-                                category_name = ""
-                            } else {
-                                if(rowData.product == null){
-                                    category_name = ""
-                                }
-                                //category_name = rowData.product.category.name
-                            }
-                            $(td).html(category_name);
-                        },
-                    },
-                    {
-                        targets: 4,
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
@@ -524,7 +520,7 @@
                         },
                     },
                     {
-                        targets: 5,
+                        targets: 4,
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
@@ -540,7 +536,7 @@
                         },
                     },
                     {
-                        targets: 6,
+                        targets: 5,
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
@@ -550,7 +546,7 @@
                         },
                     },
                     {
-                        targets: 7,
+                        targets: 6,
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
@@ -560,7 +556,7 @@
                         },
                     },
                     {
-                        targets: 8,
+                        targets: 7,
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
@@ -572,7 +568,7 @@
                         },
                     },
                     {
-                        targets: 9,
+                        targets: 8,
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
@@ -586,7 +582,7 @@
                         },
                     },
                     {
-                        targets: 10,
+                        targets: 9,
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {

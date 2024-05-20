@@ -42,7 +42,7 @@ use App\Imports\ImportItemStock;
     public function getItemStock(Request $request){
         try{
 
-            $itemStock = ItemStock::with('product', 'product.category', 'product.unit', 'item')->orderBy('id', 'ASC');
+            $itemStock = ItemStock::with('product', 'product.category', 'product.unit', 'item')->orderBy('qty', 'DESC');
 
             if( ($request->limit != null) && $request->page != null){
                 $offset = ($request->page - 1) * $request->limit;
