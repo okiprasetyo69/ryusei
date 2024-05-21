@@ -2,6 +2,7 @@
 @extends('layout.home')
 @section('title','Dashboard')
 <link href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 @section('content')
 
 <main id="main" class="main">
@@ -98,13 +99,13 @@
                         </div>
 
                         <div class="card-body">
-                            <h5 class="card-title">Performance Sales Channel</h5>
+                            <h5 class="card-title">Performance Marketplace</h5>
                             <div>
                                 <canvas id="performanceStoreChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 445px;" width="445" height="250" class="chartjs-render-monitor"></canvas>
                             </div>
-                            <div class="col-md-12 mt-2">
+                            <!-- <div class="col-md-12 mt-2">
                                 <div id="actualData"> </div>
-                            </div>
+                            </div> -->
 
                         </div>
                     </div>
@@ -124,6 +125,7 @@
                             <li><a class="dropdown-item" href="#" id="filter-today-best-channel">Today</a></li>
                             <li><a class="dropdown-item" href="#" id="filter-month-best-channel">This Month</a></li>
                             <li><a class="dropdown-item" href="#" id="filter-year-best-channel">This Year</a></li>
+                           
                         </ul>
                         </div>
 
@@ -135,8 +137,8 @@
                                 <tr class="text-center">
                                     <th scope="col">#</th>
                                     <th scope="col">Sumber</th>
-                                    <th scope="col">Penjualan Bersih</th>
-                                    <th scope="col">Qty Terjual</th>
+                                    <th scope="col">Nama Toko</th>
+                                    <th scope="col">Omset</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -152,41 +154,75 @@
                 <!-- Top Selling -->
                 <div class="col-12">
                     <div class="card top-selling overflow-auto">
-
                         <div class="filter">
-                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                            <li class="dropdown-header text-start">
-                            <h6>Filter</h6>
-                            </li>
+                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                <li class="dropdown-header text-start">
+                                <h6>Filter</h6>
+                                </li>
 
-                            <li><a class="dropdown-item" href="#" id="filter-today-most-product">Today</a></li>
-                            <li><a class="dropdown-item" href="#" id="filter-month-most-product">This Month</a></li>
-                            <li><a class="dropdown-item" href="#" id="filter-year-most-product">This Year</a></li>
-                        </ul>
+                                <li><a class="dropdown-item" href="#" id="filter-today-most-product">Today</a></li>
+                                <li><a class="dropdown-item" href="#" id="filter-month-most-product">This Month</a></li>
+                                <li><a class="dropdown-item" href="#" id="filter-year-most-product">This Year</a></li>
+                            </ul>
                         </div>
 
                         <div class="card-body pb-0">
-                        <h5 class="card-title">Produk Paling Laku</h5>
-                        <table class="table table-striped" id="table-most-product">
-                            <thead>
-                            <tr class="text-center">
-                                <th scope="col">Rank</th>
-                                <th scope="col">Product</th>
-                                <th scope="col">Qty Terjual</th>
-                                <th scope="col">Total Penjualan</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            
-                            </tbody>
-                        </table>
+                            <h5 class="card-title">Produk Paling Laku</h5>
+                            <table class="table table-striped" id="table-most-product">
+                                <thead>
+                                <tr class="text-center">
+                                    <th scope="col">Rank</th>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Qty Terjual</th>
+                                    <th scope="col">Total Penjualan</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                
+                                </tbody>
+                            </table>
 
                         </div>
-
                     </div>
-                </div><!-- End Top Selling -->
+                </div>
+                <!-- End Top Selling -->
 
+                <!-- Report Sales Turnover Market Place -->
+                <div class="col-12"> 
+                    <div class="card top-selling overflow-auto"> 
+                        <div class="filter">
+                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                <li class="dropdown-header text-start">
+                                <h6>Filter</h6>
+                                </li>
+
+                                <li><a class="dropdown-item" href="#" id="">Today</a></li>
+                                <li><a class="dropdown-item" href="#" id="">This Month</a></li>
+                                <li><a class="dropdown-item" href="#" id="">This Year</a></li>
+                                <li><a class="dropdown-item" href="#" id="sync-market-place">Sync</a></li>
+                            </ul>
+                        </div>
+                        <div class="card-body pb-0">
+                            <h5 class="card-title">Omset Marketplace & Toko</h5>
+                            <table class="table table-striped" id="table-sales-turn-over">
+                                <thead>
+                                <tr class="text-center">
+                                    <th scope="col">#</th>
+                                    <th scope="col">Market Place</th>
+                                    <th scope="col">Nama Toko</th>
+                                    <th scope="col">Omset</th>
+                                    <th scope="col">Tgl Transaksi</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div><!-- End Left side columns -->
 
@@ -261,7 +297,7 @@
           </div>
           <!-- Sale Stock Ratio Report -->
 
-          <!-- Sell Through Traffic -->
+          <!-- Sell Through  -->
           <div class="card">
                 <div class="filter">
                     <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
@@ -281,7 +317,7 @@
           </div>
           <!-- End Sell Through Report -->
 
-          <!-- News & Updates Traffic -->
+          <!-- AOV Report -->
           <div class="card">
                 <div class="filter">
                     <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
@@ -300,7 +336,43 @@
 
                 </div>
           </div>
-          <!-- End News & Updates -->
+          <!-- End AOV Report -->
+
+          <!-- Basket Size Report -->
+          <div class="card">
+                <div class="filter">
+                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                        <li class="dropdown-header text-start">
+                            <h6>Filter</h6>
+                        </li>
+                        <li><a class="dropdown-item" href="#">Today</a></li>
+                        <li><a class="dropdown-item" href="#">This Month</a></li>
+                        <li><a class="dropdown-item" href="#">This Year</a></li>
+                    </ul>
+                </div>
+
+                <div class="card-body pb-0">
+                    <h5 class="card-title">Basket Size</h5>
+                    <div class="table-responsinve mt-4">
+                        <table class="table table-striped" id="table-basket-size">
+                            <thead class="text-center">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Tgl Transaksi</th>
+                                    <th scope="col">Total Pesanan</th>
+                                    <th scope="col">Total Transaksi</th>
+                                    <th scope="col">Rata-Rata</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                        
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+          </div>
+          <!-- End AOV Report -->
 
         </div>
 
@@ -317,7 +389,7 @@
     var year = today.getFullYear(); // Tahun
     // Format tanggal dalam bentuk string YYYY-MM-DD
     var formattedDate = year + '-' + month + '-' + day;
-    var now, currentMonth, this_year, myChart, start_date, end_date , convertStartDate, convertEndDate, table, category_name
+    var now, currentMonth, this_year, myChart, start_date, end_date , convertStartDate, convertEndDate, table, table_sales_turnover, category_name, table_basket_size
     $(document).ready(function () {
       
         totalSoldWithQty()
@@ -325,6 +397,8 @@
         bestProductSeller()
         loadChart()
         monitoringStock()
+        reportSalesTurnoverMarketplace()
+        reportBasketSize()
 
         $("#start_date").datepicker({
             format: 'dd-mm-yyyy',
@@ -391,6 +465,11 @@
             bestStoreChannelSeller(null, null,null,null,this_year)
         })
 
+        $("#sync-market-place").on("click", function(e){
+            e.preventDefault()
+            syncMarketPlace()
+        })
+
         // --------------------------------------------------------------- //
         $("#filter-today-most-product").on("click", function(e){
             e.preventDefault()
@@ -430,12 +509,33 @@
         
         // --------------------------------------------------------------- //
         $("#btn-search-stock").on("click", function(e){
-            console.log("Masuk")
             e.preventDefault()
             category_name = $("#search_category").val()
             monitoringStock(category_name)
         })
         // --------------------------------------------------------------- //
+
+        // Inisialisasi Pusher
+        Pusher.logToConsole = true;
+        var pusher = new Pusher('12979774488ee33d9ff9', {
+            cluster: 'ap1',
+            forceTLS: true
+        });
+
+        var channel = pusher.subscribe('jobs');
+        channel.bind('job.completed', function(data) {
+            // Tampilkan pesan saat event diterima
+                $.confirm({
+                    title: 'Pesan !',
+                    content: data.message,
+                    type: 'orange',
+                    typeAnimated: true,
+                    buttons: {
+                        close: function () {
+                        }
+                    }
+                });
+        });
     });
 
     function totalSoldWithQty(start_date = null, end_date = null, today=null, this_month=null, this_year=null){
@@ -474,7 +574,7 @@
     function bestStoreChannelSeller(start_date = null, end_date = null, today=null, this_month=null, this_year=null){
         $.ajax({
             type: "GET",
-            url: "/api/analytics/best-store",
+            url: "/api/analytics/report/best-store",
             data: {
                 start_date : start_date,
                 end_date : end_date,
@@ -485,14 +585,17 @@
             dataType: "JSON",
             success: function (response) {
                 var data = response.data
+                console.log(data)
                 var row = ""
                 var number = 1
                 let formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' });
                 var total_sell =  0
                 $("#table-best-store").find("tr:gt(0)").remove();
                 $.each(data, function (i, val) {
-                    total_sell = formatter.format(val.total_sell)
-                    row += "<tr class='text-center'><td>"+ (number++) +"</td> <td>"+val.name+"</td><td> "+total_sell+" </td><td>"+val.total_qty+"</td></tr>"
+                    //total_sell = formatter.format(val.total)
+                    var total = parseInt(val.total)
+                    total = total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })
+                    row += "<tr class='text-center'><td>"+ (number++) +"</td> <td>"+val.channel_name+"</td><td> "+val.store_name+" </td><td>"+total+"</td></tr>"
                 });
                 $("#table-best-store > tbody:last-child").append(row); 
             }
@@ -530,7 +633,7 @@
     function loadChart(start_date = null, end_date = null, today=null, this_month=null, this_year=null){
         $.ajax({
             type: "GET",
-            url: "/api/analytics/chart-performance",
+            url: "/api/analytics/chart/sales-turnover-marketplace",
             data: {
                 start_date : start_date,
                 end_date : end_date,
@@ -581,7 +684,7 @@
     function filterChart(start_date = null, end_date = null, today=null, this_month=null, this_year=null){
         $.ajax({
             type: "GET",
-            url: "/api/analytics/chart-performance",
+            url: "/api/analytics/chart/sales-turnover-marketplace",
             data: {
                 start_date : start_date,
                 end_date : end_date,
@@ -712,9 +815,229 @@
             },
         })
     }
+
+    function syncMarketPlace(){
+        $.ajax({
+            type: "GET",
+            url: "/api/analytics/sync-sales-turnover-marketplace",
+            data: "data",
+            dataType: "JSON",
+            success: function (response) {
+                if(response.status == 200){
+                    $.confirm({
+                        title: 'Pesan ',
+                        content: response.message,
+                        buttons: {
+                            Ya: {
+                                btnClass: 'btn-success any-other-class',
+                                action: function(){
+                                    // loadSalesOrderCompleted()
+                                }
+                            },
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    function reportSalesTurnoverMarketplace(start_date=null, end_date=null){
+        if (table_sales_turnover != null) {
+            table_sales_turnover.destroy();
+        }
+        table_sales_turnover =  $("#table-sales-turn-over").DataTable({
+            // lengthChange: false,
+            searching: false,
+            destroy: true,
+            processing: true,
+            serverSide: true,
+            bAutoWidth: true,
+            scrollCollapse : true,
+            ordering: false,
+            language: {
+                emptyTable: "Data tidak tersedia",
+                zeroRecords: "Tidak ada data yang ditemukan",
+                infoFiltered: "",
+                infoEmpty: "",
+                paginate: {
+                    previous: "‹",
+                    next: "›",
+                },
+                info: "Menampilkan _START_ s/d _END_ dari _TOTAL_ Omset Marketplace",
+                aria: {
+                    paginate: {
+                        previous: "Previous",
+                        next: "Next",
+                    },
+                },
+            },
+            columns: [
+                { data: null, width: "2%" },
+                { data: null},
+                { data: null },
+                { data: null },
+                { data: null },
+            ],
+            columnDefs: [
+                {
+                    targets: 0,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).addClass("text-center");
+                        $(td).html(table.page.info().start + row + 1);
+                    },
+                },
+                {
+                    targets: 1,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.channel_name);
+                    },
+                },
+                {
+                    targets: 2,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                      
+                        $(td).html(rowData.store_name);
+                    },
+                },
+                {
+                    targets: 3,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.grand_total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }));
+                    },
+                },
+                {
+                    targets: 4,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var transaction_date = rowData.transaction_date
+                        var currDate = new Date(transaction_date)
+                        var currMonth = currDate.toLocaleString('default', { month: 'long' })
+                        var currYear = currDate.getFullYear()
+                        var format = currDate.getDate() + "-"+ currMonth +"-"+ currYear
+                        $(td).html(format);
+                    },
+                },
+            ],
+            ajax:{
+                url :  '/api/analytics/report/sales-turnover-marketplace',
+                type: "GET",
+                data: {
+                    start_date:start_date, 
+                    end_date : end_date
+                }
+            },
+        })
+    }
+
+    function reportBasketSize(start_date=null, end_date=null){
+        if (table_basket_size != null) {
+            table_basket_size.destroy();
+        }
+        table_basket_size =  $("#table-basket-size").DataTable({
+            // lengthChange: false,
+            searching: false,
+            destroy: true,
+            processing: true,
+            serverSide: true,
+            bAutoWidth: true,
+            scrollCollapse : true,
+            ordering: false,
+            language: {
+                emptyTable: "Data tidak tersedia",
+                zeroRecords: "Tidak ada data yang ditemukan",
+                infoFiltered: "",
+                infoEmpty: "",
+                paginate: {
+                    previous: "‹",
+                    next: "›",
+                },
+                info: "Menampilkan _START_ s/d _END_ dari _TOTAL_ Baske Size",
+                aria: {
+                    paginate: {
+                        previous: "Previous",
+                        next: "Next",
+                    },
+                },
+            },
+            columns: [
+                { data: null, width: "2%" },
+                { data: null},
+                { data: null },
+                { data: null },
+                { data: null },
+            ],
+            columnDefs: [
+                {
+                    targets: 0,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).addClass("text-center");
+                        $(td).html(table.page.info().start + row + 1);
+                    },
+                },
+                {
+                    targets: 1,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var transaction_date = rowData.transaction_date
+                        var currDate = new Date(transaction_date)
+                        var currMonth = currDate.toLocaleString('default', { month: 'long' })
+                        var currYear = currDate.getFullYear()
+                        var format = currDate.getDate() + "-"+ currMonth +"-"+ currYear
+                        $(td).html(format);
+                    },
+                },
+                {
+                    targets: 2,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.total_order_number);
+                    },
+                },
+                {
+                    targets: 3,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.grand_total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }));
+                    },
+                },
+                {
+                    targets: 4,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.result_divide);
+                    },
+                },
+            ],
+            ajax:{
+                url :  '/api/analytics/report/basket-size',
+                type: "GET",
+                data: {
+                    start_date:start_date, 
+                    end_date : end_date
+                }
+            },
+        })
+    }
              
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 @endsection
 
 @section('pagespecificscripts')

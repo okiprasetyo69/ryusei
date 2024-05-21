@@ -12,7 +12,8 @@ use Exception;
 use Illuminate\Support\Facades\Log;
 
 use App\Services\Interfaces\DashboardService;
-
+use App\Jobs\SyncSalesTurnoverMarketPlaceJob;
+use App\Jobs\SyncBasketSizeJob;
 
 class DashboardController extends Controller
 {
@@ -38,6 +39,7 @@ class DashboardController extends Controller
         }
     }
 
+    // Deprecated
     public function bestSellingChannelStore(Request $request){
         try{
             $bestStore = $this->service->bestSellingChannelStore($request);
@@ -64,11 +66,25 @@ class DashboardController extends Controller
         }
     }
 
+    // Deprecated
     public function getChartSelling(Request $request){
         try{
             $chartPerformance = $this->service->getChartSelling($request);
             if($chartPerformance != null){
                 return $chartPerformance;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function chartSalesTurnoverMarketplace(Request $request){
+        try{
+            $chartPerformanceSales = $this->service->chartSalesTurnoverMarketPlace($request);
+            if($chartPerformanceSales != null){
+                return $chartPerformanceSales;
             }
             return false;
         }catch(Exception $ex){
@@ -84,6 +100,71 @@ class DashboardController extends Controller
                 return $monitoringStock;
             }
             return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function reportSalesTurnoverMarketPlace(Request $request){
+        try{
+            $reportSalesTurnoverMarketPlace = $this->service->reportSalesTurnoverMarketPlace($request);
+            if($reportSalesTurnoverMarketPlace != null){
+                return $reportSalesTurnoverMarketPlace;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function reportBestStore(Request $request){
+        try{
+            $reportBestStore = $this->service->reportBestStore($request);
+            if($reportBestStore != null){
+                return $reportBestStore;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function reportBasketSize(Request $request){
+        try{
+            $reportBasketSize = $this->service->reportBasketSize($request);
+            if($reportBasketSize != null){
+                return $reportBasketSize;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function syncSalesTurnoverMarketPlace(Request $request){
+        try{
+            SyncSalesTurnoverMarketPlaceJob::dispatch();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Sync Sales Turnover. Please wait a few minutes !',
+            ]);
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function syncBaksetSize(Request $request){
+        try{
+            SyncBasketSizeJob::dispatch();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Sync Basket Size. Please wait a few minutes !',
+            ]);
         }catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;

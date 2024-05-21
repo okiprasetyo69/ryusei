@@ -490,8 +490,6 @@ use Illuminate\Support\Facades\Http;
                             $itemStock->check_in_date =  $today;
                             $itemStock->save();
                         }
-                        
-                       
                         $product->save();
                     }
                 }

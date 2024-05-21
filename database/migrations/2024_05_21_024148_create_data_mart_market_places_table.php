@@ -11,23 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('data_mart_product_details', function (Blueprint $table) {
+        Schema::create('data_mart_market_places', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('sku_id')->nullable();
-            $table->string('sku_code')->nullable();
-            $table->string('product_name')->nullable();
-            $table->unsignedBigInteger('category_id')->nullable();
-            $table->string('category_name')->nullable();
+        
             $table->unsignedBigInteger('channel_id')->nullable();
             $table->string('channel_name')->nullable();
-            $table->unsignedBigInteger('qty_sold')->nullable();
+            $table->string('store_name')->nullable();
             $table->integer('grand_total')->nullable();
             $table->date('transaction_date')->nullable();
             $table->date('sync_date')->nullable();
-
-            $table->index('sku_code');
-            $table->index('product_name');
-            $table->index('category_name');
+            
             $table->index('channel_name');
             $table->index('transaction_date');
             $table->timestamps();
@@ -39,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('data_mart_product_details');
+        Schema::dropIfExists('data_mart_market_places');
     }
 };
