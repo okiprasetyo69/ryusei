@@ -139,6 +139,7 @@
                                     <th scope="col">Sumber</th>
                                     <th scope="col">Nama Toko</th>
                                     <th scope="col">Omset</th>
+                                    <th scope="col">%</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -198,9 +199,9 @@
                                 <h6>Filter</h6>
                                 </li>
 
-                                <li><a class="dropdown-item" href="#" id="">Today</a></li>
-                                <li><a class="dropdown-item" href="#" id="">This Month</a></li>
-                                <li><a class="dropdown-item" href="#" id="">This Year</a></li>
+                                <li><a class="dropdown-item" href="#" id="filter-today-omset-marketplace">Today</a></li>
+                                <li><a class="dropdown-item" href="#" id="filter-month-omset-marketplace">This Month</a></li>
+                                <li><a class="dropdown-item" href="#" id="filter-year-omset-marketplace">This Year</a></li>
                                 <li><a class="dropdown-item" href="#" id="sync-market-place">Sync</a></li>
                             </ul>
                         </div>
@@ -223,8 +224,47 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Start Report Basket Size -->
+                <div class="col-12"> 
+                    <div class="card top-selling overflow-auto"> 
+                        <div class="filter">
+                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                <li class="dropdown-header text-start">
+                                <h6>Filter</h6>
+                                </li>
+
+                                <li><a class="dropdown-item" href="#" id="filter-today-basket-size">Today</a></li>
+                                <li><a class="dropdown-item" href="#" id="filter-month-basket-size">This Month</a></li>
+                                <li><a class="dropdown-item" href="#" id="filter-year-basket-size">This Year</a></li>
+                                <li><a class="dropdown-item" href="#" id="sync-basket-size">Sync</a></li>
+                            </ul>
+                        </div>
+                        <div class="card-body pb-0">
+                            <h5 class="card-title">Basket Size</h5>
+                            <table class="table table-striped" id="table-basket-size">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Total Pesanan</th>
+                                        <th scope="col">Total Transaksi</th>
+                                        <th scope="col">AOV</th>
+                                        <th scope="col">Tgl Transaksi</th>
+                                    </tr>
+                                </thead>
+                            <tbody>
+                                        
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- End TReport Basket Size -->
+
             </div>
-        </div><!-- End Left side columns -->
+        </div>
+        <!-- End Left side columns -->
 
         <!-- Right side columns -->
         <div class="col-lg-4">
@@ -293,6 +333,22 @@
 
                 <div class="card-body pb-0">
                     <h5 class="card-title">Sale Stock Ratio</h5>
+                    <div class="table-responsinve mt-4">
+                        <table class="table table-striped" id="table-ssr">
+                            <thead class="text-center">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Bulan</th>
+                                    <th scope="col">Omset</th>
+                                    <th scope="col">Nilai Inventory</th>
+                                    <th scope="col">Rp</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                        
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
           </div>
           <!-- Sale Stock Ratio Report -->
@@ -313,12 +369,28 @@
 
                 <div class="card-body pb-0">
                     <h5 class="card-title">Sell Through</h5>
+                    <div class="table-responsinve mt-4">
+                        <table class="table table-striped" id="table-sell-through">
+                            <thead class="text-center">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Bulan</th>
+                                    <th scope="col">Qty Barang Masuk</th>
+                                    <th scope="col">Qty Barang Terjual</th>
+                                    <th scope="col">%</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                        
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
           </div>
           <!-- End Sell Through Report -->
 
           <!-- AOV Report -->
-          <div class="card">
+          <!-- <div class="card">
                 <div class="filter">
                     <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
@@ -333,29 +405,8 @@
 
                 <div class="card-body pb-0">
                     <h5 class="card-title">AOV</h5>
-
-                </div>
-          </div>
-          <!-- End AOV Report -->
-
-          <!-- Basket Size Report -->
-          <div class="card">
-                <div class="filter">
-                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                        <li class="dropdown-header text-start">
-                            <h6>Filter</h6>
-                        </li>
-                        <li><a class="dropdown-item" href="#">Today</a></li>
-                        <li><a class="dropdown-item" href="#">This Month</a></li>
-                        <li><a class="dropdown-item" href="#">This Year</a></li>
-                    </ul>
-                </div>
-
-                <div class="card-body pb-0">
-                    <h5 class="card-title">Basket Size</h5>
                     <div class="table-responsinve mt-4">
-                        <table class="table table-striped" id="table-basket-size">
+                        <table class="table table-striped" id="table-aov">
                             <thead class="text-center">
                                 <tr>
                                     <th scope="col">#</th>
@@ -371,9 +422,8 @@
                         </table>
                     </div>
                 </div>
-          </div>
+          </div> -->
           <!-- End AOV Report -->
-
         </div>
 
     </div>
@@ -389,6 +439,7 @@
     var year = today.getFullYear(); // Tahun
     // Format tanggal dalam bentuk string YYYY-MM-DD
     var formattedDate = year + '-' + month + '-' + day;
+
     var now, currentMonth, this_year, myChart, start_date, end_date , convertStartDate, convertEndDate, table, table_sales_turnover, category_name, table_basket_size
     $(document).ready(function () {
       
@@ -397,25 +448,29 @@
         bestProductSeller()
         loadChart()
         monitoringStock()
-        reportSalesTurnoverMarketplace()
-        reportBasketSize()
+       
+        var startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
         $("#start_date").datepicker({
             format: 'dd-mm-yyyy',
             defaultDate: new Date(),
-        });
+        }).datepicker("setDate", startOfMonth);
 
         $("#end_date").datepicker({
             format: 'dd-mm-yyyy',
             defaultDate: new Date(),
-        });
+        }).datepicker("setDate", today);
+
+        start_date = $("#start_date" ).val().split("-").reverse().join("-")
+        end_date = $("#end_date" ).val().split("-").reverse().join("-")
+        reportSalesTurnoverMarketplace(start_date, end_date)
+        reportBasketSize(start_date, end_date)
        
-        // filter
+        // -------------------- START FILTER BUTTON ------------------------ //
         $("#btn-search").on("click", function(e){
             e.preventDefault()
             start_date =  $("#start_date").val()
             end_date = $("#end_date").val()
-
             convertStartDate = start_date.split("-").reverse().join("-")
             convertEndDate = end_date.split("-").reverse().join("-")
 
@@ -423,72 +478,70 @@
             bestStoreChannelSeller(convertStartDate, convertEndDate, null, null, null)
             bestProductSeller(convertStartDate, convertEndDate, null, null, null)
             filterChart(convertStartDate, convertEndDate, null, null, null)
-
+            reportBasketSize(convertStartDate, convertEndDate, null, null)
+            reportSalesTurnoverMarketplace(convertStartDate, convertEndDate, null, null)
             var description = "Periode " + start_date + " sampai dengan " + end_date
             $("#description").html(description)
         })
+        $("#btn-search-stock").on("click", function(e){
+            e.preventDefault()
+            category_name = $("#search_category").val()
+            monitoringStock(category_name)
+        })
+        // -------------------- END FILTER BUTTON ------------------------ //
+
         // --------------------------------------------------------------- //
         $("#filter-today").on("click", function(e){
             e.preventDefault()
             now = formattedDate
             totalSoldWithQty(null, null,now,null,null)
         })
-
         $("#filter-month").on("click", function(e){
             e.preventDefault()
             currentMonth = today.getMonth() + 1
             totalSoldWithQty(null, null,null,currentMonth,null)
         })
-
         $("#filter-year").on("click", function(e){
             e.preventDefault()
             this_year = year
             totalSoldWithQty(null, null,null,null,this_year)
         })
-
+        // --------------------------------------------------------------- //
         // --------------------------------------------------------------- //
         $("#filter-today-best-channel").on("click", function(e){
             e.preventDefault()
             now = formattedDate
             bestStoreChannelSeller(null, null,now,null,null)
         })
-        
         $("#filter-month-best-channel").on("click", function(e){
             e.preventDefault()
             currentMonth = today.getMonth() + 1
-            bestStoreChannelSeller(null, null,null,currentMonth,null)
+            this_year = year
+            bestStoreChannelSeller(null, null,null,currentMonth,this_year)
         })
-
         $("#filter-year-best-channel").on("click", function(e){
             e.preventDefault()
             this_year = year
             bestStoreChannelSeller(null, null,null,null,this_year)
         })
-
-        $("#sync-market-place").on("click", function(e){
-            e.preventDefault()
-            syncMarketPlace()
-        })
-
+        // --------------------------------------------------------------- //
         // --------------------------------------------------------------- //
         $("#filter-today-most-product").on("click", function(e){
             e.preventDefault()
             now = formattedDate
             bestProductSeller(null, null,now,null,null)
         })
-
         $("#filter-month-most-product").on("click", function(e){
             e.preventDefault()
             currentMonth = today.getMonth() + 1
             bestProductSeller(null, null,null,currentMonth,null)
         })
-
         $("#filter-year-most-product").on("click", function(e){
             e.preventDefault()
             this_year = year
             bestProductSeller(null, null,null,null,this_year)
         })
-
+        // --------------------------------------------------------------- //
         // --------------------------------------------------------------- //
         $("#filter-today-chart").on("click", function(e){
             e.preventDefault()
@@ -498,7 +551,8 @@
         $("#filter-month-chart").on("click", function(e){
             e.preventDefault()
             currentMonth = today.getMonth() + 1
-            filterChart(null, null,null,currentMonth,null)
+            this_year = year
+            filterChart(null, null,null,currentMonth,this_year)
         })
         $("#filter-year-chart").on("click", function(e){
             e.preventDefault()
@@ -506,14 +560,54 @@
             filterChart(null, null,null,null,this_year)
         })
         // --------------------------------------------------------------- //
-        
         // --------------------------------------------------------------- //
-        $("#btn-search-stock").on("click", function(e){
+        $("#filter-today-omset-marketplace").on("click", function(e){
             e.preventDefault()
-            category_name = $("#search_category").val()
-            monitoringStock(category_name)
+            now = formattedDate
+            reportSalesTurnoverMarketplace(null, null, now, null, null)
+        })
+        $("#filter-month-omset-marketplace").on("click", function(e){
+            e.preventDefault()
+            currentMonth = today.getMonth() + 1
+            this_year = year
+            reportSalesTurnoverMarketplace(null, null, null, currentMonth, this_year)
+        })
+        $("#filter-year-omset-marketplace").on("click", function(e){
+            e.preventDefault()
+            this_year = year
+            reportSalesTurnoverMarketplace(null, null, null, null, this_year)
         })
         // --------------------------------------------------------------- //
+        // --------------------------------------------------------------- //
+        $("#filter-today-basket-size").on("click", function(e){
+            e.preventDefault()
+            now = formattedDate
+            reportBasketSize(null, null, now, null, null)
+        })
+        $("#filter-month-basket-size").on("click", function(e){
+            e.preventDefault()
+            currentMonth = today.getMonth() + 1
+            this_year = year
+            reportBasketSize(null, null, null, currentMonth, this_year)
+        })
+        $("#filter-year-basket-size").on("click", function(e){
+            e.preventDefault()
+            this_year = year
+            reportBasketSize(null, null, null, null, this_year)
+        })
+        // --------------------------------------------------------------- //
+
+        // ------------------------START SYNC------------------------------- //
+        $("#sync-market-place").on("click", function(e){
+            e.preventDefault()
+            syncMarketPlace()
+        })
+
+        $("#sync-basket-size").on("click", function(e){
+            e.preventDefault()
+            syncBasketSize()
+        })
+        // -----------------------END SYNC----------------------------------- //
 
         // Inisialisasi Pusher
         Pusher.logToConsole = true;
@@ -585,19 +679,27 @@
             dataType: "JSON",
             success: function (response) {
                 var data = response.data
-                console.log(data)
                 var row = ""
                 var number = 1
-                let formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' });
-                var total_sell =  0
+                var grand_total = 0
+                var total = 0
+                var arrTotal = [];
+                var percentage = 0
                 $("#table-best-store").find("tr:gt(0)").remove();
                 $.each(data, function (i, val) {
-                    //total_sell = formatter.format(val.total)
-                    var total = parseInt(val.total)
+                    total = parseInt(val.total)
+                    grand_total = total + grand_total
                     total = total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })
-                    row += "<tr class='text-center'><td>"+ (number++) +"</td> <td>"+val.channel_name+"</td><td> "+val.store_name+" </td><td>"+total+"</td></tr>"
+                    arrTotal.push(val.total)
+                    row += "<tr class='text-center'><td>"+ (number++) +"</td> <td>"+val.channel_name+"</td><td> "+val.store_name+" </td><td>"+total+"</td><td data-id="+ i +"></td></tr>"
                 });
                 $("#table-best-store > tbody:last-child").append(row); 
+
+                $.each(arrTotal, function (i, val) { 
+                    percentage = parseFloat((val / grand_total) * 100)
+                    percentage = percentage.toFixed(3)
+                    $('#table-best-store tr').find('td[data-id="' + i + '"]').text(percentage)
+                });
             }
         });
     }
@@ -756,7 +858,7 @@
                     previous: "‹",
                     next: "›",
                 },
-                info: "Menampilkan _START_ s/d _END_ dari _TOTAL_ Stock",
+                info: "Menampilkan _START_ - _END_ dari _TOTAL_ Stock",
                 aria: {
                     paginate: {
                         previous: "Previous",
@@ -841,7 +943,32 @@
         });
     }
 
-    function reportSalesTurnoverMarketplace(start_date=null, end_date=null){
+    function syncBasketSize(){
+        $.ajax({
+            type: "GET",
+            url: "/api/analytics/sync-basket-size",
+            data: "data",
+            dataType: "JSON",
+            success: function (response) {
+                if(response.status == 200){
+                    $.confirm({
+                        title: 'Pesan ',
+                        content: response.message,
+                        buttons: {
+                            Ya: {
+                                btnClass: 'btn-success any-other-class',
+                                action: function(){
+                                    // loadSalesOrderCompleted()
+                                }
+                            },
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    function reportSalesTurnoverMarketplace(start_date=null, end_date=null, today=null, this_month=null, this_year=null){
         if (table_sales_turnover != null) {
             table_sales_turnover.destroy();
         }
@@ -932,13 +1059,16 @@
                 type: "GET",
                 data: {
                     start_date:start_date, 
-                    end_date : end_date
+                    end_date : end_date,
+                    today : today,
+                    this_month : this_month,
+                    this_year : this_year
                 }
             },
         })
     }
 
-    function reportBasketSize(start_date=null, end_date=null){
+    function reportBasketSize(start_date=null, end_date=null, today=null, this_month=null, this_year=null){
         if (table_basket_size != null) {
             table_basket_size.destroy();
         }
@@ -960,7 +1090,7 @@
                     previous: "‹",
                     next: "›",
                 },
-                info: "Menampilkan _START_ s/d _END_ dari _TOTAL_ Baske Size",
+                info: "Menampilkan _START_ s/d _END_ dari _TOTAL_ Basket Size",
                 aria: {
                     paginate: {
                         previous: "Previous",
@@ -990,6 +1120,32 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.total_order_number);
+                    },
+                },
+                {
+                    targets: 2,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.grand_total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }));
+                    },
+                },
+                {
+                    targets: 3,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var result = parseFloat(rowData.result_divide)
+                        result = result.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })
+                        $(td).html(result);
+                    },
+                },
+                {
+                    targets: 4,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
                         var transaction_date = rowData.transaction_date
                         var currDate = new Date(transaction_date)
                         var currMonth = currDate.toLocaleString('default', { month: 'long' })
@@ -998,37 +1154,16 @@
                         $(td).html(format);
                     },
                 },
-                {
-                    targets: 2,
-                    searchable: false,
-                    orderable: false,
-                    createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html(rowData.total_order_number);
-                    },
-                },
-                {
-                    targets: 3,
-                    searchable: false,
-                    orderable: false,
-                    createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html(rowData.grand_total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }));
-                    },
-                },
-                {
-                    targets: 4,
-                    searchable: false,
-                    orderable: false,
-                    createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html(rowData.result_divide);
-                    },
-                },
             ],
             ajax:{
                 url :  '/api/analytics/report/basket-size',
                 type: "GET",
                 data: {
                     start_date:start_date, 
-                    end_date : end_date
+                    end_date : end_date,
+                    today : today,
+                    this_month : this_month,
+                    this_year : this_year
                 }
             },
         })

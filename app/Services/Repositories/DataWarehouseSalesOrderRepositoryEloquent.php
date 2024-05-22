@@ -229,6 +229,15 @@ class DataWarehouseSalesOrderRepositoryEloquent implements DataWarehouseSalesOrd
                         $dataSalesOrderCompleted->total_disc = $responses->json()['total_disc'];
                         $dataSalesOrderCompleted->total_tax = $responses->json()['total_tax'];
                         $dataSalesOrderCompleted->payment_method = $responses->json()['payment_method'];
+                        $dataSalesOrderCompleted->service_fee = $responses->json()['service_fee'];
+                        $dataSalesOrderCompleted->insurance_cost = $responses->json()['insurance_cost'];
+                        $dataSalesOrderCompleted->shipping_cost = $responses->json()['shipping_cost'];
+                        $dataSalesOrderCompleted->buyer_shipping_cost = $responses->json()['buyer_shipping_cost'];
+                        $dataSalesOrderCompleted->add_disc = $responses->json()['add_disc'];
+                        $dataSalesOrderCompleted->add_fee = $responses->json()['add_fee'];
+                        $dataSalesOrderCompleted->discount_marketplace = $responses->json()['discount_marketplace'];
+                        $dataSalesOrderCompleted->total_amount_mp = $responses->json()['total_amount_mp'];
+
                         $dataSalesOrderCompleted->save();
                     }
                     // upsert sales order detail completed

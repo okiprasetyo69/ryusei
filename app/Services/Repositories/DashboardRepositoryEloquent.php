@@ -231,23 +231,23 @@ use Yajra\DataTables\Facades\DataTables;
                             ->select("channel_name", "store_name", DB::raw("SUM(grand_total) as total"));
 
             if($request->start_date != null){
-                $bestStore =  $bestStore->where("order_date", ">=",$request->start_date);
+                $bestStore =  $bestStore->where("transaction_date", ">=",$request->start_date);
             }
                 
             if($request->end_date != null){
-                $bestStore =  $bestStore->where("order_date", "<=",$request->end_date);
+                $bestStore =  $bestStore->where("transaction_date", "<=",$request->end_date);
             }
                 
             if($request->this_month != null){
-                $bestStore =  $bestStore->whereMonth("order_date",$request->this_month);
+                $bestStore =  $bestStore->whereMonth("transaction_date",$request->this_month);
             }
                 
             if($request->today != null){
-                $bestStore =  $bestStore->where("order_date", $request->today);
+                $bestStore =  $bestStore->where("transaction_date", $request->today);
             }
                 
             if($request->this_year != null){
-                $bestStore =  $bestStore->whereYear("order_date",$request->this_year);
+                $bestStore =  $bestStore->whereYear("transaction_date",$request->this_year);
             }
 
             $bestStore = $bestStore->groupBy("channel_name", "store_name")->orderBy("total", "DESC")->take($limit)->get();
@@ -281,7 +281,7 @@ use Yajra\DataTables\Facades\DataTables;
             }
                 
             if($request->this_month != null){
-                $salesTurnOverMarketPlace =  $salesTurnOverMarketPlace->whereMonth("transaction_date",$request->this_month);
+                $salesTurnOverMarketPlace =  $salesTurnOverMarketPlace->whereMonth("transaction_date", $request->this_month);
             }
                                 
             if($request->this_year != null){
@@ -334,7 +334,19 @@ use Yajra\DataTables\Facades\DataTables;
             }
 
             if($request->end_date != null){
-                $tranreportSalesTurnoverMarketPlacesaction =  $reportSalesTurnoverMarketPlace->where("transaction_date", "<=",$request->end_date);
+                $reportSalesTurnoverMarketPlace =  $reportSalesTurnoverMarketPlace->where("transaction_date", "<=",$request->end_date);
+            }
+
+            if($request->today != null){
+                $reportSalesTurnoverMarketPlace =  $reportSalesTurnoverMarketPlace->where("transaction_date", $request->today);
+            }
+
+            if($request->this_month != null){
+                $reportSalesTurnoverMarketPlace =  $reportSalesTurnoverMarketPlace->whereMonth("transaction_date", $request->this_month);
+            }
+                
+            if($request->this_year != null){
+                $reportSalesTurnoverMarketPlace =  $reportSalesTurnoverMarketPlace->whereYear("transaction_date",$request->this_year);
             }
 
             $reportSalesTurnoverMarketPlace = $reportSalesTurnoverMarketPlace->get();
@@ -358,11 +370,50 @@ use Yajra\DataTables\Facades\DataTables;
                 $reportBasketSize =  $reportBasketSize->where("transaction_date", "<=",$request->end_date);
             }
 
+            if($request->today != null){
+                $reportBasketSize =  $reportBasketSize->where("transaction_date", $request->today);
+            }
+
+            if($request->this_month != null){
+                $reportBasketSize =  $reportBasketSize->whereMonth("transaction_date", $request->this_month);
+            }
+                
+            if($request->this_year != null){
+                $reportBasketSize =  $reportBasketSize->whereYear("transaction_date",$request->this_year);
+            }
+
             $reportBasketSize = $reportBasketSize->get();
             $datatables = Datatables::of($reportBasketSize);
             return $datatables->make(true);
         }
         catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function reportAov(Request $request){
+        try{
+            return true;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function reportSaleStockRatio(Request $request){
+        try{
+            return true;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function reportSellThrough(Request $request){
+        try{
+            return true;
+        }catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;
         }
@@ -449,6 +500,24 @@ use Yajra\DataTables\Facades\DataTables;
                 }
               
             }
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function saleStockRatio(){
+        try{
+            // Formula
+            // X (Rp) = Omset Penjualan (Rp) / Nilai Inventory Keseluruhan (Rp) dari harga jual
+            $dataWareHouseSalesOrder =  DB::table("data_ware_house_orders")
+                                        ->select("transaction_date", DB::raw("SUM(grand_total) as grand_total"));
+            $dataOrderDetail =  DB::table("data_ware_house_order_details")
+            ->select("transaction_date", DB::raw("SUM(grand_total) as grand_total"));
+
+            $dataWareHouseSalesOrder =  $dataWareHouseSalesOrder->groupBy("transaction_date")->orderBy("transaction_date", "ASC")->get();
+            $today = date('Y-m-d');
+
         }catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;

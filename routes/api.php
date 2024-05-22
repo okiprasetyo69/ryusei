@@ -156,9 +156,12 @@ Route::controller(DashboardController::class)->group(function() {
     Route::get('/analytics/report/sales-turnover-marketplace', 'reportSalesTurnoverMarketPlace')->name('analytics.report.sales-turnover-marketplace');
     Route::get('/analytics/report/best-store', 'reportBestStore')->name('analytics.report.best-store');
     Route::get('/analytics/report/basket-size', 'reportBasketSize')->name('analytics.report.basket-size');
+    Route::get('/analytics/report/aov', 'reportAov')->name('analytics.report.aov');
+    Route::get('/analytics/report/ssr', 'reportSaleStockRatio')->name('analytics.report.ssr');
+    Route::get('/analytics/report/sell-through', 'reportSellThrough')->name('analytics.report.sell-through');
 
     Route::get('/analytics/sync-sales-turnover-marketplace', 'syncSalesTurnoverMarketPlace')->name('analytics.sync-sales-turnover-marketplace');
-    Route::get('/analytics/sync-basket-size', 'syncBaksetSize')->name('analytics.sync-sales-turnover-marketplace');
+    Route::get('/analytics/sync-basket-size', 'syncBaksetSize')->name('analytics.sync-basket-size');
 });
 
 // Warehouse

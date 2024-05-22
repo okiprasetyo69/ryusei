@@ -145,6 +145,45 @@ class DashboardController extends Controller
         }
     }
 
+    public function reportAov(Request $request){
+        try{
+            $reportAov = $this->service->reportAov($request);
+            if($reportAov != null){
+                return $reportAov;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function reportSaleStockRatio(Request $request){
+        try{
+            $reportSaleStockRatio = $this->service->reportSaleStockRatio($request);
+            if($reportSaleStockRatio != null){
+                return $reportSaleStockRatio;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function reportSellThrough(Request $request){
+        try{
+            $reportSellThrough = $this->service->reportSellThrough($request);
+            if($reportSellThrough != null){
+                return $reportSellThrough;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
     public function syncSalesTurnoverMarketPlace(Request $request){
         try{
             SyncSalesTurnoverMarketPlaceJob::dispatch();
