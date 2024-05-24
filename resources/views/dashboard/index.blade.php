@@ -730,16 +730,10 @@
                 var number = 1
                 let formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' });
                 var total_sell =  0
-                var product_name = ""
                 $("#table-most-product").find("tr:gt(0)").remove();
                 $.each(data, function (i, val) {
                     total_sell = formatter.format(val.total_sell)
-                    if(val.product_name == null){
-                        product_name = "-"
-                    } else {
-                        product_name = val.product_name
-                    }
-                    row += "<tr class='text-center'><td>"+ (number++) +"</td><td>"+val.sku_code+"</td><td>"+product_name+"</td><td>"+val.qty_sold+"</td></tr>"
+                    row += "<tr class='text-center'><td>"+ (number++) +"</td><td>"+val.sku_code+"</td><td>"+val.product_name+"</td><td>"+val.qty_sold+"</td></tr>"
                 });
                 $("#table-most-product > tbody:last-child").append(row); 
             }
