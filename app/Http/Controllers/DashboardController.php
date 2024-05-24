@@ -12,17 +12,21 @@ use Exception;
 use Illuminate\Support\Facades\Log;
 
 use App\Services\Interfaces\DashboardService;
+use App\Services\Repositories\DashboardRepositoryEloquent;
 use App\Jobs\SyncSalesTurnoverMarketPlaceJob;
 use App\Jobs\SyncBasketSizeJob;
+use App\Jobs\SyncBestProductJob;
 
 class DashboardController extends Controller
 {
 
     private DashboardService $service;
+    private DashboardRepositoryEloquent $dashboardEloquent;
 
-    public function __construct(DashboardService $service) 
+    public function __construct(DashboardService $service, DashboardRepositoryEloquent $dashboardEloquent) 
     {
         $this->service = $service;
+        $this->dashboardEloquent = $dashboardEloquent;
     }
 
 
@@ -132,6 +136,19 @@ class DashboardController extends Controller
         }
     }
 
+    public function reportBestProduct(Request $request){
+        try{
+            $reportBestProduct = $this->service->reportBestProduct($request);
+            if($reportBestProduct != null){
+                return $reportBestProduct;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
     public function reportBasketSize(Request $request){
         try{
             $reportBasketSize = $this->service->reportBasketSize($request);
@@ -203,6 +220,20 @@ class DashboardController extends Controller
             return response()->json([
                 'status' => 200,
                 'message' => 'Sync Basket Size. Please wait a few minutes !',
+            ]);
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function syncBestProduct(Request $request){
+        try{
+            //$sync = $this->dashboardEloquent->syncBestProduct();
+            SyncBestProductJob::dispatch();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Sync Top 10 Best Product Sell. Please wait a few minutes !',
             ]);
         }catch(Exception $ex){
             Log::error($ex->getMessage());

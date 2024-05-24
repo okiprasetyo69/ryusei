@@ -6,7 +6,10 @@ use App\Models\Transaction;
 use App\Models\ItemStock;
 use App\Models\DataWareHouseOrder;
 use App\Models\DataMartMarketPlace;
+use App\Models\DataMartProductDetail;
 use App\Models\BasketSizeReport;
+use App\Models\Product;
+
 use App\Services\Interfaces\ItemStockService;
 use App\Services\Interfaces\DashboardService;
 
@@ -263,6 +266,43 @@ use Yajra\DataTables\Facades\DataTables;
         }
     }
 
+    public function reportBestProduct(Request $request){
+        try{
+            $limit = 10;
+            $bestProduct = DataMartProductDetail::orderBy('qty_sold', 'DESC');
+
+            if($request->start_date != null){
+                $bestProduct =  $bestProduct->where("transaction_date", ">=",$request->start_date);
+            }
+                
+            if($request->end_date != null){
+                $bestProduct =  $bestProduct->where("transaction_date", "<=",$request->end_date);
+            }
+            
+            if($request->today != null){
+                $bestProduct =  $bestProduct->where("transaction_date", $request->today);
+            }
+
+            if($request->this_month != null){
+                $bestProduct =  $bestProduct->whereMonth("transaction_date",$request->this_month);
+            }
+                
+            if($request->this_year != null){
+                $bestProduct =  $bestProduct->whereYear("transaction_date",$request->this_year);
+            }
+
+            $bestProduct =  $bestProduct->take($limit)->get();
+            return response()->json([
+                'status' => 200,
+                'message' => true,
+                'data' => $bestProduct
+            ]); 
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
     public function chartSalesTurnoverMarketPlace(Request $request){
         try{
             $salesTurnOverMarketPlace = DB::table("data_mart_market_places")
@@ -506,19 +546,75 @@ use Yajra\DataTables\Facades\DataTables;
         }
     }
 
+    public function syncBestProduct(){
+        try{
+            $bestProduct = DB::table("data_ware_house_order_details")
+                            ->select("data_ware_house_order_details.sku_id", "data_ware_house_order_details.sku_code", DB::raw("SUM(data_ware_house_order_details.qty_in_base) as qty_sold"));
+            $bestProduct = $bestProduct->groupBy("data_ware_house_order_details.sku_code", "data_ware_house_order_details.sku_id")
+                            ->orderBy("qty_sold", "DESC")->get(); 
+            $today = date('Y-m-d');
+            foreach ($bestProduct as $key => $value) {
+                $dataMartProductDetail = DataMartProductDetail::where("sku_code", $value->sku_code)->first();
+                $product = Product::where("sku", $value->sku_code)->where("id", $value->sku_id)->first();
+               
+                if($dataMartProductDetail == null){
+                    $newDataMartProductDetail = new DataMartProductDetail();
+                    $newDataMartProductDetail->sku_id =  $product['id'];
+                    $newDataMartProductDetail->sku_code = $product['sku'];
+                    if($product['article'] != null){
+                        $newDataMartProductDetail->product_name = $product['article'];
+                    } else {
+                        $newDataMartProductDetail->product_name = $product['name'];
+                    }
+                    $newDataMartProductDetail->qty_sold = $value->qty_sold;
+                    $newDataMartProductDetail->sync_date = $today;
+
+                    $newDataMartProductDetail->save();
+                } 
+
+                if($dataMartProductDetail != null){
+                    if($product['article'] != null){
+                        $dataMartProductDetail->product_name = $product['article'];
+                    } else {
+                        $dataMartProductDetail->product_name = $product['name'];
+                    }
+                    $dataMartProductDetail->qty_sold = $value->qty_sold;
+                    $dataMartProductDetail->sync_date = $today;
+
+                    $dataMartProductDetail->save();
+                }
+            }
+        }
+        catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
     public function saleStockRatio(){
         try{
             // Formula
-            // X (Rp) = Omset Penjualan (Rp) / Nilai Inventory Keseluruhan (Rp) dari harga jual
-            $dataWareHouseSalesOrder =  DB::table("data_ware_house_orders")
-                                        ->select("transaction_date", DB::raw("SUM(grand_total) as grand_total"));
-            $dataOrderDetail =  DB::table("data_ware_house_order_details")
-            ->select("transaction_date", DB::raw("SUM(grand_total) as grand_total"));
+            // X (Rp)= Omset Penjualan (akhir bulan) / Nilai Inventory Keseluruhan dalam rupiah (dari harga jual) dari data gudang
 
-            $dataWareHouseSalesOrder =  $dataWareHouseSalesOrder->groupBy("transaction_date")->orderBy("transaction_date", "ASC")->get();
+            $dataMartSalesStokRatio =  DB::table("data_ware_house_orders")
+                                        ->join("data_ware_house_order_details", "data_ware_house_orders.id", "=", "data_ware_house_order_details.dwh_order_id")
+                                        ->select("data_ware_house_orders.transaction_date", "data_ware_house_order_details.sku_code", DB::raw("SUM(data_ware_house_orders.grand_total)"), DB::raw("SUM(data_ware_house_order_details.sell_price)"));
+            $dataMartSalesStokRatio =  $dataMartSalesStokRatio->groupBy("data_ware_house_orders.transaction_date")
+                                        ->orderBy("transaction_date", "ASC")->take(100)->get();
+
             $today = date('Y-m-d');
 
         }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function syncSellThrough(){
+        try{
+
+        }
+        catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;
         }

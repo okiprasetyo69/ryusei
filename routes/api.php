@@ -155,6 +155,7 @@ Route::controller(DashboardController::class)->group(function() {
     Route::get('/analytics/chart/sales-turnover-marketplace', 'chartSalesTurnoverMarketplace')->name('analytics.chart-sales-turnover-marketplace');
     Route::get('/analytics/report/sales-turnover-marketplace', 'reportSalesTurnoverMarketPlace')->name('analytics.report.sales-turnover-marketplace');
     Route::get('/analytics/report/best-store', 'reportBestStore')->name('analytics.report.best-store');
+    Route::get('/analytics/report/best-product', 'reportBestProduct')->name('analytics.report.best-product');
     Route::get('/analytics/report/basket-size', 'reportBasketSize')->name('analytics.report.basket-size');
     Route::get('/analytics/report/aov', 'reportAov')->name('analytics.report.aov');
     Route::get('/analytics/report/ssr', 'reportSaleStockRatio')->name('analytics.report.ssr');
@@ -162,6 +163,7 @@ Route::controller(DashboardController::class)->group(function() {
 
     Route::get('/analytics/sync-sales-turnover-marketplace', 'syncSalesTurnoverMarketPlace')->name('analytics.sync-sales-turnover-marketplace');
     Route::get('/analytics/sync-basket-size', 'syncBaksetSize')->name('analytics.sync-basket-size');
+    Route::get('/analytics/sync-best-product', 'syncBestProduct')->name('analytics.sync-best-product');
 });
 
 // Warehouse

@@ -165,6 +165,7 @@
                                 <li><a class="dropdown-item" href="#" id="filter-today-most-product">Today</a></li>
                                 <li><a class="dropdown-item" href="#" id="filter-month-most-product">This Month</a></li>
                                 <li><a class="dropdown-item" href="#" id="filter-year-most-product">This Year</a></li>
+                                <li><a class="dropdown-item" href="#" id="sync-best-product">Sync</a></li>
                             </ul>
                         </div>
 
@@ -174,9 +175,10 @@
                                 <thead>
                                 <tr class="text-center">
                                     <th scope="col">Rank</th>
+                                    <th scope="col">SKU</th>
                                     <th scope="col">Product</th>
                                     <th scope="col">Qty Terjual</th>
-                                    <th scope="col">Total Penjualan</th>
+                                    <!-- <th scope="col">Total Penjualan</th> -->
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -249,7 +251,7 @@
                                         <th scope="col">#</th>
                                         <th scope="col">Total Pesanan</th>
                                         <th scope="col">Total Transaksi</th>
-                                        <th scope="col">AOV</th>
+                                        <th scope="col">Rata-Rata</th>
                                         <th scope="col">Tgl Transaksi</th>
                                     </tr>
                                 </thead>
@@ -607,6 +609,11 @@
             e.preventDefault()
             syncBasketSize()
         })
+
+        $("#sync-best-product").on("click", function(e){
+            e.preventDefault()
+            syncBestProduct()
+        })
         // -----------------------END SYNC----------------------------------- //
 
         // Inisialisasi Pusher
@@ -707,7 +714,7 @@
     function bestProductSeller(start_date = null, end_date = null, today=null, this_month=null, this_year=null){
         $.ajax({
             type: "GET",
-            url: "/api/analytics/best-product",
+            url: "/api/analytics/report/best-product",
             data: {
                 start_date : start_date,
                 end_date : end_date,
@@ -718,14 +725,21 @@
             dataType: "JSON",
             success: function (response) {
                 var data = response.data
+                console.log(data)
                 var row = ""
                 var number = 1
                 let formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' });
                 var total_sell =  0
+                var product_name = ""
                 $("#table-most-product").find("tr:gt(0)").remove();
                 $.each(data, function (i, val) {
                     total_sell = formatter.format(val.total_sell)
-                    row += "<tr class='text-center'><td>"+ (number++) +"</td> <td>"+val.article+"</td><td>"+val.total_qty+"</td><td> "+total_sell+" </td></tr>"
+                    if(val.product_name == null){
+                        product_name = "-"
+                    } else {
+                        product_name = val.product_name
+                    }
+                    row += "<tr class='text-center'><td>"+ (number++) +"</td><td>"+val.sku_code+"</td><td>"+product_name+"</td><td>"+val.qty_sold+"</td></tr>"
                 });
                 $("#table-most-product > tbody:last-child").append(row); 
             }
@@ -858,7 +872,7 @@
                     previous: "‹",
                     next: "›",
                 },
-                info: "Menampilkan _START_ - _END_ dari _TOTAL_ Stock",
+                info: "Display _START_ - _END_ dari _TOTAL_ Stock",
                 aria: {
                     paginate: {
                         previous: "Previous",
@@ -959,6 +973,31 @@
                                 btnClass: 'btn-success any-other-class',
                                 action: function(){
                                     // loadSalesOrderCompleted()
+                                }
+                            },
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    function syncBestProduct(){
+        $.ajax({
+            type: "GET",
+            url: "/api/analytics/sync-best-product",
+            data: "data",
+            dataType: "JSON",
+            success: function (response) {
+                if(response.status == 200){
+                    $.confirm({
+                        title: 'Pesan ',
+                        content: response.message,
+                        buttons: {
+                            Ya: {
+                                btnClass: 'btn-success any-other-class',
+                                action: function(){
+                                    bestProductSeller()
                                 }
                             },
                         }
