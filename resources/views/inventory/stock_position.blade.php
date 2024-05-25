@@ -106,6 +106,7 @@
                                                 <th scope="col">Avg. Value</th>
                                                 <th scope="col">Total. Value</th>
                                                 <th scope="col">Price (PL)</th>
+                                                <th scope="col">Sell Price</th>
                                                 <th scope="col">Tgl Sync</th>
                                                 <th scope="col">Aksi </th>
                                             </tr>
@@ -442,7 +443,7 @@
                     { data: null,  width: "5%"},
                     { data: null},
                     { data: null, width: "20%" },
-                    // { data: null },
+                    { data: null },
                     { data: null },
                     { data: null },
                     { data: null },
@@ -489,22 +490,6 @@
                             $(td).html(item_name);
                         },
                     },
-                    // {
-                    //     targets: 3,
-                    //     searchable: false,
-                    //     orderable: false,
-                    //     createdCell: function (td, cellData, rowData, row, col) {
-                    //         var category_name = ""
-                    //         if(rowData.sku_id == null){
-                    //             category_name = ""
-                    //         } else {
-                    //             if(rowData.product == null){
-                    //                 category_name = ""
-                    //             }
-                    //         }
-                    //         $(td).html(category_name);
-                    //     },
-                    // },
                     {
                         targets: 3,
                         searchable: false,
@@ -572,6 +557,18 @@
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
+                            var sell_price = 0
+                            if(rowData.sell_price != null){
+                                sell_price = rowData.sell_price.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })
+                            }
+                            $(td).html(sell_price);
+                        },
+                    },
+                    {
+                        targets: 9,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
                             check_in_date = rowData.check_in_date
                             date = new Date(check_in_date)
                             month = date.toLocaleString('default', { month: 'long' })
@@ -582,7 +579,7 @@
                         },
                     },
                     {
-                        targets: 9,
+                        targets: 10,
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {

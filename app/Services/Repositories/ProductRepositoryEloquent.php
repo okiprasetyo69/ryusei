@@ -455,6 +455,7 @@ use Illuminate\Support\Facades\Http;
                         }
 
                         $newProduct->name = $value['item_name'];
+                        $newProduct->item_id = $value['item_id'];
                         $newProduct->save();
 
                         $newStock = new ItemStock();
@@ -475,6 +476,7 @@ use Illuminate\Support\Facades\Http;
                             $product->article  = null;
                         }
                         $product->name = $value['item_name'];
+                        $product->item_id = $value['item_id'];
                         // Check exist stock item product
                         $itemStock = ItemStock::where("sku_id", $product->id)->first();
                         if($itemStock == null){
@@ -619,6 +621,38 @@ use Illuminate\Support\Facades\Http;
         }
     }
 
+    public function upadteSellPriceInventory($userData){
+        try{
+            $arrItemStock = [];
+            $product = Product::whereNotNull("item_id")->get();
+
+            foreach ($product as $key => $value) {
+                array_push($arrItemStock, [
+                    'sku_id' => $value['id'],
+                    'sku_code' => $value['sku'],
+                    'sell_price' =>  $value['price'],
+                    'item_id' =>  $value['item_id']
+                ]);
+            }
+            foreach ($arrItemStock as $key => $value) {
+                $responses = $this->endpointDetailItemBySkuCode($userData, $value['item_id']);
+                if($responses->status() == 200){
+                    $item = ItemStock::where("sku_code", strval($value['sku_code']))->where("sku_id",  $value['sku_id'])->first();
+                    $sellPrice = $responses->json()['sell_price'];
+                    if($item != null){
+                        Log::info('Upsert Sell Price Inventory SKU : ' . strval($value['sku_code']) . ' with price : '. $sellPrice);
+                        $item->sell_price = $sellPrice;
+                        $item->save();
+                    }
+                }
+            } 
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            Log::info("Error Code : ". $ex->getCode());
+            return false;
+        }
+    }
+
     public function endPointProductItem($userData){
         $responses = Http::withHeaders([
             'Authorization' => 'Bearer ' . $userData['api_token'],
@@ -627,6 +661,15 @@ use Illuminate\Support\Facades\Http;
         
         return $responses;
 
+    }
+
+    public function endpointDetailItemBySkuCode($userData, $itemId){
+        $responses = Http::timeout(10)->retry(3, 1000)->withHeaders([
+            'Authorization' => 'Bearer ' . $userData['api_token'],
+            'Accept' => 'application/json', 
+        ])->get(env('JUBELIO_API') . '/inventory/items/'.$itemId);
+        
+        return $responses;
     }
 
     public function updateTokenApi($userData){

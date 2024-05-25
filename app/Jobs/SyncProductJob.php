@@ -46,6 +46,11 @@ class SyncProductJob implements ShouldQueue
         $upsertItemProductBundle = $service->updateItemBundling($this->userData);
         Log::info('Finish Process Upsert Item Product Bundle...');
 
+        Log::info('Start Sync Process Upsert Sell Price Inventory...');
+        $upsertItemProductBundle = $service->upadteSellPriceInventory($this->userData);
+        Log::info('Finish Sync Process Upsert Sell Price Inventory...');
+
+
         // Message queue job has done
         broadcast(new JobCompleted('Sync Product has been successed !'));
     }

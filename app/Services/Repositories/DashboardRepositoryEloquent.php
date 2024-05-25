@@ -595,12 +595,7 @@ use Yajra\DataTables\Facades\DataTables;
         try{
             // Formula
             // X (Rp)= Omset Penjualan (akhir bulan) / Nilai Inventory Keseluruhan dalam rupiah (dari harga jual) dari data gudang
-
-            $dataMartSalesStokRatio =  DB::table("data_ware_house_orders")
-                                        ->join("data_ware_house_order_details", "data_ware_house_orders.id", "=", "data_ware_house_order_details.dwh_order_id")
-                                        ->select("data_ware_house_orders.transaction_date", "data_ware_house_order_details.sku_code", DB::raw("SUM(data_ware_house_orders.grand_total)"), DB::raw("SUM(data_ware_house_order_details.sell_price)"));
-            $dataMartSalesStokRatio =  $dataMartSalesStokRatio->groupBy("data_ware_house_orders.transaction_date")
-                                        ->orderBy("transaction_date", "ASC")->take(100)->get();
+          
 
             $today = date('Y-m-d');
 
