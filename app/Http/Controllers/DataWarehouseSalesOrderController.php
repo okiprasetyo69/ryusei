@@ -87,7 +87,10 @@ class DataWarehouseSalesOrderController extends Controller
             $startDate = date('Y-m-d', strtotime($request->start_date . ' -1 day'));
             $endDate =  $request->end_date;
             if($userData){
-                SyncSalesOrderJob::dispatch($userData, $startDate, $endDate);
+                $dataInvoice = $this->service->getDataWareHouseOrderFromJubelio( $userData, $startDate, $endDate);
+                //$dataDetailInvoice = $this->service->getDataWareHouseDetailOrderTransaction( $userData, $startDate, $endDate);
+                
+                //SyncSalesOrderJob::dispatch($userData, $startDate, $endDate);
                 return response()->json([
                     'status' => 200,
                     'message' => 'Sync product on process. Please wait a few minutes !',

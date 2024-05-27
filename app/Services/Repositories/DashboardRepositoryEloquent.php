@@ -9,6 +9,7 @@ use App\Models\DataMartMarketPlace;
 use App\Models\DataMartProductDetail;
 use App\Models\BasketSizeReport;
 use App\Models\Product;
+use App\Models\DataMartSellThrough;
 
 use App\Services\Interfaces\ItemStockService;
 use App\Services\Interfaces\DashboardService;
@@ -452,7 +453,30 @@ use Yajra\DataTables\Facades\DataTables;
 
     public function reportSellThrough(Request $request){
         try{
-            return true;
+            $reportSellThrough = DataMartSellThrough::orderBy("sync_date", "DESC");
+            if($request->start_date != null){
+                $reportSellThrough =  $reportSellThrough->where("sync_date", ">=",$request->start_date);
+            }
+
+            if($request->end_date != null){
+                $reportSellThrough =  $reportSellThrough->where("sync_date", "<=",$request->end_date);
+            }
+
+            if($request->today != null){
+                $reportSellThrough =  $reportSellThrough->where("sync_date", $request->today);
+            }
+
+            if($request->this_month != null){
+                $reportSellThrough =  $reportSellThrough->whereMonth("sync_date", $request->this_month);
+            }
+                
+            if($request->this_year != null){
+                $reportSellThrough =  $reportSellThrough->whereYear("sync_date",$request->this_year);
+            }
+            $reportSellThrough = $reportSellThrough->get();
+            $datatables = Datatables::of($reportSellThrough);
+            return $datatables->make(true);
+            
         }catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;
@@ -558,6 +582,7 @@ use Yajra\DataTables\Facades\DataTables;
                 $product = Product::where("sku", $value->sku_code)->where("id", $value->sku_id)->first();
                
                 if($dataMartProductDetail == null){
+                    Log::info('Insert Best Product with SKU : ' . $value->sku_code);
                     $newDataMartProductDetail = new DataMartProductDetail();
                     $newDataMartProductDetail->sku_id =  $product['id'];
                     $newDataMartProductDetail->sku_code = $product['sku'];
@@ -573,6 +598,7 @@ use Yajra\DataTables\Facades\DataTables;
                 } 
 
                 if($dataMartProductDetail != null){
+                    Log::info('Update Best Product with SKU : ' . $value->sku_code);
                     if($product['article'] != null){
                         $dataMartProductDetail->product_name = $product['article'];
                     } else {
@@ -607,7 +633,60 @@ use Yajra\DataTables\Facades\DataTables;
 
     public function syncSellThrough(){
         try{
+            // Formula
+            // X (%) = ( Qty Barang Terjual / Qty Barang Masuk) * 100%
+            $dataSellThrough =   DB::table("data_ware_house_order_details")
+                            ->join("item_stocks", "data_ware_house_order_details.sku_code", "=", "item_stocks.sku_code")
+                            ->select("item_stocks.sku_code", DB::raw("COALESCE(SUM(data_ware_house_order_details.qty_in_base), 0) as total_units_sold"), "item_stocks.qty as unit_stock" );
 
+            $dataSellThrough = $dataSellThrough->groupBy("item_stocks.sku_code", "item_stocks.qty")
+                                ->orderBy("total_units_sold", "DESC")->get();
+
+            $today = date('Y-m-d');
+            $sellThrough = null;
+            foreach ($dataSellThrough as $key => $value) {
+                $dataMartSellThrough = DataMartSellThrough::where("sku_code", $value->sku_code)->where("sync_date")->first();
+                $product = Product::where("sku", $value->sku_code)->first();
+
+                if((int) $value->unit_stock <= 0){
+                    $sellThrough = null;
+                } else {
+                    $sellThrough = ( (int) $value->total_units_sold / (int) $value->unit_stock) * 100;
+                }
+            
+                if($dataMartSellThrough == null){
+                    Log::info('Insert Sell Through with SKU : ' . $value->sku_code);
+                    $newDataMartSellThrough = new DataMartSellThrough();
+                    $newDataMartSellThrough->sku_code = $value->sku_code;
+
+                    if($product->article == null){
+                        $newDataMartSellThrough->product_name = $product->name; 
+                    } else {
+                        $newDataMartSellThrough->product_name = $product->article; 
+                    }
+                    $newDataMartSellThrough->total_unit_received =  (int) $value->unit_stock;
+                    $newDataMartSellThrough->total_unit_sold = (int) $value->total_units_sold;
+                    $newDataMartSellThrough->sell_through =  $sellThrough;
+                    $newDataMartSellThrough->sync_date = $today = date('Y-m-d');
+
+                    $newDataMartSellThrough->save();
+                }
+
+                if($dataMartSellThrough != null){
+                    Log::info('Update Sell Through with SKU : ' .$value->sku_code);
+                    if($product->article == null){
+                        $dataMartSellThrough->product_name = $product->name; 
+                    } else {
+                        $dataMartSellThrough->product_name = $product->article; 
+                    }
+                    $dataMartSellThrough->total_unit_received = (int) $value->unit_stock;
+                    $dataMartSellThrough->total_unit_sold =  (int) $value->total_units_sold;
+                    $dataMartSellThrough->sell_through =  $sellThrough;
+                    $dataMartSellThrough->sync_date = $today = date('Y-m-d');
+
+                    $dataMartSellThrough->save();
+                }
+            }
         }
         catch(Exception $ex){
             Log::error($ex->getMessage());

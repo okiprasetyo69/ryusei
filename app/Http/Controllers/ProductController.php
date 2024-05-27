@@ -251,9 +251,11 @@ class ProductController extends Controller
         try{
 
             $userData = Auth::user();
-            // $inventory = $this->service->getProductFromJubelio($request, $userData);
-
             if($userData){
+                // $product = $this->service->updateProductItem($userData);
+                // $item = $this->service->updateItemProduct($userData);
+                // $productBundling = $this->service->updateItemBundling($userData);
+                // $sellPrice = $this->service->upadteSellPriceInventory($userData);
                 SyncProductJob::dispatch($userData);
                 return response()->json([
                     'status' => 200,

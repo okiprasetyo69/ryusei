@@ -201,10 +201,6 @@
 
         $("#btn-sync").on("click", function(e){
             e.preventDefault()
-            $("#btn-sync").attr("disabled", true);
-            $("#spinner-sync").attr("class", "spinner-grow spinner-grow-sm")
-            $("#lbl-sync").text("Loading...")
-
             $.ajax({
                 type: "GET",
                 url: "/jubelio/inventory",
@@ -238,9 +234,6 @@
         var channel = pusher.subscribe('jobs');
         channel.bind('job.completed', function(data) {
             // Tampilkan pesan saat event diterima
-            $("#btn-sync").attr("disabled", false);
-            $("#spinner-sync").attr("class", "")
-            $("#lbl-sync").text("Sync Order")
             $.confirm({
                 title: 'Pesan !',
                 content: data.message,

@@ -16,6 +16,7 @@ use App\Services\Repositories\DashboardRepositoryEloquent;
 use App\Jobs\SyncSalesTurnoverMarketPlaceJob;
 use App\Jobs\SyncBasketSizeJob;
 use App\Jobs\SyncBestProductJob;
+use App\Jobs\SyncSaleThroughJob;
 
 class DashboardController extends Controller
 {
@@ -190,7 +191,7 @@ class DashboardController extends Controller
 
     public function reportSellThrough(Request $request){
         try{
-            $reportSellThrough = $this->service->reportSellThrough($request);
+            $reportSellThrough = $this->dashboardEloquent->reportSellThrough($request);
             if($reportSellThrough != null){
                 return $reportSellThrough;
             }
@@ -234,6 +235,20 @@ class DashboardController extends Controller
             return response()->json([
                 'status' => 200,
                 'message' => 'Sync Top 10 Best Product Sell. Please wait a few minutes !',
+            ]);
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function syncSellThrough(Request $request){
+        try{
+            //$sync = $this->dashboardEloquent->syncSellThrough();
+            SyncSaleThroughJob::dispatch();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Sync Sell Through. Please wait a few minutes !',
             ]);
         }catch(Exception $ex){
             Log::error($ex->getMessage());

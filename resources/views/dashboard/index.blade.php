@@ -363,9 +363,10 @@
                         <li class="dropdown-header text-start">
                             <h6>Filter</h6>
                         </li>
-                        <li><a class="dropdown-item" href="#">Today</a></li>
-                        <li><a class="dropdown-item" href="#">This Month</a></li>
-                        <li><a class="dropdown-item" href="#">This Year</a></li>
+                        <li><a class="dropdown-item" href="#" id="filter-today-sell-through">Today</a></li>
+                        <li><a class="dropdown-item" href="#" id="filter-month-sell-through">This Month</a></li>
+                        <li><a class="dropdown-item" href="#" id="filter-year-sell-through">This Year</a></li>
+                        <li><a class="dropdown-item" href="#" id="sync-sell-through">Sync</a></li>
                     </ul>
                 </div>
 
@@ -376,9 +377,11 @@
                             <thead class="text-center">
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Bulan</th>
-                                    <th scope="col">Qty Barang Masuk</th>
-                                    <th scope="col">Qty Barang Terjual</th>
+                                    <!-- <th scope="col">SKU</th> -->
+                                    <th scope="col">Produk</th>
+                                    <th scope="col">Qty Masuk</th>
+                                    <th scope="col">Qty Terjual</th>
+                                    <th scope="col">Tgl Sync</th>
                                     <th scope="col">%</th>
                                 </tr>
                             </thead>
@@ -442,7 +445,7 @@
     // Format tanggal dalam bentuk string YYYY-MM-DD
     var formattedDate = year + '-' + month + '-' + day;
 
-    var now, currentMonth, this_year, myChart, start_date, end_date , convertStartDate, convertEndDate, table, table_sales_turnover, category_name, table_basket_size
+    var now, currentMonth, this_year, myChart, start_date, end_date , convertStartDate, convertEndDate, table, table_sales_turnover, category_name, table_basket_size, table_sell_through
     $(document).ready(function () {
       
         totalSoldWithQty()
@@ -467,6 +470,7 @@
         end_date = $("#end_date" ).val().split("-").reverse().join("-")
         reportSalesTurnoverMarketplace(start_date, end_date)
         reportBasketSize(start_date, end_date)
+        reportSellThrough(start_date, end_date)
        
         // -------------------- START FILTER BUTTON ------------------------ //
         $("#btn-search").on("click", function(e){
@@ -482,6 +486,8 @@
             filterChart(convertStartDate, convertEndDate, null, null, null)
             reportBasketSize(convertStartDate, convertEndDate, null, null)
             reportSalesTurnoverMarketplace(convertStartDate, convertEndDate, null, null)
+            reportSellThrough(convertStartDate, convertEndDate, null, null)
+            
             var description = "Periode " + start_date + " sampai dengan " + end_date
             $("#description").html(description)
         })
@@ -598,6 +604,24 @@
             reportBasketSize(null, null, null, null, this_year)
         })
         // --------------------------------------------------------------- //
+        // --------------------------------------------------------------- //
+        $("#filter-today-sell-through").on("click", function(e){
+            e.preventDefault()
+            now = formattedDate
+            reportSellThrough(null, null, now, null, null)
+        })
+        $("#filter-month-sell-through").on("click", function(e){
+            e.preventDefault()
+            currentMonth = today.getMonth() + 1
+            this_year = year
+            reportSellThrough(null, null, null, currentMonth, this_year)
+        })
+        $("#filter-year-sell-through").on("click", function(e){
+            e.preventDefault()
+            this_year = year
+            reportSellThrough(null, null, null, null, this_year)
+        })
+        // --------------------------------------------------------------- //
 
         // ------------------------START SYNC------------------------------- //
         $("#sync-market-place").on("click", function(e){
@@ -613,6 +637,11 @@
         $("#sync-best-product").on("click", function(e){
             e.preventDefault()
             syncBestProduct()
+        })
+
+        $("#sync-sell-through").on("click", function(e){
+            e.preventDefault()
+            syncSellThrough()
         })
         // -----------------------END SYNC----------------------------------- //
 
@@ -725,7 +754,6 @@
             dataType: "JSON",
             success: function (response) {
                 var data = response.data
-                console.log(data)
                 var row = ""
                 var number = 1
                 let formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' });
@@ -1001,6 +1029,31 @@
         });
     }
 
+    function syncSellThrough(){
+        $.ajax({
+            type: "GET",
+            url: "/api/analytics/sync-sell-through",
+            data: "data",
+            dataType: "JSON",
+            success: function (response) {
+                if(response.status == 200){
+                    $.confirm({
+                        title: 'Pesan ',
+                        content: response.message,
+                        buttons: {
+                            Ya: {
+                                btnClass: 'btn-success any-other-class',
+                                action: function(){
+                                    reportSellThrough()
+                                }
+                            },
+                        }
+                    });
+                }
+            }
+        });
+    }
+
     function reportSalesTurnoverMarketplace(start_date=null, end_date=null, today=null, this_month=null, this_year=null){
         if (table_sales_turnover != null) {
             table_sales_turnover.destroy();
@@ -1045,7 +1098,7 @@
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
                         $(td).addClass("text-center");
-                        $(td).html(table.page.info().start + row + 1);
+                        $(td).html(table_sales_turnover.page.info().start + row + 1);
                     },
                 },
                 {
@@ -1145,7 +1198,7 @@
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
                         $(td).addClass("text-center");
-                        $(td).html(table.page.info().start + row + 1);
+                        $(td).html(table_basket_size.page.info().start + row + 1);
                     },
                 },
                 {
@@ -1190,6 +1243,124 @@
             ],
             ajax:{
                 url :  '/api/analytics/report/basket-size',
+                type: "GET",
+                data: {
+                    start_date:start_date, 
+                    end_date : end_date,
+                    today : today,
+                    this_month : this_month,
+                    this_year : this_year
+                }
+            },
+        })
+    }
+
+    function reportSellThrough(start_date=null, end_date=null, today=null, this_month=null, this_year=null){
+        if (table_sell_through != null) {
+            table_sell_through.destroy();
+        }
+
+        table_sell_through =  $("#table-sell-through").DataTable({
+            // lengthChange: false,
+            searching: false,
+            destroy: true,
+            processing: true,
+            serverSide: true,
+            bAutoWidth: true,
+            scrollCollapse : true,
+            ordering: false,
+            language: {
+                emptyTable: "Data tidak tersedia",
+                zeroRecords: "Tidak ada data yang ditemukan",
+                infoFiltered: "",
+                infoEmpty: "",
+                paginate: {
+                    previous: "‹",
+                    next: "›",
+                },
+                info: "Display _START_ s/d _END_ dari _TOTAL_ SellThrough",
+                aria: {
+                    paginate: {
+                        previous: "Previous",
+                        next: "Next",
+                    },
+                },
+            },
+            columns: [
+                { data: null, width: "2%" },
+                // { data: null},
+                { data: null },
+                { data: null },
+                { data: null },
+                { data: null },
+                { data: null },
+            ],
+            columnDefs: [
+                {
+                    targets: 0,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).addClass("text-center");
+                        $(td).html(table_sell_through.page.info().start + row + 1);
+                    },
+                },
+                // {
+                //     targets: 1,
+                //     searchable: false,
+                //     orderable: false,
+                //     createdCell: function (td, cellData, rowData, row, col) {
+                //         $(td).html(rowData.sku_code);
+                //     },
+                // },
+                {
+                    targets: 1,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.product_name);
+                    },
+                },
+                {
+                    targets: 2,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.total_unit_received);
+                    },
+                },
+                {
+                    targets: 3,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.total_unit_sold);
+                    },
+                },
+                {
+                    targets: 4,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var sync_date = rowData.sync_date
+                        var currDate = new Date(sync_date)
+                        var currMonth = currDate.toLocaleString('default', { month: 'long' })
+                        var currYear = currDate.getFullYear()
+                        var format = currDate.getDate() + "-"+ currMonth +"-"+ currYear
+                        $(td).html(format);
+                    },
+                },
+                {
+                    targets: 5,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.sell_through);
+                    },
+                },
+            ],
+            ajax:{
+                url :  '/api/analytics/report/sell-through',
                 type: "GET",
                 data: {
                     start_date:start_date, 

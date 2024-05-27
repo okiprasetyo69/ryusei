@@ -164,6 +164,7 @@ Route::controller(DashboardController::class)->group(function() {
     Route::get('/analytics/sync-sales-turnover-marketplace', 'syncSalesTurnoverMarketPlace')->name('analytics.sync-sales-turnover-marketplace');
     Route::get('/analytics/sync-basket-size', 'syncBaksetSize')->name('analytics.sync-basket-size');
     Route::get('/analytics/sync-best-product', 'syncBestProduct')->name('analytics.sync-best-product');
+    Route::get('/analytics/sync-sell-through', 'syncSellThrough')->name('analytics.sync-sell-through');
 });
 
 // Warehouse
