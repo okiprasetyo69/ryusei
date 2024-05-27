@@ -487,7 +487,7 @@
             reportBasketSize(convertStartDate, convertEndDate, null, null)
             reportSalesTurnoverMarketplace(convertStartDate, convertEndDate, null, null)
             reportSellThrough(convertStartDate, convertEndDate, null, null)
-            
+
             var description = "Periode " + start_date + " sampai dengan " + end_date
             $("#description").html(description)
         })
@@ -1256,6 +1256,7 @@
     }
 
     function reportSellThrough(start_date=null, end_date=null, today=null, this_month=null, this_year=null){
+
         if (table_sell_through != null) {
             table_sell_through.destroy();
         }
