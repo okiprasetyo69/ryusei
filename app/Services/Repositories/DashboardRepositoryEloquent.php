@@ -454,6 +454,7 @@ use Yajra\DataTables\Facades\DataTables;
     public function reportSellThrough(Request $request){
         try{
             $reportSellThrough = DataMartSellThrough::orderBy("sync_date", "DESC");
+            
             if($request->start_date != null){
                 $reportSellThrough =  $reportSellThrough->where("sync_date", ">=",$request->start_date);
             }

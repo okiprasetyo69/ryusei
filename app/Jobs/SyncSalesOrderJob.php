@@ -44,6 +44,10 @@ class SyncSalesOrderJob implements ShouldQueue
         $upsertPurchaseDetailInvoice = $service->getDataWareHouseDetailOrderTransaction($this->userData, $this->transactionDateFrom, $this->transactionDateTo);
         Log::info('Finish Sync Process Upsert Sales Order...');
 
+        Log::info('Sync Process Upsert Sell Price...');
+        $upsertPurchaseDetailInvoice = $service->getDataWareHouseDetailOrderTransaction($this->userData, $this->transactionDateFrom, $this->transactionDateTo);
+        Log::info('Finish Sync Process Upsert  Sell Price...');
+
         broadcast(new JobCompleted('Sync Sales Order Completed has been successed !'));
     }
 }

@@ -213,9 +213,6 @@
             e.preventDefault()
             var transactionDateFrom =  $('#start_date').val().split("-").reverse().join("-")
             var transactionDateTo =  $('#end_date').val().split("-").reverse().join("-")
-            $("#btn-sync").attr("disabled", true);
-            $("#spinner-sync").attr("class", "spinner-grow spinner-grow-sm")
-            $("#lbl-sync").text("Loading...")
             $.ajax({
                 type: "GET",
                 url: "/jubelio/transaction/invoice",
@@ -226,9 +223,6 @@
                 dataType: "JSON",
                 success: function (response) {
                     if(response.status == 200){
-                        $("#btn-sync").attr("disabled", false);
-                        $("#spinner-sync").attr("class", "")
-                        $("#lbl-sync").text("Sync Invoice")
                         $.confirm({
                             title: 'Pesan',
                             content: response.message,

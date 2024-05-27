@@ -179,11 +179,6 @@
          // sync purchase order
         $("#btn-sync").on("click", function(e){
             e.preventDefault()
-           
-            $("#btn-sync").attr("disabled", true);
-            $("#spinner-sync").attr("class", "spinner-grow spinner-grow-sm")
-            $("#lbl-sync").text("Loading...")
-
             $.ajax({
                 type: "GET",
                 url: "/jubelio/purchase/order",
@@ -217,20 +212,16 @@
         var channel = pusher.subscribe('jobs');
         channel.bind('job.completed', function(data) {
             // Tampilkan pesan saat event diterima
-            console.log(data)
-                $("#btn-sync").attr("disabled", false);
-                $("#spinner-sync").attr("class", "")
-                $("#lbl-sync").text("Sync Purchase Order")
-                $.confirm({
-                    title: 'Pesan !',
-                    content: data.message,
-                    type: 'orange',
-                    typeAnimated: true,
-                    buttons: {
-                        close: function () {
-                        }
+            $.confirm({
+                title: 'Pesan !',
+                content: data.message,
+                type: 'orange',
+                typeAnimated: true,
+                buttons: {
+                    close: function () {
                     }
-                });
+                }
+            });
         });
     });
 
