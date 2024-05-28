@@ -270,7 +270,8 @@ use Yajra\DataTables\Facades\DataTables;
     public function reportBestProduct(Request $request){
         try{
             $limit = 10;
-            $bestProduct = DataMartProductDetail::orderBy('qty_sold', 'DESC');
+
+            $bestProduct = DB::table("data_mart_product_details")->select("name", DB::raw("SUM(qty_sold) as qty_sold"));
 
             if($request->start_date != null){
                 $bestProduct =  $bestProduct->where("transaction_date", ">=",$request->start_date);
@@ -292,7 +293,8 @@ use Yajra\DataTables\Facades\DataTables;
                 $bestProduct =  $bestProduct->whereYear("transaction_date",$request->this_year);
             }
 
-            $bestProduct =  $bestProduct->take($limit)->get();
+            $bestProduct = $bestProduct->groupBy("name")->orderBy("qty_sold", "DESC")->take($limit)->get(); 
+          
             return response()->json([
                 'status' => 200,
                 'message' => true,
@@ -453,8 +455,10 @@ use Yajra\DataTables\Facades\DataTables;
 
     public function reportSellThrough(Request $request){
         try{
-            $reportSellThrough = DataMartSellThrough::orderBy("sync_date", "DESC");
-            
+            // $reportSellThrough = DataMartSellThrough::orderBy("sync_date", "DESC");
+            $reportSellThrough = DB::table("data_mart_sell_throughs")
+                                ->select("name", "sync_date", DB::raw("SUM(total_unit_received) as total_unit_received"), DB::raw("SUM(total_unit_sold) as total_unit_sold"), DB::raw("SUM(total_unit_sold) / SUM(total_unit_received) * 100 as sell_throughs"));
+
             if($request->start_date != null){
                 $reportSellThrough =  $reportSellThrough->where("sync_date", ">=",$request->start_date);
             }
@@ -474,7 +478,9 @@ use Yajra\DataTables\Facades\DataTables;
             if($request->this_year != null){
                 $reportSellThrough =  $reportSellThrough->whereYear("sync_date",$request->this_year);
             }
-            $reportSellThrough = $reportSellThrough->get();
+            //$reportSellThrough = $reportSellThrough->get();
+            $reportSellThrough = $reportSellThrough->groupBy("name", "sync_date")->orderBy("sell_throughs", "DESC")->get(); 
+
             $datatables = Datatables::of($reportSellThrough);
             return $datatables->make(true);
             
@@ -577,7 +583,9 @@ use Yajra\DataTables\Facades\DataTables;
                             ->select("data_ware_house_order_details.sku_id", "data_ware_house_order_details.sku_code", DB::raw("SUM(data_ware_house_order_details.qty_in_base) as qty_sold"));
             $bestProduct = $bestProduct->groupBy("data_ware_house_order_details.sku_code", "data_ware_house_order_details.sku_id")
                             ->orderBy("qty_sold", "DESC")->get(); 
+                            
             $today = date('Y-m-d');
+
             foreach ($bestProduct as $key => $value) {
                 $dataMartProductDetail = DataMartProductDetail::where("sku_code", $value->sku_code)->first();
                 $product = Product::where("sku", $value->sku_code)->where("id", $value->sku_id)->first();
@@ -587,11 +595,14 @@ use Yajra\DataTables\Facades\DataTables;
                     $newDataMartProductDetail = new DataMartProductDetail();
                     $newDataMartProductDetail->sku_id =  $product['id'];
                     $newDataMartProductDetail->sku_code = $product['sku'];
+                    $newDataMartProductDetail->name = $product['name'];
+
                     if($product['article'] != null){
                         $newDataMartProductDetail->product_name = $product['article'];
                     } else {
                         $newDataMartProductDetail->product_name = $product['name'];
                     }
+
                     $newDataMartProductDetail->qty_sold = $value->qty_sold;
                     $newDataMartProductDetail->sync_date = $today;
 
@@ -600,6 +611,10 @@ use Yajra\DataTables\Facades\DataTables;
 
                 if($dataMartProductDetail != null){
                     Log::info('Update Best Product with SKU : ' . $value->sku_code);
+                    
+                    $dataMartProductDetail->sku_code = $product['sku'];
+                    $dataMartProductDetail->name = $product['name'];
+
                     if($product['article'] != null){
                         $dataMartProductDetail->product_name = $product['article'];
                     } else {
@@ -622,7 +637,11 @@ use Yajra\DataTables\Facades\DataTables;
         try{
             // Formula
             // X (Rp)= Omset Penjualan (akhir bulan) / Nilai Inventory Keseluruhan dalam rupiah (dari harga jual) dari data gudang
-          
+            // Omset Penjualan = SUM(Grand Total dari Invoice)
+            // Nilai Inventory = SUM ((Total Stock Per Item x Harga Jual Per Item))
+            $dataInventoryValue =  DB::table("data_ware_house_order_details")
+                            ->join("item_stocks", "data_ware_house_order_details.sku_code", "=", "item_stocks.sku_code")
+                             ->select("item_stocks.sku_code", DB::raw("SUM(data_ware_house_order_details.amount) as sell_price"), DB::raw("SUM(item_stocks.sell_price) as inventory_price") );
 
             $today = date('Y-m-d');
 
@@ -645,7 +664,9 @@ use Yajra\DataTables\Facades\DataTables;
 
             $today = date('Y-m-d');
             $sellThrough = null;
+
             foreach ($dataSellThrough as $key => $value) {
+
                 $dataMartSellThrough = DataMartSellThrough::where("sku_code", $value->sku_code)->where("sync_date")->first();
                 $product = Product::where("sku", $value->sku_code)->first();
 
@@ -659,22 +680,25 @@ use Yajra\DataTables\Facades\DataTables;
                     Log::info('Insert Sell Through with SKU : ' . $value->sku_code);
                     $newDataMartSellThrough = new DataMartSellThrough();
                     $newDataMartSellThrough->sku_code = $value->sku_code;
-
+                 
                     if($product->article == null){
                         $newDataMartSellThrough->product_name = $product->name; 
                     } else {
                         $newDataMartSellThrough->product_name = $product->article; 
                     }
+
                     $newDataMartSellThrough->total_unit_received =  (int) $value->unit_stock;
                     $newDataMartSellThrough->total_unit_sold = (int) $value->total_units_sold;
                     $newDataMartSellThrough->sell_through =  $sellThrough;
                     $newDataMartSellThrough->sync_date = $today = date('Y-m-d');
+                    $newDataMartSellThrough->name = $product->name;
 
                     $newDataMartSellThrough->save();
                 }
 
                 if($dataMartSellThrough != null){
                     Log::info('Update Sell Through with SKU : ' .$value->sku_code);
+                   
                     if($product->article == null){
                         $dataMartSellThrough->product_name = $product->name; 
                     } else {
@@ -683,6 +707,7 @@ use Yajra\DataTables\Facades\DataTables;
                     $dataMartSellThrough->total_unit_received = (int) $value->unit_stock;
                     $dataMartSellThrough->total_unit_sold =  (int) $value->total_units_sold;
                     $dataMartSellThrough->sell_through =  $sellThrough;
+                    $dataMartSellThrough->name = $product->name;
                     $dataMartSellThrough->sync_date = $today = date('Y-m-d');
 
                     $dataMartSellThrough->save();

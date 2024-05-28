@@ -20,6 +20,7 @@ class DataMartSellThrough extends Model
         'total_unit_sold',
         'sell_through',
         'sync_date',
+        'name'
     ];
 
     public function product(){

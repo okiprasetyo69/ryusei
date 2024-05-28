@@ -175,7 +175,6 @@
                                 <thead>
                                 <tr class="text-center">
                                     <th scope="col">Rank</th>
-                                    <th scope="col">SKU</th>
                                     <th scope="col">Product</th>
                                     <th scope="col">Qty Terjual</th>
                                     <!-- <th scope="col">Total Penjualan</th> -->
@@ -761,7 +760,7 @@
                 $("#table-most-product").find("tr:gt(0)").remove();
                 $.each(data, function (i, val) {
                     total_sell = formatter.format(val.total_sell)
-                    row += "<tr class='text-center'><td>"+ (number++) +"</td><td>"+val.sku_code+"</td><td>"+val.product_name+"</td><td>"+val.qty_sold+"</td></tr>"
+                    row += "<tr class='text-center'><td>"+ (number++) +"</td><td>"+val.name+"</td><td>"+val.qty_sold+"</td></tr>"
                 });
                 $("#table-most-product > tbody:last-child").append(row); 
             }
@@ -1036,6 +1035,7 @@
             data: "data",
             dataType: "JSON",
             success: function (response) {
+                console.log(response)
                 if(response.status == 200){
                     $.confirm({
                         title: 'Pesan ',
@@ -1044,7 +1044,7 @@
                             Ya: {
                                 btnClass: 'btn-success any-other-class',
                                 action: function(){
-                                    reportSellThrough()
+                                    table_sell_through.ajax.reload();
                                 }
                             },
                         }
@@ -1319,7 +1319,7 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html(rowData.product_name);
+                        $(td).html(rowData.name);
                     },
                 },
                 {
@@ -1356,7 +1356,9 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html(rowData.sell_through);
+                        var sell_throughs = Number(rowData.sell_throughs)
+                        sell_throughs = sell_throughs.toFixed(2)
+                        $(td).html(sell_throughs);
                     },
                 },
             ],

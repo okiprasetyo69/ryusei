@@ -87,6 +87,14 @@
                                     <label id="lbl-sync">Sync Purchase Order</label>
                                 </button>
                             </div>
+                            <div class="col-md-4"> </div>
+                            <div class="col-md-4">
+                                <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                                    <i class="bi bi-star me-1"></i>
+                                        Total Purchase Order : 
+                                    <label id="lbl-total">252.684</label> 
+                                </div>
+                            </div>
                         </div>
                         <div class="row mt-2">
                             <div class="col-md-12">
@@ -175,7 +183,7 @@
         end_date = $("#end_date").val()
         end_date = end_date.split("-").reverse().join("-")
         loadPurchaseOrder(order_number, start_date, end_date, openState, closeState, draftState, voidState)
-
+        totalPurchaseOrder()
          // sync purchase order
         $("#btn-sync").on("click", function(e){
             e.preventDefault()
@@ -480,6 +488,18 @@
         });
     }
 
+    function totalPurchaseOrder(){
+        $.ajax({
+            type: "GET",
+            url: "/api/purchase/order/total",
+            data: "data",
+            dataType: "JSON",
+            success: function (response) {
+                total = response.data.total_purchase_order
+                $("#lbl-total").text(total)
+            }
+        });
+    }
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>

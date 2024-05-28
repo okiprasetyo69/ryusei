@@ -102,7 +102,7 @@ class DataWarehouseSalesOrderRepositoryEloquent implements DataWarehouseSalesOrd
             $transactionDateFrom = $transactionDateFrom."T17%3A00%3A00.000Z";
             $transactionDateTo = $transactionDateTo."T16%3A59%3A00.000Z&q=";
             $firstPage = 1;
-            $pageSize = 3000;
+            $pageSize = 200;
             $today = date('Y-m-d');
 
             $responses = $this->endPointSalesOrderTransaction($userData, $firstPage,  $pageSize, $transactionDateFrom, $transactionDateTo);

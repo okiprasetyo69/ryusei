@@ -223,6 +223,7 @@ Route::controller(PurchasingController::class)->group(function() {
 // Manage purchase order
 Route::controller(PurchaseOrderController::class)->group(function() {
     Route::get('/purchase/order', 'getPurchaseOrder')->name('purchase-order.data');
+    Route::get('/purchase/order/total', 'totalPurchaseOrder')->name('purchase-order.total');
     // Route::post('/purchasing-invoice/create', 'create')->name('purchasing-invoice.create');
     // Route::post('/purchasing-invoice/update', 'update')->name('purchasing-invoice.update');
     // Route::post('/purchasing-invoice/delete', 'delete')->name('purchasing-invoice.delete');

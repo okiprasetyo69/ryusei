@@ -120,5 +120,18 @@ class PurchaseOrderController extends Controller
             return false;
         }
     }
+
+    public function totalPurchaseOrder(Request $request){
+        try{
+            $totalPurchaseOrder = $this->service->getTotalPurchaseOrder($request);
+            if($totalPurchaseOrder != null){
+                return $totalPurchaseOrder;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
    
 }

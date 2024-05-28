@@ -75,6 +75,21 @@ use Illuminate\Support\Facades\Http;
         }
     }
 
+    public function getTotalPurchaseOrder(Request $request){
+        try{
+            $totalPurchaseOrder = DB::table("purchase_orders")->select(DB::raw("COUNT(*) as total_purchase_order"))->first();
+            return response()->json([
+                'status' => 200,
+                'message' => "Success get total purchase order !",
+                'data' => $totalPurchaseOrder 
+            ]); 
+           
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
     public function purchaseOrderDetail(Request $request){
         try{
             $purchaseOrderDetail = PurchaseOrderDetail::with("unit")->where("purchase_id", $request->purchase_id)->get();

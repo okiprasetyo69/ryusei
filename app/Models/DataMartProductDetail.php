@@ -25,6 +25,7 @@ class DataMartProductDetail extends Model
         'grand_total',
         'transaction_date',
         'sync_date',
+        'name',
     ];
 
     public function product(){
