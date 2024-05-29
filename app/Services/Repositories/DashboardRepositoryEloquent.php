@@ -10,7 +10,8 @@ use App\Models\DataMartProductDetail;
 use App\Models\BasketSizeReport;
 use App\Models\Product;
 use App\Models\DataMartSellThrough;
-
+use App\Models\DataMartSaleStockRatio;
+use App\Models\SellStockRatioReport;
 use App\Services\Interfaces\ItemStockService;
 use App\Services\Interfaces\DashboardService;
 
@@ -444,10 +445,48 @@ use Yajra\DataTables\Facades\DataTables;
         }
     }
 
-    public function reportSaleStockRatio(Request $request){
+    public function reportSellStockRatioDaily(Request $request){
         try{
-            return true;
+            $reportSSR = SellStockRatioReport::orderBy("transaction_date", "DESC");
+
+            if($request->start_date != null){
+                $reportSSR =  $reportSSR->where("transaction_date", ">=",$request->start_date);
+            }
+
+            if($request->end_date != null){
+                $reportSSR =  $reportSSR->where("transaction_date", "<=",$request->end_date);
+            }
+
+            if($request->today != null){
+                $reportSSR =  $reportSSR->where("transaction_date", $request->today);
+            }
+
+            if($request->this_month != null){
+                $reportSSR =  $reportSSR->whereMonth("transaction_date", $request->this_month);
+            }
+                
+            if($request->this_year != null){
+                $reportSSR =  $reportSSR->whereYear("transaction_date",$request->this_year);
+            }
+
+            $reportSSR =  $reportSSR->get();
+            $datatables = Datatables::of($reportSSR);
+            return $datatables->make(true);
         }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function reportSSRMonthly(Request $request){
+        try{
+            $reportSSRMonthly = DB::table("sell_stock_ratio_reports")
+                        ->select(DB::raw("DATE_FORMAT(transaction_date, '%M') as by_month"), DB::raw("DATE_FORMAT(transaction_date, '%Y') as by_year"), DB::raw("SUM(total_sales_turn_over) as omset"), DB::raw("SUM(total_inventory_value) as inv_value"),  DB::raw("(SUM(total_sales_turn_over) / SUM(total_inventory_value)) * 100  as ssr_month"));
+            $reportSSRMonthly = $reportSSRMonthly->groupBy("by_month", "by_year")->get();
+            $datatables = Datatables::of($reportSSRMonthly);
+            return $datatables->make(true);
+        }
+        catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;
         }
@@ -633,24 +672,6 @@ use Yajra\DataTables\Facades\DataTables;
         }
     }
 
-    public function saleStockRatio(){
-        try{
-            // Formula
-            // X (Rp)= Omset Penjualan (akhir bulan) / Nilai Inventory Keseluruhan dalam rupiah (dari harga jual) dari data gudang
-            // Omset Penjualan = SUM(Grand Total dari Invoice)
-            // Nilai Inventory = SUM ((Total Stock Per Item x Harga Jual Per Item))
-            $dataInventoryValue =  DB::table("data_ware_house_order_details")
-                            ->join("item_stocks", "data_ware_house_order_details.sku_code", "=", "item_stocks.sku_code")
-                             ->select("item_stocks.sku_code", DB::raw("SUM(data_ware_house_order_details.amount) as sell_price"), DB::raw("SUM(item_stocks.sell_price) as inventory_price") );
-
-            $today = date('Y-m-d');
-
-        }catch(Exception $ex){
-            Log::error($ex->getMessage());
-            return false;
-        }
-    }
-
     public function syncSellThrough(){
         try{
             // Formula
@@ -719,5 +740,160 @@ use Yajra\DataTables\Facades\DataTables;
             return false;
         }
     }
-   
+
+    public function syncSaleStockRatio(){
+        try{
+            // Formula
+            // X (Rp)= Omset Penjualan (akhir bulan) / Nilai Inventory Keseluruhan dalam rupiah (dari harga jual) dari data gudang
+            // Omset Penjualan = SUM(Grand Total dari Invoice)
+            // Nilai Inventory = SUM ((Total Stock Per Item x Harga Jual Per Item))
+            $today = date('Y-m-d');
+            // Get inventory value then store to data mart
+            $getInventoryValueSaleStockRatio = $this->getInventoryValueSaleStockRatio($today);
+            
+            // Calculate or SUM total inventory value then Store to report sale stock ratio
+            $totalInventoryValue = $this->totalInventoryValue($today);
+
+            // Calculate or SUM Total Sales Turn Over (Omset)
+            $totalSalesTurnOver = $this->totalSalesTurnOver($today);
+
+            //$ssr = $this->calculateSSR($today);
+
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function getInventoryValueSaleStockRatio($today){
+        try{
+            // Get Inventory Value
+            $dataValueInventory =  DB::table("data_ware_house_order_details")
+                                    ->join("item_stocks", "data_ware_house_order_details.sku_code", "=", "item_stocks.sku_code")
+                                    ->join("data_ware_house_orders", "data_ware_house_order_details.dwh_order_id", "=", "data_ware_house_orders.id")
+                                    ->select("data_ware_house_orders.transaction_date", "data_ware_house_orders.salesorder_no",  "data_ware_house_order_details.dwh_order_id", "data_ware_house_order_details.sku_code", "item_stocks.qty as total_stock", "data_ware_house_order_details.amount" , DB::raw("item_stocks.qty * data_ware_house_order_details.amount  as total_inventory"));
+                
+            $dataValueInventory =  $dataValueInventory->orderBy("data_ware_house_order_details.dwh_order_id", "ASC")->get();  
+            // Store to data mart
+            foreach ($dataValueInventory as $key => $value) {
+                $dataMartSaleStockRatio = DataMartSaleStockRatio::where("transaction_date", $value->transaction_date)
+                                            ->where("salesorder_no", $value->salesorder_no)
+                                            ->where("dwh_order_id", $value->dwh_order_id)
+                                            ->where("sku_code", $value->sku_code)->first();
+                if($dataMartSaleStockRatio == null){
+                    Log::info('Insert Data Mart Inventory Value with SKU : ' . $value->sku_code . ' - Order Number : ' . $value->salesorder_no . ' Date : ' . $value->transaction_date);
+                    $newDataMartSaleStockRatio = new DataMartSaleStockRatio();
+                    $newDataMartSaleStockRatio->transaction_date = $value->transaction_date;
+                    $newDataMartSaleStockRatio->sku_code =  $value->sku_code;
+                    $newDataMartSaleStockRatio->sync_date =  $today;
+                    $newDataMartSaleStockRatio->salesorder_no =  $value->salesorder_no;
+                    $newDataMartSaleStockRatio->dwh_order_id = $value->dwh_order_id;
+                    $newDataMartSaleStockRatio->total_stock = $value->total_stock;
+                    $newDataMartSaleStockRatio->amount = $value->amount;
+                    $newDataMartSaleStockRatio->total_inventory = $value->total_inventory;
+                        
+                    $newDataMartSaleStockRatio->save();
+                }
+
+                if($dataMartSaleStockRatio != null){
+                    Log::info('Update Data Mart Inventory Value with SKU : ' . $value->sku_code . ' - Order Number : ' . $value->salesorder_no . ' Date : ' . $value->transaction_date);
+                    $dataMartSaleStockRatio->sync_date =  $today = date('Y-m-d');
+                    $dataMartSaleStockRatio->salesorder_no = $value->salesorder_no;
+                    $dataMartSaleStockRatio->dwh_order_id = $value->dwh_order_id;
+                    $dataMartSaleStockRatio->total_stock = $value->total_stock;
+                    $dataMartSaleStockRatio->amount =$value->amount;
+                    $dataMartSaleStockRatio->total_inventory = $value->total_inventory;
+
+                    $dataMartSaleStockRatio->save();
+                }
+            }
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+    
+    public function totalInventoryValue($today){
+        try{
+            $totalInventoryValue = DB::table("data_mart_sale_stock_ratios")
+                                    ->select("transaction_date",  DB::raw("SUM(total_inventory) as total_inventory"));
+            $totalInventoryValue = $totalInventoryValue->groupBy("transaction_date")->get();
+
+            foreach ($totalInventoryValue as $key => $value) {
+                $dataReportSellStockRatio = SellStockRatioReport::where("transaction_date", $value->transaction_date)->first();
+
+                if($dataReportSellStockRatio == null){
+                    Log::info('Insert Inventory Value to Report Sell Stock Ratio with transaction date : '.$value->transaction_date. ' and total inventory value : ' . $value->total_inventory);
+                    $newReportInventoryValue = new SellStockRatioReport();
+                    $newReportInventoryValue->transaction_date = $value->transaction_date;
+                    $newReportInventoryValue->total_inventory_value = $value->total_inventory;
+                    $newReportInventoryValue->sync_date = $today;
+                    $newReportInventoryValue->save();
+                }
+
+                if($dataReportSellStockRatio != null){
+                    Log::info('Update Inventory Value to Report Sell Stock Ratio with transaction date : '.$value->transaction_date. ' and total inventory value : ' . $value->total_inventory_value);
+                    $dataReportSellStockRatio->total_inventory_value = $value->total_inventory;
+                    $dataReportSellStockRatio->total_sales_turn_over = $dataReportSellStockRatio->total_sales_turn_over;
+                    $dataReportSellStockRatio->sync_date = $today;
+                    $dataReportSellStockRatio->save();
+                }
+            }
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function totalSalesTurnOver($today){
+        try{
+            $totalOmset = DB::table("data_ware_house_orders")
+                        ->select("transaction_date",  DB::raw("SUM(grand_total) as amount"));
+            $totalOmset = $totalOmset->groupBy("transaction_date")->get();
+
+            foreach ($totalOmset as $key => $value) {
+                $dataReportSellStockRatio = SellStockRatioReport::where("transaction_date", $value->transaction_date)->first();
+
+                if($dataReportSellStockRatio == null){
+                    Log::info('Insert Omset to Report Sell Stock Ratio with transaction date : '.$value->transaction_date. ' and amount of grand total : ' . $value->amount);
+                    $newReportAmountGrandTotal = new SellStockRatioReport();
+                    $newReportAmountGrandTotal->transaction_date = $value->transaction_date;
+                    $newReportAmountGrandTotal->total_sales_turn_over = $value->amount;
+                    $newReportInventoryValue->sell_stock_ratio = $value->amount /  $dataReportSellStockRatio->total_inventory_value;
+                    $newReportAmountGrandTotal->save();
+                }
+
+                if($dataReportSellStockRatio!= null){
+                    Log::info('Update Omset to Report Sell Stock Ratio with transaction date : '.$value->transaction_date. ' and amount of grand total : ' . $value->amount);
+                    $newReportAmountGrandTotal = new SellStockRatioReport();
+                    $dataReportSellStockRatio->total_sales_turn_over = $value->amount;
+                    $dataReportSellStockRatio->total_inventory_value = $dataReportSellStockRatio->total_inventory_value;
+                    $dataReportSellStockRatio->sell_stock_ratio = $value->amount /  $dataReportSellStockRatio->total_inventory_value;
+                    $dataReportSellStockRatio->save();
+                }
+            }
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function calculateSSR($today){
+        try{
+            $reportSSR = SellStockRatioReport::all();
+            foreach ($reportSSR as $key => $value) {
+                $dataReportSSR = SellStockRatioReport::where("transaction_date", $value->transaction_date)->first();
+                $dataReportSSR->transaction_date = $dataReportSSR->transaction_date;
+                $dataReportSSR->total_sales_turn_over = $dataReportSSR->total_sales_turn_over;
+                $dataReportSSR->total_inventory_value = $dataReportSSR->total_inventory_value;
+                $dataReportSSR->sell_stock_ratio = $dataReportSSR->total_sales_turn_over / $dataReportSSR->total_inventory_value;
+                $dataReportSSR->sync_date = $today;
+                $dataReportSSR->save();
+            }
+        }
+        catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
  }

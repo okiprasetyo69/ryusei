@@ -263,6 +263,79 @@
                 </div>
                 <!-- End TReport Basket Size -->
 
+                <!-- Start Report Sell Stock Ratio Daily -->
+                <div class="col-12">  
+                    <div class="card top-selling overflow-auto">
+                        <div class="filter">
+                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                <li class="dropdown-header text-start">
+                                    <h6>Filter</h6>
+                                </li>
+                                <li><a class="dropdown-item" href="#">Today</a></li>
+                                <li><a class="dropdown-item" href="#">This Month</a></li>
+                                <li><a class="dropdown-item" href="#">This Year</a></li>
+                            </ul>
+                        </div>
+                        <div class="card-body pb-0">
+                            <h5 class="card-title">Sell Stock Ratio Daily</h5>
+                            <div class="table-responsinve mt-4">
+                                <table class="table table-striped" id="table-ssr-daily">
+                                    <thead class="text-center">
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Tgl</th>
+                                            <th scope="col">Omset</th>
+                                            <th scope="col">Nilai Inventory</th>
+                                            <th scope="col">SSR (%)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                                
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Report Sell Stock Ratio Daily -->
+
+                <!-- Start Report Sell Stock Ratio Monthly -->
+                <div class="col-12">  
+                    <div class="card top-selling overflow-auto">
+                        <div class="filter">
+                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                <li class="dropdown-header text-start">
+                                    <h6>Filter</h6>
+                                </li>
+                                <li><a class="dropdown-item" href="#">Today</a></li>
+                                <li><a class="dropdown-item" href="#">This Month</a></li>
+                                <li><a class="dropdown-item" href="#">This Year</a></li>
+                            </ul>
+                        </div>
+                        <div class="card-body pb-0">
+                            <h5 class="card-title">Sell Stock Ratio Monthly</h5>
+                            <div class="table-responsinve mt-4">
+                                <table class="table table-striped" id="table-ssr-monthly">
+                                    <thead class="text-center">
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Bulan</th>
+                                            <th scope="col">Omset</th>
+                                            <th scope="col">Nilai Inventory</th>
+                                            <th scope="col">SSR (%)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                                
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Report Sell Stock Ratio Monthly -->
             </div>
         </div>
         <!-- End Left side columns -->
@@ -317,43 +390,6 @@
                 </div>
           </div>
           <!-- End Monitoring Stock -->
-
-          <!-- Sale Stock Ratio Report -->
-          <div class="card">
-                <div class="filter">
-                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                        <li class="dropdown-header text-start">
-                            <h6>Filter</h6>
-                        </li>
-                        <li><a class="dropdown-item" href="#">Today</a></li>
-                        <li><a class="dropdown-item" href="#">This Month</a></li>
-                        <li><a class="dropdown-item" href="#">This Year</a></li>
-                    </ul>
-                </div>
-
-                <div class="card-body pb-0">
-                    <h5 class="card-title">Sale Stock Ratio</h5>
-                    <div class="table-responsinve mt-4">
-                        <table class="table table-striped" id="table-ssr">
-                            <thead class="text-center">
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Bulan</th>
-                                    <th scope="col">Omset</th>
-                                    <th scope="col">Nilai Inventory</th>
-                                    <th scope="col">Rp</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                        
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-          </div>
-          <!-- Sale Stock Ratio Report -->
-
           <!-- Sell Through  -->
           <div class="card">
                 <div class="filter">
@@ -444,7 +480,7 @@
     // Format tanggal dalam bentuk string YYYY-MM-DD
     var formattedDate = year + '-' + month + '-' + day;
 
-    var now, currentMonth, this_year, myChart, start_date, end_date , convertStartDate, convertEndDate, table, table_sales_turnover, category_name, table_basket_size, table_sell_through
+    var now, currentMonth, this_year, myChart, start_date, end_date , convertStartDate, convertEndDate, table, table_sales_turnover, category_name, table_basket_size, table_sell_through, table_ssr_daily, table_ssr_monthly
     $(document).ready(function () {
       
         totalSoldWithQty()
@@ -470,7 +506,8 @@
         reportSalesTurnoverMarketplace(start_date, end_date)
         reportBasketSize(start_date, end_date)
         reportSellThrough(start_date, end_date)
-       
+        reportSSRDaily()
+        reportSSRMonthly()
         // -------------------- START FILTER BUTTON ------------------------ //
         $("#btn-search").on("click", function(e){
             e.preventDefault()
@@ -1364,6 +1401,218 @@
             ],
             ajax:{
                 url :  '/api/analytics/report/sell-through',
+                type: "GET",
+                data: {
+                    start_date:start_date, 
+                    end_date : end_date,
+                    today : today,
+                    this_month : this_month,
+                    this_year : this_year
+                }
+            },
+        })
+    }
+
+    function reportSSRDaily(start_date=null, end_date=null, today=null, this_month=null, this_year=null){
+        if (table_ssr_daily != null) {
+            table_ssr_daily.destroy();
+        }
+
+        table_ssr_daily =  $("#table-ssr-daily").DataTable({
+            // lengthChange: false,
+            searching: false,
+            destroy: true,
+            processing: true,
+            serverSide: true,
+            bAutoWidth: true,
+            scrollCollapse : true,
+            ordering: false,
+            language: {
+                emptyTable: "Data tidak tersedia",
+                zeroRecords: "Tidak ada data yang ditemukan",
+                infoFiltered: "",
+                infoEmpty: "",
+                paginate: {
+                    previous: "‹",
+                    next: "›",
+                },
+                info: "Display _START_ s/d _END_ dari _TOTAL_ SSR",
+                aria: {
+                    paginate: {
+                        previous: "Previous",
+                        next: "Next",
+                    },
+                },
+            },
+            columns: [
+                { data: null },
+                { data: null },
+                { data: null },
+                { data: null },
+                { data: null },
+            ],
+            columnDefs: [
+                {
+                    targets: 0,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).addClass("text-center");
+                        $(td).html(table_ssr_daily.page.info().start + row + 1);
+                    },
+                },
+                {
+                    targets: 1,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var transaction_date = rowData.transaction_date
+                        var currDate = new Date(transaction_date)
+                        var currMonth = currDate.toLocaleString('default', { month: 'long' })
+                        var currYear = currDate.getFullYear()
+                        var format = currDate.getDate() + "-"+ currMonth +"-"+ currYear
+                        $(td).html(format);
+                    },
+                },
+                {
+                    targets: 2,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var total_sales_turn_over = 0
+                        if(rowData.total_sales_turn_over != null){
+                            total_sales_turn_over = rowData.total_sales_turn_over.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })
+                        }
+                        $(td).html(total_sales_turn_over);
+                    },
+                },
+                {
+                    targets: 3,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var total_inventory_value = 0
+                        if(rowData.total_inventory_value != null){
+                            total_inventory_value = rowData.total_inventory_value.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })
+                        }
+                        $(td).html(total_inventory_value);
+                    },
+                },
+                {
+                    targets: 4,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.sell_stock_ratio);
+                    },
+                },
+            ],
+            ajax:{
+                url :  '/api/analytics/report/ssr/daily',
+                type: "GET",
+                data: {
+                    start_date:start_date, 
+                    end_date : end_date,
+                    today : today,
+                    this_month : this_month,
+                    this_year : this_year
+                }
+            },
+        })
+    }
+
+    function reportSSRMonthly(start_date=null, end_date=null, today=null, this_month=null, this_year=null){
+        if (table_ssr_monthly != null) {
+            table_ssr_monthly.destroy();
+        }
+
+        table_ssr_monthly =  $("#table-ssr-monthly").DataTable({
+            // lengthChange: false,
+            searching: false,
+            destroy: true,
+            processing: true,
+            serverSide: true,
+            bAutoWidth: true,
+            scrollCollapse : true,
+            ordering: false,
+            language: {
+                emptyTable: "Data tidak tersedia",
+                zeroRecords: "Tidak ada data yang ditemukan",
+                infoFiltered: "",
+                infoEmpty: "",
+                paginate: {
+                    previous: "‹",
+                    next: "›",
+                },
+                info: "Display _START_ s/d _END_ dari _TOTAL_ SSR",
+                aria: {
+                    paginate: {
+                        previous: "Previous",
+                        next: "Next",
+                    },
+                },
+            },
+            columns: [
+                { data: null },
+                { data: null },
+                { data: null },
+                { data: null },
+                { data: null },
+            ],
+            columnDefs: [
+                {
+                    targets: 0,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).addClass("text-center");
+                        $(td).html(table_ssr_monthly.page.info().start + row + 1);
+                    },
+                },
+                {
+                    targets: 1,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var format = rowData.by_month + ' - ' +  rowData.by_year
+                        $(td).html(format);
+                    },
+                },
+                {
+                    targets: 2,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var omset = 0
+                        if(rowData.omset != null){
+                            omset = BigInt(rowData.omset).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })
+                        }
+                        $(td).html(omset);
+                    },
+                },
+                {
+                    targets: 3,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var inv_value = 0
+                        if(rowData.inv_value != null){
+                            inv_value = BigInt(rowData.inv_value).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })
+                        }
+                        $(td).html(inv_value);
+                    },
+                },
+                {
+                    targets: 4,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.ssr_month);
+                    },
+                },
+            ],
+            ajax:{
+                url :  '/api/analytics/report/ssr/monthly',
                 type: "GET",
                 data: {
                     start_date:start_date, 

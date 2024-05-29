@@ -17,6 +17,7 @@ use App\Jobs\SyncSalesTurnoverMarketPlaceJob;
 use App\Jobs\SyncBasketSizeJob;
 use App\Jobs\SyncBestProductJob;
 use App\Jobs\SyncSaleThroughJob;
+use App\Jobs\SyncSaleStockRatioJob;
 
 class DashboardController extends Controller
 {
@@ -176,11 +177,24 @@ class DashboardController extends Controller
         }
     }
 
-    public function reportSaleStockRatio(Request $request){
+    public function reportSellStockRatioDaily(Request $request){
         try{
-            $reportSaleStockRatio = $this->service->reportSaleStockRatio($request);
-            if($reportSaleStockRatio != null){
-                return $reportSaleStockRatio;
+            $reportSellStockRatioDaily = $this->service->reportSellStockRatioDaily($request);
+            if($reportSellStockRatioDaily != null){
+                return $reportSellStockRatioDaily;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function reportSellStockRatioMontly(Request $request){
+        try{
+            $reportSSRMonthly = $this->service->reportSSRMonthly($request);
+            if($reportSSRMonthly != null){
+                return $reportSSRMonthly;
             }
             return false;
         }catch(Exception $ex){
@@ -249,6 +263,20 @@ class DashboardController extends Controller
             return response()->json([
                 'status' => 200,
                 'message' => 'Sync Sell Through. Please wait a few minutes !',
+            ]);
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function syncSaleStockRatio(Request $request){
+        try{
+            // $sync = $this->dashboardEloquent->syncSaleStockRatio();
+            SyncSaleStockRatioJob::dispatch();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Sync Sell Stock Ratio. Please wait a few minutes !',
             ]);
         }catch(Exception $ex){
             Log::error($ex->getMessage());

@@ -5,9 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DataMartSaleStockRatio extends Model
+class SellStockRatioReport extends Model
 {
     use HasFactory;
+
      /**
      * The attributes that are mass assignable.
      *
@@ -15,12 +16,9 @@ class DataMartSaleStockRatio extends Model
      */
     protected $fillable = [
         'transaction_date',
-        'sku_code',
-        'salesorder_no',
-        'dwh_order_id',
-        'total_stock',
-        'amount',
-        'total_inventory',
+        'total_sales_turn_over',
+        'total_inventory_value',
+        'sale_stock_ratio',
         'sync_date',
     ];
 }

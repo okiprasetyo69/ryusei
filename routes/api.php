@@ -158,13 +158,15 @@ Route::controller(DashboardController::class)->group(function() {
     Route::get('/analytics/report/best-product', 'reportBestProduct')->name('analytics.report.best-product');
     Route::get('/analytics/report/basket-size', 'reportBasketSize')->name('analytics.report.basket-size');
     Route::get('/analytics/report/aov', 'reportAov')->name('analytics.report.aov');
-    Route::get('/analytics/report/ssr', 'reportSaleStockRatio')->name('analytics.report.ssr');
+    Route::get('/analytics/report/ssr/daily', 'reportSellStockRatioDaily')->name('analytics.report.ssr');
+    Route::get('/analytics/report/ssr/monthly', 'reportSellStockRatioMontly')->name('analytics.report.ssr');
     Route::get('/analytics/report/sell-through', 'reportSellThrough')->name('analytics.report.sell-through');
 
     Route::get('/analytics/sync-sales-turnover-marketplace', 'syncSalesTurnoverMarketPlace')->name('analytics.sync-sales-turnover-marketplace');
     Route::get('/analytics/sync-basket-size', 'syncBaksetSize')->name('analytics.sync-basket-size');
     Route::get('/analytics/sync-best-product', 'syncBestProduct')->name('analytics.sync-best-product');
     Route::get('/analytics/sync-sell-through', 'syncSellThrough')->name('analytics.sync-sell-through');
+    Route::get('/analytics/sync-sell-stock-ratio', 'syncSaleStockRatio')->name('analytics.sync-sell-stock-ratio');
 });
 
 // Warehouse
