@@ -112,60 +112,65 @@ class SalesReturnRepositoryEloquent implements SalesReturnService {
                 $totalData = $responses->json()['totalCount'];
                 $totalPage = ceil($totalData /  $pageSize) + 10;
                 Log::info("Loop Response page : ". $firstPage);
-                $respons = $this->endPointSalesReturnFromJubelio($userData, $firstPage,  $pageSize, $transactionDateFrom, $transactionDateTo);
-                $firstPage = $firstPage + 1;
-                if($respons->status() == 200){
-                    $data = $respons->json()['data'];
-                    foreach ($data as $key => $value){
-                        $salesReturn =  $this->salesReturn::where("doc_id", $value['doc_id'])->where("doc_number", $value['doc_number'])->first();
-                        $channel = SalesChannel::where("name" , $value['customer_name'])->first();
-
-                        if($salesReturn == null){
-                            Log::info('Insert Sales Return with Doc ID : ' .$value['doc_id'] . ' and Invoice Number : '.$value['ref_no']);
-                            $newSalesReturn = new SalesReturn();
-                            $newSalesReturn->doc_id = $value['doc_id'];
-                            $newSalesReturn->doc_number = $value['doc_number'];
-                            if($channel != null){
-                                $newSalesReturn->customer_id = $channel->id;
-                                $newSalesReturn->customer_name = $channel->name;
+                // Loop every page data
+                for($i = 0; $i <= $totalPage; $i++) { 
+                    $respons = $this->endPointSalesReturnFromJubelio($userData, $firstPage,  $pageSize, $transactionDateFrom, $transactionDateTo);
+                    $firstPage = $firstPage + 1;
+                    
+                    if($respons->status() == 200){
+                        $data = $respons->json()['data'];
+                        foreach ($data as $key => $value){
+                            $salesReturn =  $this->salesReturn::where("doc_id", $value['doc_id'])->where("doc_number", $value['doc_number'])->first();
+                            $channel = SalesChannel::where("name" , $value['customer_name'])->first();
+    
+                            if($salesReturn == null){
+                                Log::info('Insert Sales Return with Doc ID : ' .$value['doc_id'] . ' and Invoice Number : '.$value['ref_no']);
+                                $newSalesReturn = new SalesReturn();
+                                $newSalesReturn->doc_id = $value['doc_id'];
+                                $newSalesReturn->doc_number = $value['doc_number'];
+                                if($channel != null){
+                                    $newSalesReturn->customer_id = $channel->id;
+                                    $newSalesReturn->customer_name = $channel->name;
+                                }
+                                $newSalesReturn->invoice_number = $value['ref_no'];
+                                $newSalesReturn->transaction_date = date_create($value['transaction_date'])->format('Y-m-d');
+                                $newSalesReturn->due_date = date_create($value['due_date'])->format('Y-m-d');
+                                $newSalesReturn->grand_total = $value['grand_total'];
+                                $newSalesReturn->due = $value['due'];
+                                $newSalesReturn->downpayment_amount = $value['downpayment_amount'];
+                                $newSalesReturn->doc_type = $value['doc_type'];
+                                $newSalesReturn->age = $value['age'];
+                                $newSalesReturn->age_due = $value['age_due'];
+                                $newSalesReturn->store_name = $value['store_name'];
+                                $newSalesReturn->return_type = $value['return_type'];
+                                $newSalesReturn->sync_date =  $today;
+    
+                                $newSalesReturn->save();
+                            }   
+    
+                            if($salesReturn != null){
+                                if($channel != null){
+                                    $salesReturn->customer_id = $channel->id;
+                                    $salesReturn->customer_name = $channel->name;
+                                }
+                                $salesReturn->invoice_number = $value['ref_no'];
+                                $salesReturn->transaction_date = date_create($value['transaction_date'])->format('Y-m-d');
+                                $salesReturn->due_date = date_create($value['due_date'])->format('Y-m-d');
+                                $salesReturn->grand_total = $value['grand_total'];
+                                $salesReturn->due = $value['due'];
+                                $salesReturn->downpayment_amount = $value['downpayment_amount'];
+                                $salesReturn->doc_type = $value['doc_type'];
+                                $salesReturn->age = $value['age'];
+                                $salesReturn->age_due = $value['age_due'];
+                                $salesReturn->store_name = $value['store_name'];
+                                $salesReturn->return_type = $value['return_type'];
+                                
+                                $salesReturn->save();
                             }
-                            $newSalesReturn->invoice_number = $value['ref_no'];
-                            $newSalesReturn->transaction_date = date_create($value['transaction_date'])->format('Y-m-d');
-                            $newSalesReturn->due_date = date_create($value['due_date'])->format('Y-m-d');
-                            $newSalesReturn->grand_total = $value['grand_total'];
-                            $newSalesReturn->due = $value['due'];
-                            $newSalesReturn->downpayment_amount = $value['downpayment_amount'];
-                            $newSalesReturn->doc_type = $value['doc_type'];
-                            $newSalesReturn->age = $value['age'];
-                            $newSalesReturn->age_due = $value['age_due'];
-                            $newSalesReturn->store_name = $value['store_name'];
-                            $newSalesReturn->return_type = $value['return_type'];
-                            $newSalesReturn->sync_date =  $today;
-
-                            $newSalesReturn->save();
-                        }   
-
-                        if($salesReturn != null){
-                            if($channel != null){
-                                $salesReturn->customer_id = $channel->id;
-                                $salesReturn->customer_name = $channel->name;
-                            }
-                            $salesReturn->invoice_number = $value['ref_no'];
-                            $salesReturn->transaction_date = date_create($value['transaction_date'])->format('Y-m-d');
-                            $salesReturn->due_date = date_create($value['due_date'])->format('Y-m-d');
-                            $salesReturn->grand_total = $value['grand_total'];
-                            $salesReturn->due = $value['due'];
-                            $salesReturn->downpayment_amount = $value['downpayment_amount'];
-                            $salesReturn->doc_type = $value['doc_type'];
-                            $salesReturn->age = $value['age'];
-                            $salesReturn->age_due = $value['age_due'];
-                            $salesReturn->store_name = $value['store_name'];
-                            $salesReturn->return_type = $value['return_type'];
-                            
-                            $salesReturn->save();
                         }
                     }
                 }
+               
             }
 
             return response()->json([
@@ -191,106 +196,6 @@ class SalesReturnRepositoryEloquent implements SalesReturnService {
                     'doc_id' => $value['doc_id'],
                 ]);
             }
-
-            // foreach ($salesReturn as $key => $value) {
-            //     array_push($arrSalesReturn, $value['doc_id']);
-            // }
-
-            // $i = 0;
-            // while(!empty($arrSalesReturn)){
-            //     dd($arrSalesReturn[$i]);
-            //     Log::info('Get detail sales return with Doc ID : ' . $arrSalesReturn[$i]);
-            //     $salesReturn =  $this->salesReturn::where("doc_id", $arrSalesReturn[$i])->first();
-            //     $responses = $this->endPointDetailSalesReturnFromJubelio($userData, $arrSalesReturn[$i]);
-
-            //     if($responses->status() == 200){
-
-            //         if (isset($arrSalesReturn[$i])){
-            //             $data = $responses->json()['items'];
-            //             if($salesReturn != null){
-            //                 $salesReturn->sub_total = $responses->json()['sub_total'];
-            //                 $salesReturn->total_disc = $responses->json()['total_disc'];
-            //                 $salesReturn->total_tax = $responses->json()['total_tax'];
-            //                 $salesReturn->add_disc = $responses->json()['add_disc'];
-            //                 $salesReturn->add_fee = $responses->json()['add_fee'];
-            //                 $salesReturn->service_fee = $responses->json()['service_fee'];
-            //                 $salesReturn->salesorder_no = $responses->json()['salesorder_no'];
-                            
-            //                 $salesReturn->save();
-            //             }
-    
-            //             foreach ($data as $key => $value) {
-            //                 $detailSalesReturn = SalesReturnDetail::where("sales_return_id",  $salesReturn->id)
-            //                                     ->where("sku_code", $value['item_code'])->first();
-            //                 $product = Product::where("sku", $value['item_code'])->first();
-    
-            //                 if($detailSalesReturn == null){
-            //                     Log::info('Create Sales Order Detail with SKU Code - ' .  $value['item_code']);
-            //                     $newDetailSalesReturn = new SalesReturnDetail();
-            //                     $newDetailSalesReturn->sales_return_id =  $salesReturn->id;
-            //                     if($product != null){
-            //                         $newDetailSalesReturn->sku_id = $product->id;
-            //                         $newDetailSalesReturn->sku_code = $product->sku;
-            //                         $newDetailSalesReturn->name = $product->name;
-            //                     } 
-            //                     $newDetailSalesReturn->tax_id = $value['tax_id'];
-            //                     $newDetailSalesReturn->description = $value['description'];
-            //                     $newDetailSalesReturn->price = $value['price'];
-            //                     $newDetailSalesReturn->qty = $value['qty'];
-            //                     $newDetailSalesReturn->unit = $value['unit'];
-            //                     $newDetailSalesReturn->qty_in_base = $value['qty_in_base'];
-            //                     $newDetailSalesReturn->amount = $value['amount'];
-            //                     $newDetailSalesReturn->cogs = $value['cogs'];
-            //                     $newDetailSalesReturn->tax_amount = $value['tax_amount'];
-            //                     $newDetailSalesReturn->discount = $value['disc'];
-            //                     $newDetailSalesReturn->disc_amount = $value['disc_amount'];
-            //                     $newDetailSalesReturn->sell_price = $value['sell_price'];
-            //                     $newDetailSalesReturn->original_price = $value['original_price'];
-            //                     $newDetailSalesReturn->rate = $value['rate'];
-            //                     $newDetailSalesReturn->tax_name = $value['tax_name'];
-            //                     $newDetailSalesReturn->available_qty = $value['available_qty'];
-    
-            //                     $newDetailSalesReturn->sync_date = $today;
-    
-            //                     $newDetailSalesReturn->save();
-            //                 }    
-                            
-            //                 if($detailSalesReturn != null){
-            //                     Log::info('Update Sales Return Detail with SKU Code - ' .  $value['item_code']);
-            //                     if($product != null){
-            //                         $detailSalesReturn->sku_id = $product->id;
-            //                         $detailSalesReturn->sku_code = $product->sku;
-            //                         $detailSalesReturn->name = $product->name;
-            //                     } 
-    
-            //                     $detailSalesReturn->tax_id = $value['tax_id'];
-            //                     $detailSalesReturn->price = $value['price'];
-            //                     $detailSalesReturn->qty = $value['qty'];
-            //                     $detailSalesReturn->unit = $value['unit'];
-            //                     $detailSalesReturn->qty_in_base = $value['qty_in_base'];
-            //                     $detailSalesReturn->amount = $value['amount'];
-            //                     $detailSalesReturn->cogs = $value['cogs'];
-            //                     $detailSalesReturn->tax_amount = $value['tax_amount'];
-            //                     $detailSalesReturn->discount = $value['disc'];
-            //                     $detailSalesReturn->disc_amount = $value['disc_amount'];
-            //                     $detailSalesReturn->sell_price = $value['sell_price'];
-            //                     $detailSalesReturn->original_price = $value['original_price'];
-            //                     $detailSalesReturn->rate = $value['rate'];
-            //                     $detailSalesReturn->tax_name = $value['tax_name'];
-            //                     $detailSalesReturn->available_qty = $value['available_qty'];
-    
-            //                     $detailSalesReturn->save();
-            //                 }
-            //             }
-            //             // remove array index
-            //             unset($arrSalesReturn[$i]);
-            //             Log::info('Remove array : ' .  $arrSalesReturn[$i]);
-            //             $arrSalesReturn = array_values($arrSalesReturn);
-                        
-            //         }
-
-            //     }
-            // }
 
             foreach ($arrSalesReturn as $k => $val) {
                 Log::info('Get detail sales return with Doc ID : ' . $val['doc_id']);
@@ -334,7 +239,7 @@ class SalesReturnRepositoryEloquent implements SalesReturnService {
                             $newDetailSalesReturn->amount = $value['amount'];
                             $newDetailSalesReturn->cogs = $value['cogs'];
                             $newDetailSalesReturn->tax_amount = $value['tax_amount'];
-                            $newDetailSalesReturn->disc = $value['disc'];
+                            $newDetailSalesReturn->discount = $value['disc'];
                             $newDetailSalesReturn->disc_amount = $value['disc_amount'];
                             $newDetailSalesReturn->sell_price = $value['sell_price'];
                             $newDetailSalesReturn->original_price = $value['original_price'];
@@ -368,6 +273,7 @@ class SalesReturnRepositoryEloquent implements SalesReturnService {
                             $detailSalesReturn->rate = $value['rate'];
                             $detailSalesReturn->tax_name = $value['tax_name'];
                             $detailSalesReturn->available_qty = $value['available_qty'];
+                            $detailSalesReturn->sync_date = $today;
 
                             $detailSalesReturn->save();
                         }
@@ -378,10 +284,6 @@ class SalesReturnRepositoryEloquent implements SalesReturnService {
         catch(Exception $ex){
             Log::error($ex->getMessage());
             Log::info("Error Code : ". $ex->getCode());
-            if($ex->getCode() == 0  || $ex->getCode() == 404 ){
-                Log::info("Retry on process ... ");
-                $responses = $this->endPointDetailSalesReturnFromJubelio($userData,  $val);
-            }
             return false;
         }
     }
@@ -395,10 +297,10 @@ class SalesReturnRepositoryEloquent implements SalesReturnService {
     }
 
     public function endPointDetailSalesReturnFromJubelio($userData , $val){
-        $responses = Http::timeout(10)->retry(3, 1000)->withHeaders([
+        $responses = Http::timeout(10)->retry(3, 3000)->withHeaders([
             'Authorization' => 'Bearer ' . $userData['api_token'],
             'Accept' => 'application/json', 
-        ])->get(env('JUBELIO_API') . '/sales/sales-returns/'.$val);
+        ])->get(env('JUBELIO_API') . '/sales/sales-returns/'.$val['doc_id']);
         return $responses;
     }
 

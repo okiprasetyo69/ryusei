@@ -87,6 +87,14 @@
                                     <label id="lbl-sync">Sync Purchase Invoice</label>
                                 </button>
                             </div>
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4">
+                                <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                                    <i class="bi bi-star me-1"></i>
+                                        Total Purchase Invoice : 
+                                    <label id="lbl-total">-</label> 
+                                </div>
+                            </div>
                         </div>
                         <div class="row mt-2">
                             <div class="col-md-12">
@@ -178,6 +186,7 @@
         end_date = end_date.split("-").reverse().join("-")
         loadPurchaseInvoice(invoice_number, start_date, end_date, openState, closeState, draftState, voidState)
 
+        totalPurchaseInvoice()
          // sync supplier
         $("#btn-sync").on("click", function(e){
             e.preventDefault()
@@ -534,6 +543,18 @@
         });
     }
 
+    function totalPurchaseInvoice(){
+        $.ajax({
+            type: "GET",
+            url: "/api/purchasing-invoice/total",
+            data: "data",
+            dataType: "JSON",
+            success: function (response) {
+                total = response.data.total_purchase_invoice
+                $("#lbl-total").text(total)
+            }
+        });
+    }
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>

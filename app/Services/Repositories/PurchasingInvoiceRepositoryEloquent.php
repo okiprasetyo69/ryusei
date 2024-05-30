@@ -96,6 +96,21 @@ use Illuminate\Support\Facades\Http;
         }
     }
 
+    public function getTotalPurchaseInvoice(Request $request){
+        try{
+            $totalPurchaseInvoice = DB::table("purchase_invoices")->select(DB::raw("COUNT(*) as total_purchase_invoice"))->first();
+            return response()->json([
+                'status' => 200,
+                'message' => "Success get total purchase invoice !",
+                'data' => $totalPurchaseInvoice 
+            ]); 
+           
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
     public function create(Request $request){
         try{
 

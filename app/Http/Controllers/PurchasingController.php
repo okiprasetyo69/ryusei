@@ -16,6 +16,8 @@ use App\Models\PurchasingInvoiceDetail;
 use App\Services\Interfaces\PurchasingInvoiceService;
 use App\Jobs\SyncPurchaseInvoiceJob;
 
+use App\Services\Repositories\PurchasingInvoiceRepositoryEloquent;
+
 class PurchasingController extends Controller
 {
      /**
@@ -23,10 +25,12 @@ class PurchasingController extends Controller
     */
 
     private PurchasingInvoiceService $service;
+    private PurchasingInvoiceRepositoryEloquent $purchaseInvoiceEloquent;
 
-    public function __construct(PurchasingInvoiceService $service) 
+    public function __construct(PurchasingInvoiceService $service, PurchasingInvoiceRepositoryEloquent $purchaseInvoiceEloquent) 
     {
         $this->service = $service;
+        $this->purchaseInvoiceEloquent = $purchaseInvoiceEloquent;
     }
 
     // WEB
@@ -187,6 +191,19 @@ class PurchasingController extends Controller
         
             return false;
 
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function totalPurchaseInvoice(Request $request){
+        try{
+            $totalPurchaseInvoice = $this->purchaseInvoiceEloquent->getTotalPurchaseInvoice($request);
+            if($totalPurchaseInvoice != null){
+                return $totalPurchaseInvoice;
+            }
+            return false;
         }catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;

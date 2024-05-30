@@ -576,7 +576,7 @@ use Yajra\DataTables\Facades\DataTables;
     public function syncBasketSize(){
         try{
             // Formula
-            // Basket Size : Total Grand Total dalam 1 hari / Jumlah Nomor Order dalam 1 hari
+            // Basket Size : SUM Grand Total dalam 1 hari / Jumlah Nomor Order dalam 1 hari
 
             $dataWareHouseSalesOrder =  DB::table("data_ware_house_orders")
                                         ->select("transaction_date", DB::raw("COUNT(salesorder_no) as total_order_number"), DB::raw("SUM(grand_total) as grand_total"));

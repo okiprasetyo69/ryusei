@@ -12,7 +12,17 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('sales-return:sync')->dailyAt('16:00');
+        $schedule->command('product:sync')->dailyAt('18:00');
+        $schedule->command('vendors:sync')->dailyAt('18:45');
+        $schedule->command('purchase-orders:sync')->dailyAt('19:00');
+        $schedule->command('purchase-invoice:sync')->dailyAt('19:30');
+        $schedule->command('basket-size:sync')->dailyAt('20:00');
+        $schedule->command('best_product:sync')->dailyAt('20:30');
+        $schedule->command('sales-turn-over-market-place:sync')->dailyAt('21:00');
+        $schedule->command('sale-through:sync')->dailyAt('21:30');
+        $schedule->command('sale-stock-ratio:sync')->dailyAt('22:00');
+        $schedule->command('sales-order:sync')->dailyAt('23:00');
     }
 
     /**
