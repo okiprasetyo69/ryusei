@@ -216,6 +216,7 @@ class DashboardController extends Controller
         }
     }
 
+    // Queue Best Store from Marketplace
     public function syncSalesTurnoverMarketPlace(Request $request){
         try{
             SyncSalesTurnoverMarketPlaceJob::dispatch();
@@ -229,6 +230,7 @@ class DashboardController extends Controller
         }
     }
 
+    // Queue Basket Size
     public function syncBaksetSize(Request $request){
         try{
             SyncBasketSizeJob::dispatch();
@@ -242,6 +244,7 @@ class DashboardController extends Controller
         }
     }
 
+    // Queue Top Best Product
     public function syncBestProduct(Request $request){
         try{
             //$sync = $this->dashboardEloquent->syncBestProduct();
@@ -256,6 +259,7 @@ class DashboardController extends Controller
         }
     }
 
+    // Queue Sell Through
     public function syncSellThrough(Request $request){
         try{
             //$sync = $this->dashboardEloquent->syncSellThrough();
@@ -270,6 +274,7 @@ class DashboardController extends Controller
         }
     }
 
+    // Queue SSR
     public function syncSaleStockRatio(Request $request){
         try{
             // $sync = $this->dashboardEloquent->syncSaleStockRatio();

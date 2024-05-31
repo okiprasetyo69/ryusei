@@ -125,7 +125,7 @@
                             <li><a class="dropdown-item" href="#" id="filter-today-best-channel">Today</a></li>
                             <li><a class="dropdown-item" href="#" id="filter-month-best-channel">This Month</a></li>
                             <li><a class="dropdown-item" href="#" id="filter-year-best-channel">This Year</a></li>
-                           
+                            <li><a class="dropdown-item" href="#" id="sync-best-channel">Sync</a></li>
                         </ul>
                         </div>
 
@@ -272,9 +272,10 @@
                                 <li class="dropdown-header text-start">
                                     <h6>Filter</h6>
                                 </li>
-                                <li><a class="dropdown-item" href="#">Today</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
+                                <li><a class="dropdown-item" href="#" id="filter-today-ssr-daily">Today</a></li>
+                                <li><a class="dropdown-item" href="#" id="filter-month-ssr-daily">This Month</a></li>
+                                <li><a class="dropdown-item" href="#" id="filter-year-ssr-daily">This Year</a></li>
+                                <li><a class="dropdown-item" href="#" id="sync-sale-stock-ratio-daily">This Year</a></li>
                             </ul>
                         </div>
                         <div class="card-body pb-0">
@@ -309,9 +310,8 @@
                                 <li class="dropdown-header text-start">
                                     <h6>Filter</h6>
                                 </li>
-                                <li><a class="dropdown-item" href="#">Today</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
+                                <li><a class="dropdown-item" href="#" id="filter-year-ssr-monthly">This Year</a></li>
+                                <li><a class="dropdown-item" href="#" id="sync-sale-stock-ratio-monthly">Sync</a></li>
                             </ul>
                         </div>
                         <div class="card-body pb-0">
@@ -658,8 +658,37 @@
             reportSellThrough(null, null, null, null, this_year)
         })
         // --------------------------------------------------------------- //
-
+        // --------------------------------------------------------------- //
+        $("#filter-today-ssr-daily").on("click", function(e){
+            e.preventDefault()
+            now = formattedDate
+            reportSSRDaily(null, null, now, null, null)
+        })
+        $("#filter-month-ssr-daily").on("click", function(e){
+            e.preventDefault()
+            currentMonth = today.getMonth() + 1
+            this_year = year
+            reportSSRDaily(null, null, null, currentMonth, this_year)
+        })
+        $("#filter-year-ssr-daily").on("click", function(e){
+            e.preventDefault()
+            this_year = year
+            reportSSRDaily(null, null, null, null, this_year)
+        })
+        // --------------------------------------------------------------- //
+        // --------------------------------------------------------------- //
+        $("#filter-year-ssr-monthly").on("click", function(e){
+            this_year = year
+            reportSSRMonthly(null, null, null, null, this_year)
+        })
+         // --------------------------------------------------------------- //
         // ------------------------START SYNC------------------------------- //
+        $("#sync-best-channel").on("click", function(e){
+            e.preventDefault()
+            syncMarketPlace()
+            bestStoreChannelSeller()
+        })
+
         $("#sync-market-place").on("click", function(e){
             e.preventDefault()
             syncMarketPlace()
@@ -678,6 +707,16 @@
         $("#sync-sell-through").on("click", function(e){
             e.preventDefault()
             syncSellThrough()
+        })
+
+        $("#sync-sale-stock-ratio-daily").on("click", function(e){
+            e.preventDefault()
+            syncSSR()
+        })
+
+        $("#sync-sale-stock-ratio-monthly").on("click", function(e){
+            e.preventDefault()
+            syncSSR()
         })
         // -----------------------END SYNC----------------------------------- //
 
@@ -1082,6 +1121,33 @@
                                 btnClass: 'btn-success any-other-class',
                                 action: function(){
                                     table_sell_through.ajax.reload();
+                                }
+                            },
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    function syncSSR(){
+        $.ajax({
+            type: "GET",
+            url: "/api/analytics/sync-sell-stock-ratio",
+            data: "data",
+            dataType: "JSON",
+            success: function (response) {
+                console.log(response)
+                if(response.status == 200){
+                    $.confirm({
+                        title: 'Pesan ',
+                        content: response.message,
+                        buttons: {
+                            Ya: {
+                                btnClass: 'btn-success any-other-class',
+                                action: function(){
+                                    table_ssr_daily.ajax.reload();
+                                    table_ssr_monthly.ajax.reload();
                                 }
                             },
                         }

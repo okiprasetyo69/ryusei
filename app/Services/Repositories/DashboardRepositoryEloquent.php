@@ -229,6 +229,7 @@ use Yajra\DataTables\Facades\DataTables;
         }
     }
 
+    // Report Best 10 Store From Market Place
     public function reportBestStore(Request $request){
         try{
             $limit = 10;
@@ -268,6 +269,7 @@ use Yajra\DataTables\Facades\DataTables;
         }
     }
 
+    // Report Top 10 Product Market Place
     public function reportBestProduct(Request $request){
         try{
             $limit = 10;
@@ -307,6 +309,7 @@ use Yajra\DataTables\Facades\DataTables;
         }
     }
 
+    // Report Chart based on omset from each Martketplace
     public function chartSalesTurnoverMarketPlace(Request $request){
         try{
             $salesTurnOverMarketPlace = DB::table("data_mart_market_places")
@@ -350,6 +353,7 @@ use Yajra\DataTables\Facades\DataTables;
         }
     }
 
+    // Report Monitoring stock
     public function monitoringStock(Request $request){
         try{
             $itemStock = ItemStock::with('product', 'product.category', 'product.unit', 'item')->orderBy('qty', 'DESC');
@@ -369,6 +373,7 @@ use Yajra\DataTables\Facades\DataTables;
         }
     }
 
+    // Report Omset Marketplace per daily
     public function reportSalesTurnoverMarketPlace(Request $request){
         try{
             $reportSalesTurnoverMarketPlace = DataMartMarketPlace::orderBy("transaction_date", "DESC");
@@ -529,6 +534,7 @@ use Yajra\DataTables\Facades\DataTables;
         }
     }
 
+    // Best Store From Marketplace
     public function syncSalesTurnOver(){
         try{
             $limit = 100;
@@ -616,6 +622,7 @@ use Yajra\DataTables\Facades\DataTables;
         }
     }
 
+    // Best Top 10 Product
     public function syncBestProduct(){
         try{
             $bestProduct = DB::table("data_ware_house_order_details")
@@ -765,6 +772,7 @@ use Yajra\DataTables\Facades\DataTables;
         }
     }
 
+    // Get Inventory Value For SSR (Sell Stock Ratio)
     public function getInventoryValueSaleStockRatio($today){
         try{
             // Get Inventory Value
@@ -813,6 +821,7 @@ use Yajra\DataTables\Facades\DataTables;
         }
     }
     
+    // SUM of Inventory Value For SSR (Sell Stok Ratio)
     public function totalInventoryValue($today){
         try{
             $totalInventoryValue = DB::table("data_mart_sale_stock_ratios")
@@ -845,6 +854,7 @@ use Yajra\DataTables\Facades\DataTables;
         }
     }
 
+    // Amount of Grand Total From Grand Total For SSR (Sell Stok Ratio)
     public function totalSalesTurnOver($today){
         try{
             $totalOmset = DB::table("data_ware_house_orders")
