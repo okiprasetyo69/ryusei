@@ -137,22 +137,21 @@
                                                     } else {
                                                         $itemName = $item->name;
                                                     }
-                             
+                                                    // dd($itemName);
                                                 ;?>
-                                                <p class="fst-italic fw-bold"> {{ $itemName }} </p>
+                                                <p class="fst-italic fw-bold"> <?php echo $itemName ;?></p>
                                             </li>
                                             <li class="list-group-item">
                                                 <?php 
                                                     $sizeName = "";
-
                                                     if($item->size == null){
                                                         $sizeName = "-";
                                                     } else {
-                                                        $sizeName =  $item->sizes->name;
+                                                        $sizeName =  $item->size;
                                                     }
                                                   
                                                 ;?>
-                                                <p class="text-center fw-bold"> Size : {{  $sizeName }} </p>
+                                                <p class="text-center fw-bold"> Size : <?php echo  $sizeName ;?> </p>
                                             </li>
                                             <li class="list-group-item">
                                                 <p class="text-center fw-bold">  Harga : Rp. {{ number_format($item->price, 0, ',', '.')}} </p>

@@ -158,6 +158,7 @@ class DataWarehouseSalesOrderRepositoryEloquent implements DataWarehouseSalesOrd
                             }
 
                             if($dataWarehouseOrder != null){
+                                Log::info('Update Order Trx with Sales Order Number : ' .$value['salesorder_no'] . ' and Invoice Number : '.$value['invoice_no']);
                                 $dataWarehouseOrder->invoice_created_date =  date_create($value['invoice_created_date'])->format('Y-m-d');
                                 $dataWarehouseOrder->transaction_date = date_create($value['transaction_date'])->format('Y-m-d');
                                 $dataWarehouseOrder->is_paid = $value['is_paid'];
@@ -225,6 +226,7 @@ class DataWarehouseSalesOrderRepositoryEloquent implements DataWarehouseSalesOrd
                     // update sales order completed
                     $dataSalesOrderCompleted = DataWareHouseOrder::where("salesorder_id",  $val['salesorder_id'])->first();
                     if($dataSalesOrderCompleted != null){
+                        Log::info('Update Order Trx with Sales Order ID : ' .$value['salesorder_id']);
                         $dataSalesOrderCompleted->sub_total = $responses->json()['sub_total'];
                         $dataSalesOrderCompleted->total_disc = $responses->json()['total_disc'];
                         $dataSalesOrderCompleted->total_tax = $responses->json()['total_tax'];

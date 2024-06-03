@@ -219,6 +219,7 @@ class DashboardController extends Controller
     // Queue Best Store from Marketplace
     public function syncSalesTurnoverMarketPlace(Request $request){
         try{
+            // $upsertSalesTurnoverMarketPlace = $this->dashboardEloquent->syncSalesTurnOver();
             SyncSalesTurnoverMarketPlaceJob::dispatch();
             return response()->json([
                 'status' => 200,
