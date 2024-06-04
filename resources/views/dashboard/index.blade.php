@@ -759,17 +759,17 @@
                 var data = response.data
                 let formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' });
                 var total_sold = 0
-                var qty = 0
+                var total_item = 0
                 if(data.total_sold != null){
                     total_sold =  formatter.format(data.total_sold)
                 }
-                if(data.qty != null){
-                    qty = data.qty
+                if(data.total_item != null){
+                    total_item = data.total_item
                 }
 
                 if(data != null){
                     $("#total_sold").text("| " + total_sold)
-                    $("#qty").text(qty + " item")
+                    $("#qty").text(total_item + " item")
                 }
 
             }

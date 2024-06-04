@@ -216,8 +216,6 @@ use Illuminate\Support\Facades\Http;
 
     public function getSupplierFromJubelio($userData){
         try{
-            // DB::beginTransaction();
-
             // get all product with actual stock
             $responses = $this->endPointGetSupplier($userData);
             $supplier = $this->vendor;
@@ -228,18 +226,15 @@ use Illuminate\Support\Facades\Http;
     
                    $suppliers = Vendor::where("name", $value['contact_name'])->first();
                    if($suppliers == null){
-                        $newSupplier = new Vendor();
-                        $newSupplier->name = $value['contact_name'];
-                        $newSupplier->phone = $value['phone'];
-                        $newSupplier->mobile = $value['mobile'];
-                        $newSupplier->email = $value['email'];
-
-                        $newSupplier->save();
+                        Log::info('Create new vendor name : '. $value['contact_name']);
+                        Vendor::create([
+                            'name' =>  $value['contact_name'],
+                            'phone' =>  $value['phone'],
+                            'mobile' =>  $value['mobile'],
+                            'email' =>  $value['email'],
+                        ]);
                    } else {
-                        $suppliers->phone = $value['phone'];
-                        $suppliers->mobile = $value['mobile'];
-                        $suppliers->email = $value['email'];
-                        $suppliers->save();
+                        Log::info('Vendor name : '. $value['contact_name'] . ' was Exist !');
                    }
                 }
             }
@@ -250,7 +245,6 @@ use Illuminate\Support\Facades\Http;
                 $responses =  $this->endPointGetSupplier($userData);
             }
 
-            // DB::commit();
             return response()->json([
                 'data' =>  $supplier,
                 'message' => 'Success upsert suppliers !',
@@ -270,7 +264,7 @@ use Illuminate\Support\Facades\Http;
     }
 
     public function endPointGetSupplier($userData){
-        $responses = Http::timeout(10)->retry(3, 1000)->withHeaders([
+        $responses = Http::timeout(10)->retry(5, 3000)->withHeaders([
                         'Authorization' => 'Bearer ' . $userData['api_token'],
                         'Accept' => 'application/json', 
                     ])->get(env('JUBELIO_API') . '/contacts/suppliers/', [

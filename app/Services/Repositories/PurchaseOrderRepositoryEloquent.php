@@ -124,9 +124,8 @@ use Illuminate\Support\Facades\Http;
                     $purchaseInvoice = PurchaseOrder::where("purchaseorder_number", $value['purchaseorder_no'])->first();
                     $supplier = Vendor::where("name", $value['supplier_name'])->first();
                     $convertTransactionDate = date_create($value['transaction_date'])->format('Y-m-d');
-                   
-                    Log::info('Upsert Purchase Order Number - ' .   $value['purchaseorder_no']);
                     if($purchaseInvoice == null){
+                        Log::info('Create Purchase Order Number - ' .   $value['purchaseorder_no']);
                         $newPurchaseOrder = new PurchaseOrder();
                         
                         $newPurchaseOrder->purchaseorder_number = $value['purchaseorder_no'];
@@ -143,11 +142,12 @@ use Illuminate\Support\Facades\Http;
                             $newPurchaseOrder->status = null;
                         }
                         $newPurchaseOrder->sync_date =  $today;
-                        
                         $newPurchaseOrder->save();
+                        
                     }
 
                     if($purchaseInvoice != null){
+                        Log::info('Purchase Order Number - ' .   $value['purchaseorder_no'] . ' was Exist');
                         $purchaseInvoice->purchaseorder_number = $value['purchaseorder_no'];
                         $purchaseInvoice->vendor_id = $supplier->id;
                         $purchaseInvoice->transaction_date = $convertTransactionDate ;
@@ -203,12 +203,12 @@ use Illuminate\Support\Facades\Http;
                     foreach ($data as $key => $value) {
                         // get detail purchase order
                         $purchaseOrderDetail = PurchaseOrderDetail::where("purchase_id",  $purchaseOrder->id)->where("sku_code", $value['item_code'])->first();
+                        $product = Product::where("sku", $value['item_code'])->first();
                         if($purchaseOrderDetail == null){
-                            Log::info('Create Purchase Order Detail with SKU Code - ' .  $value['item_code']);
+                            Log::info('Create Purchase Order Detail with Purchase ID - ' .  $purchaseOrder->id);
                             $newDetailPurchaseOrder = new PurchaseOrderDetail();
                             $newDetailPurchaseOrder->purchase_id = $purchaseOrder->id;
                                     
-                            $product = Product::where("sku", $value['item_code'])->first();
                             if($product != null){
                                 $newDetailPurchaseOrder->sku_id = $product->id;
                                 $newDetailPurchaseOrder->sku_code = $product->sku;
@@ -221,9 +221,8 @@ use Illuminate\Support\Facades\Http;
                 
                             $newDetailPurchaseOrder->save();
                         } else {
-                            Log::info('Update Purchase Order Detail with SKU Code - ' .  $value['item_code']);
-                            $purchaseOrderDetail->purchase_id = $purchaseOrder->id;
-                                    
+                            Log::info('Purchase Order Detail with Purchase ID - ' .  $purchaseOrder->id.' was  Exist !');
+
                             $product = Product::where("sku", $value['item_code'])->first();
                             if($product != null){
                                 $purchaseOrderDetail->sku_id = $product->id;
@@ -245,16 +244,12 @@ use Illuminate\Support\Facades\Http;
         }catch(Exception $ex){
             Log::error($ex->getMessage());
             Log::info("Error Code : ". $ex->getCode());
-            if($ex->getCode() == 0){
-                $responses = $this->endPointDetailPurchaseOrder($userData, $val);
-                Log::info("Retry on process ... ");
-            }
             return false;
         }
     }
 
     public function endPointDetailPurchaseOrder($userData, $val){
-        $responses = Http::timeout(10)->retry(3, 1000)->withHeaders([
+        $responses = Http::timeout(10)->retry(5, 3000)->withHeaders([
             'Authorization' => 'Bearer ' . $userData['api_token'],
             'Accept' => 'application/json', 
         ])->get(env('JUBELIO_API') . '/purchase/orders/'. $val['purchaseorder_id']);

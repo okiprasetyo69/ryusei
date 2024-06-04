@@ -440,10 +440,10 @@ use Illuminate\Support\Facades\Http;
                 $data = $responses->json()['data'];
                 foreach ($data as $k => $value) {
                     // Check exist product
-                    Log::info('Update Product with item code - ' . $value['item_code']);
-
                     $product = Product::where("sku", $value['item_code'])->first();
+
                     if($product == null){
+                        Log::info('Create Product with item code - ' . $value['item_code']);
                         $newProduct = new Product();
                         $newProduct->code = $value['item_group_id'];
                         $newProduct->sku = $value['item_code'];
@@ -452,6 +452,7 @@ use Illuminate\Support\Facades\Http;
                             $newProduct->article =   $value['item_name'] . ' - ' . $value['variation_values'][0]['value'];
                         } else {
                             $newProduct->article  = null;
+
                         }
 
                         $newProduct->name = $value['item_name'];
@@ -460,13 +461,13 @@ use Illuminate\Support\Facades\Http;
 
                         $newStock = new ItemStock();
                         $newStock->sku_id =  $newProduct->id;
-                        $newStock->check_in_date =  $today;
+                        $newStock->sku_code = $value['item_code'];
                         $newStock->qty =  $value['total_stocks']['available'];
                         $newStock->save();
                     }  
     
                     if($product != null){
-
+                        Log::info("Product with SKU : " . $value['item_code'] .' was Exist !');
                         $product->code = $value['item_group_id'];
                         $product->sku = $value['item_code'];
 
@@ -477,6 +478,7 @@ use Illuminate\Support\Facades\Http;
                         }
                         $product->name = $value['item_name'];
                         $product->item_id = $value['item_id'];
+
                         // Check exist stock item product
                         $itemStock = ItemStock::where("sku_id", $product->id)->first();
                         if($itemStock == null){
@@ -487,11 +489,13 @@ use Illuminate\Support\Facades\Http;
                             $newItemStock->check_in_date =   $today;
                             $newItemStock->save();
                         } else {
+                            Log::info("Item Stock with SKU : " . $value['item_code'] .' was updated !');
                             $itemStock->sku_code = $value['item_code'];
                             $itemStock->qty =  $value['total_stocks']['available'];
                             $itemStock->check_in_date =  $today;
                             $itemStock->save();
                         }
+
                         $product->save();
                     }
                 }
@@ -508,10 +512,6 @@ use Illuminate\Support\Facades\Http;
 
         }catch(Exception $ex){
             Log::error($ex->getMessage());
-            if($ex->getCode() == 0 || $ex->getCode() == 404){
-                $responses = $this->endPointProductItem($userData);
-                Log::info("Retry on process ... ");
-            }
             return false;
         }
     }
@@ -537,16 +537,16 @@ use Illuminate\Support\Facades\Http;
                 foreach ($data as $k => $val) {
                     $detailItem = $val['variants'];
                     foreach ($detailItem as $key => $value) {
-                        Log::info('Update Produtct per Item with item code - ' . $value['item_code']);
-
                         $productPrice = Product::where("sku", $value['item_code'])->first();
                         if($productPrice == null ){
+                            Log::info('Create Product with item code - ' . $value['item_code']);
                             $newProductPrice = new Product();
                             $newProductPrice->code = $value['item_group_id'];
                             $newProductPrice->name = $value['item_name'];
                             $newProductPrice->price = $value['sell_price'];
                             $newProductPrice->save();
                         } else {
+                            Log::info('Update Product with item code - ' . $value['item_code']);
                             $productPrice->price = $value['sell_price'];
                             $productPrice->save();
                         }
@@ -554,14 +554,6 @@ use Illuminate\Support\Facades\Http;
                 }
             } 
             
-            if($itemsResponse->status() == 401){
-                $relogin = $this->updateTokenApi($userData);
-            }
-
-            return response()->json([
-                'status' => 200,
-                'message' => 'Data Item product success updated !',
-            ]);
 
         }catch(Exception $ex){
             Log::error($ex->getMessage());
@@ -589,31 +581,22 @@ use Illuminate\Support\Facades\Http;
                 foreach ($data as $k => $val) {
                     $variants = $val['variants'];
                     foreach ($variants as $key => $value) {
-                        Log::info('Update Product per Item Bundling with item code - ' . $value['item_code']);
-
                         $productPrice = Product::where("sku", $value['item_code'])->first();
                         if($productPrice == null ){
+                            Log::info('Create Product Item Bundling with item code - ' . $value['item_code']);
                             $newProductPrice = new Product();
                             $newProductPrice->code = $value['item_group_id'];
                             $newProductPrice->name = $value['item_name'];
                             $newProductPrice->price = $value['sell_price'];
                             $newProductPrice->save();
                         } else {
+                            Log::info('Update Product Item Bundling with item code - ' . $value['item_code']);
                             $productPrice->price = $value['sell_price'];
                             $productPrice->save();
                         }
                     }
                 }
             }
-
-            if($itemsBundleResponse->status() == 401){
-                $relogin = $this->updateTokenApi($userData);
-            }
-
-            return response()->json([
-                'status' => 200,
-                'message' => 'Data item bundling product success updated !',
-            ]);
 
         }catch(Exception $ex){
             Log::error($ex->getMessage());
@@ -654,7 +637,7 @@ use Illuminate\Support\Facades\Http;
     }
 
     public function endPointProductItem($userData){
-        $responses = Http::withHeaders([
+        $responses = Http::timeout(10)->retry(5, 3000)->withHeaders([
             'Authorization' => 'Bearer ' . $userData['api_token'],
             'Accept' => 'application/json', 
         ])->get(env('JUBELIO_API') . '/inventory/');
@@ -664,7 +647,7 @@ use Illuminate\Support\Facades\Http;
     }
 
     public function endpointDetailItemBySkuCode($userData, $itemId){
-        $responses = Http::timeout(10)->retry(3, 1000)->withHeaders([
+        $responses = Http::timeout(10)->retry(5, 3000)->withHeaders([
             'Authorization' => 'Bearer ' . $userData['api_token'],
             'Accept' => 'application/json', 
         ])->get(env('JUBELIO_API') . '/inventory/items/'.$itemId);

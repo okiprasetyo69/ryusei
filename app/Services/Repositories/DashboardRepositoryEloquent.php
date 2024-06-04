@@ -58,8 +58,10 @@ use Yajra\DataTables\Facades\DataTables;
 
     public function totalQty(Request $request){
         try{
-            $transaction = DB::table("transactions")
-                            ->selectRaw('SUM(qty) AS qty, SUM(total) AS total_sold');
+            // $transaction = DB::table("transactions")->selectRaw('SUM(qty) AS qty, SUM(total) AS total_sold');
+
+            $transaction = DB::table("data_ware_house_order_Details")
+                            ->select(DB::raw('COUNT(sku_code) as total_item'), DB::raw('SUM(amount) as total_sold'));
 
             if($request->today != null){
                 $transaction =  $transaction->where("order_date", $request->today);
