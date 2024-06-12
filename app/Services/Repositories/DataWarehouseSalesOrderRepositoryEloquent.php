@@ -126,36 +126,12 @@ class DataWarehouseSalesOrderRepositoryEloquent implements DataWarehouseSalesOrd
                             $channelName = "";
                             if($dataWarehouseOrder == null){
                                 Log::info('Insert Order Trx with Sales Order Number : ' .$value['salesorder_no'] . ' and Invoice Number : '.$value['invoice_no']);
-                                // $newOrderData = new DataWareHouseOrder();
-                                // $newOrderData->salesorder_id = $value['salesorder_id'];
-                                // $newOrderData->salesorder_no = $value['salesorder_no'];
-                                // $newOrderData->invoice_number = $value['invoice_no'];
-                                // $newOrderData->invoice_created_date =  date_create($value['invoice_created_date'])->format('Y-m-d');
-                                // $newOrderData->transaction_date = date_create($value['transaction_date'])->format('Y-m-d');
-                                // $newOrderData->is_paid = $value['is_paid'];
-                                // $newOrderData->shipping_full_name = $value['shipping_full_name'];
-                                // $newOrderData->customer_name = $value['customer_name'];
-                                // $newOrderData->grand_total = $value['grand_total'];
-                                // $newOrderData->store_name = $value['store_name'];
+                              
                                 if($channel != null){
-                                    // $newOrderData->channel_id =  $channel->id;
-                                    // $newOrderData->channel_name = $channel->name;
                                     $channelId = $channel->id;
                                     $channelName =  $channel->name;
                                 }
-                                // $newOrderData->shipper = $value['shipper'];
-                                // $newOrderData->store = $value['store'];
-                                // $newOrderData->package_count = $value['package_count'];
-                                // // $newOrderData->cancel_reason = $value['cancel_reason'] == false ? 0 : 1 ;
-                                // // $newOrderData->cancel_reason_detail = $value['cancel_reason_detail' == false ? 0 : 1];
-                                // $newOrderData->wms_status = $value['wms_status'];
-                                // $newOrderData->note = $value['note'];
-                                // $newOrderData->ref_no = $value['ref_no'];
-                                // $newOrderData->tracking_number = $value['tracking_number'];
-                                // $newOrderData->is_cod = $value['is_cod'];
-                                // $newOrderData->sync_date =  $today;
 
-                                // $newOrderData->save();
                                 DataWareHouseOrder::create([
                                     'salesorder_id' => $value['salesorder_id'],
                                     'salesorder_no' =>  $value['salesorder_no'],

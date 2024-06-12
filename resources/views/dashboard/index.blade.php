@@ -275,7 +275,7 @@
                                 <li><a class="dropdown-item" href="#" id="filter-today-ssr-daily">Today</a></li>
                                 <li><a class="dropdown-item" href="#" id="filter-month-ssr-daily">This Month</a></li>
                                 <li><a class="dropdown-item" href="#" id="filter-year-ssr-daily">This Year</a></li>
-                                <li><a class="dropdown-item" href="#" id="sync-sale-stock-ratio-daily">This Year</a></li>
+                                <li><a class="dropdown-item" href="#" id="sync-sale-stock-ratio-daily">Sync</a></li>
                             </ul>
                         </div>
                         <div class="card-body pb-0">
@@ -390,7 +390,8 @@
                 </div>
           </div>
           <!-- End Monitoring Stock -->
-          <!-- Sell Through  -->
+
+          <!-- Sell Through Daily -->
           <div class="card">
                 <div class="filter">
                     <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
@@ -412,12 +413,10 @@
                             <thead class="text-center">
                                 <tr>
                                     <th scope="col">#</th>
-                                    <!-- <th scope="col">SKU</th> -->
-                                    <th scope="col">Produk</th>
                                     <th scope="col">Qty Masuk</th>
                                     <th scope="col">Qty Terjual</th>
-                                    <th scope="col">Tgl Sync</th>
                                     <th scope="col">%</th>
+                                    <th scope="col">Trx Date</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -427,7 +426,7 @@
                     </div>
                 </div>
           </div>
-          <!-- End Sell Through Report -->
+          <!-- End Sell Through Daily Report -->
 
           <!-- AOV Report -->
           <!-- <div class="card">
@@ -706,12 +705,16 @@
 
         $("#sync-sell-through").on("click", function(e){
             e.preventDefault()
-            syncSellThrough()
+            //now = formattedDate
+            now = '2024-01-01'
+            syncSellThrough(now)
         })
 
         $("#sync-sale-stock-ratio-daily").on("click", function(e){
             e.preventDefault()
-            syncSSR()
+            now = formattedDate
+            //now = '2024-01-01'
+            syncSSR(now)
         })
 
         $("#sync-sale-stock-ratio-monthly").on("click", function(e){
@@ -1044,7 +1047,7 @@
                             Ya: {
                                 btnClass: 'btn-success any-other-class',
                                 action: function(){
-                                    // loadSalesOrderCompleted()
+                                    bestStoreChannelSeller()
                                 }
                             },
                         }
@@ -1104,11 +1107,13 @@
         });
     }
 
-    function syncSellThrough(){
+    function syncSellThrough(sync_today = null){
         $.ajax({
             type: "GET",
             url: "/api/analytics/sync-sell-through",
-            data: "data",
+            data: {
+                sync_today : sync_today
+            },
             dataType: "JSON",
             success: function (response) {
                 console.log(response)
@@ -1130,14 +1135,15 @@
         });
     }
 
-    function syncSSR(){
+    function syncSSR(sync_today = null){
         $.ajax({
             type: "GET",
             url: "/api/analytics/sync-sell-stock-ratio",
-            data: "data",
+            data: {
+                sync_today : sync_today
+            },
             dataType: "JSON",
             success: function (response) {
-                console.log(response)
                 if(response.status == 200){
                     $.confirm({
                         title: 'Pesan ',
@@ -1392,8 +1398,6 @@
             },
             columns: [
                 { data: null, width: "2%" },
-                // { data: null},
-                { data: null },
                 { data: null },
                 { data: null },
                 { data: null },
@@ -1409,24 +1413,8 @@
                         $(td).html(table_sell_through.page.info().start + row + 1);
                     },
                 },
-                // {
-                //     targets: 1,
-                //     searchable: false,
-                //     orderable: false,
-                //     createdCell: function (td, cellData, rowData, row, col) {
-                //         $(td).html(rowData.sku_code);
-                //     },
-                // },
                 {
                     targets: 1,
-                    searchable: false,
-                    orderable: false,
-                    createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html(rowData.name);
-                    },
-                },
-                {
-                    targets: 2,
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
@@ -1434,7 +1422,7 @@
                     },
                 },
                 {
-                    targets: 3,
+                    targets: 2,
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
@@ -1442,26 +1430,27 @@
                     },
                 },
                 {
+                    targets: 3,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var sell_through = Number(rowData.sell_through)
+                        sell_through = sell_through.toFixed(2)
+                        $(td).html(sell_through);
+                    },
+                },
+                {
                     targets: 4,
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        var sync_date = rowData.sync_date
-                        var currDate = new Date(sync_date)
+                        console.log( rowData)
+                        var transaction_date = rowData.transaction_date
+                        var currDate = new Date(transaction_date)
                         var currMonth = currDate.toLocaleString('default', { month: 'long' })
                         var currYear = currDate.getFullYear()
                         var format = currDate.getDate() + "-"+ currMonth +"-"+ currYear
                         $(td).html(format);
-                    },
-                },
-                {
-                    targets: 5,
-                    searchable: false,
-                    orderable: false,
-                    createdCell: function (td, cellData, rowData, row, col) {
-                        var sell_throughs = Number(rowData.sell_throughs)
-                        sell_throughs = sell_throughs.toFixed(2)
-                        $(td).html(sell_throughs);
                     },
                 },
             ],

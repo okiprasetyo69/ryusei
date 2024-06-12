@@ -15,12 +15,14 @@ class SyncSaleStockRatioJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $syncToday;
+
     /**
      * Create a new job instance.
      */
-    public function __construct()
+    public function __construct($syncToday)
     {
-        //
+        $this->syncToday = $syncToday;
     }
 
     /**
@@ -29,7 +31,7 @@ class SyncSaleStockRatioJob implements ShouldQueue
     public function handle(DashboardRepositoryEloquent $service)
     {
         Log::info('Sync Process Sale Stock Ratio...');
-        $upsertSalesTurnoverMarketPlace = $service->syncSaleStockRatio();
+        $upsertSalesStockRatio = $service->syncSaleStockRatio($this->syncToday);
         Log::info('Finish Sync Sale Stock Ratio...');
 
         // Message queue job has done

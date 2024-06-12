@@ -15,13 +15,13 @@ class SyncSaleThroughJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     public $userData;
-
+    public $syncToday;
     /**
      * Create a new job instance.
      */
-    public function __construct()
+    public function __construct($syncToday)
     {
-        //
+        $this->syncToday = $syncToday;
     }
 
     /**
@@ -30,7 +30,7 @@ class SyncSaleThroughJob implements ShouldQueue
     public function handle(DashboardRepositoryEloquent $service)
     {
         Log::info('Sync Process Upsert Sale Through ...');
-        $upsertSaleThrough = $service->syncSellThrough();
+        $upsertSaleThrough = $service->syncSellThrough($this->syncToday);
         Log::info('Finish Sync Sale Through...');
 
         // Message queue job has done

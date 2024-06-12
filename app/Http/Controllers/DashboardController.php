@@ -264,7 +264,8 @@ class DashboardController extends Controller
     public function syncSellThrough(Request $request){
         try{
             //$sync = $this->dashboardEloquent->syncSellThrough();
-            SyncSaleThroughJob::dispatch();
+            $syncToday = $request->sync_today;
+            SyncSaleThroughJob::dispatch($syncToday);
             return response()->json([
                 'status' => 200,
                 'message' => 'Sync Sell Through. Please wait a few minutes !',
@@ -279,7 +280,8 @@ class DashboardController extends Controller
     public function syncSaleStockRatio(Request $request){
         try{
             // $sync = $this->dashboardEloquent->syncSaleStockRatio();
-            SyncSaleStockRatioJob::dispatch();
+            $syncToday = $request->sync_today;
+            SyncSaleStockRatioJob::dispatch($syncToday);
             return response()->json([
                 'status' => 200,
                 'message' => 'Sync Sell Stock Ratio. Please wait a few minutes !',

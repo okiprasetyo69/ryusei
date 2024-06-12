@@ -503,7 +503,7 @@ use Yajra\DataTables\Facades\DataTables;
         try{
             // $reportSellThrough = DataMartSellThrough::orderBy("sync_date", "DESC");
             $reportSellThrough = DB::table("data_mart_sell_throughs")
-                                ->select("name", "sync_date", DB::raw("SUM(total_unit_received) as total_unit_received"), DB::raw("SUM(total_unit_sold) as total_unit_sold"), DB::raw("SUM(total_unit_sold) / SUM(total_unit_received) * 100 as sell_throughs"));
+                                ->select("*");
 
             if($request->start_date != null){
                 $reportSellThrough =  $reportSellThrough->where("sync_date", ">=",$request->start_date);
@@ -525,7 +525,7 @@ use Yajra\DataTables\Facades\DataTables;
                 $reportSellThrough =  $reportSellThrough->whereYear("sync_date",$request->this_year);
             }
             //$reportSellThrough = $reportSellThrough->get();
-            $reportSellThrough = $reportSellThrough->groupBy("name", "sync_date")->orderBy("sell_throughs", "DESC")->get(); 
+            $reportSellThrough = $reportSellThrough->orderBy("transaction_date", "DESC")->get(); 
 
             $datatables = Datatables::of($reportSellThrough);
             return $datatables->make(true);
@@ -552,27 +552,18 @@ use Yajra\DataTables\Facades\DataTables;
 
                 if($dataMartMarketPlace == null){
                     Log::info('Insert Channel : ' . $value->channel_name. ' and Transaction Date : '. $value->transaction_date);
-                    $newDataMartMarketPlace = new DataMartMarketPlace();
-                    $newDataMartMarketPlace->channel_id =  $value->channel_id;
-                    $newDataMartMarketPlace->channel_name =  $value->channel_name;
-                    $newDataMartMarketPlace->store_name =  $value->store_name;
-                    $newDataMartMarketPlace->transaction_date =  $value->transaction_date;
-                    $newDataMartMarketPlace->grand_total =  $value->total;
-                    $newDataMartMarketPlace->sync_date =   $today;
-
-                    $newDataMartMarketPlace->save(); 
+                    DataMartMarketPlace::create([
+                        'channel_id' => $value->channel_id,
+                        'channel_name' => $value->channel_name,
+                        'store_name' => $value->store_name,
+                        'transaction_date' => $value->transaction_date,
+                        'grand_total' => $value->total,
+                        'sync_date' => $today,
+                    ]);
                 }
 
                 if($dataMartMarketPlace != null){
-                    Log::info('Update Channel : ' . $value->channel_name. ' and Transaction Date : '. $value->transaction_date);
-                    $dataMartMarketPlace->channel_id =  $value->channel_id;
-                    $dataMartMarketPlace->channel_name =  $value->channel_name;
-                    $dataMartMarketPlace->store_name =  $value->store_name;
-                    $dataMartMarketPlace->transaction_date =  $value->transaction_date;
-                    $dataMartMarketPlace->grand_total =  $value->total;
-                    $dataMartMarketPlace->sync_date =   $today;
-
-                    $dataMartMarketPlace->save(); 
+                    Log::info('Best Channel : ' . $value->channel_name. ' and Transaction Date : '. $value->transaction_date . ' was existed !');
                 }
             }
         }catch(Exception $ex){
@@ -598,23 +589,30 @@ use Yajra\DataTables\Facades\DataTables;
 
                 if($basketSize == null){
                     Log::info('Insert Basket Size with Transaction Date : '. $value->transaction_date);
-                    $newBasketSize = new BasketSizeReport();
-                    $newBasketSize->transaction_date = $value->transaction_date;
-                    $newBasketSize->total_order_number = $value->total_order_number;
-                    $newBasketSize->grand_total = $value->grand_total;
-                    $newBasketSize->result_divide = ($value->grand_total / $value->total_order_number);
-                    $newBasketSize->sync_date =  $today;
+                    // $newBasketSize = new BasketSizeReport();
+                    // $newBasketSize->transaction_date = $value->transaction_date;
+                    // $newBasketSize->total_order_number = $value->total_order_number;
+                    // $newBasketSize->grand_total = $value->grand_total;
+                    // $newBasketSize->result_divide = ($value->grand_total / $value->total_order_number);
+                    // $newBasketSize->sync_date =  $today;
 
-                    $newBasketSize->save();
+                    // $newBasketSize->save();
+                    BasketSizeReport::create([
+                        'transaction_date' => $value->transaction_date,
+                        'total_order_number' => $value->total_order_number,
+                        'grand_total' => $value->grand_total,
+                        'result_divide' => ($value->grand_total / $value->total_order_number),
+                        'sync_date' =>$today,
+                    ]);
                 }
 
                 if($basketSize != null){
-                    Log::info('Update Basket Size with Transaction Date : '. $value->transaction_date);
-                    $basketSize->total_order_number = $value->total_order_number;
-                    $basketSize->grand_total = $value->grand_total;
-                    $basketSize->result_divide = ($value->grand_total / $value->total_order_number);
+                    Log::info('Basket Size with Transaction Date : '. $value->transaction_date .' was exist');
+                    // $basketSize->total_order_number = $value->total_order_number;
+                    // $basketSize->grand_total = $value->grand_total;
+                    // $basketSize->result_divide = ($value->grand_total / $value->total_order_number);
                     
-                    $basketSize->save();
+                    // $basketSize->save();
                 }
               
             }
@@ -637,40 +635,28 @@ use Yajra\DataTables\Facades\DataTables;
             foreach ($bestProduct as $key => $value) {
                 $dataMartProductDetail = DataMartProductDetail::where("sku_code", $value->sku_code)->first();
                 $product = Product::where("sku", $value->sku_code)->where("id", $value->sku_id)->first();
-               
+                $productName = null;
                 if($dataMartProductDetail == null){
                     Log::info('Insert Best Product with SKU : ' . $value->sku_code);
-                    $newDataMartProductDetail = new DataMartProductDetail();
-                    $newDataMartProductDetail->sku_id =  $product['id'];
-                    $newDataMartProductDetail->sku_code = $product['sku'];
-                    $newDataMartProductDetail->name = $product['name'];
-
                     if($product['article'] != null){
-                        $newDataMartProductDetail->product_name = $product['article'];
+                        $productName =  $product['article'];
                     } else {
-                        $newDataMartProductDetail->product_name = $product['name'];
+                        $productName =  $product['name'];
                     }
-
-                    $newDataMartProductDetail->qty_sold = $value->qty_sold;
-                    $newDataMartProductDetail->sync_date = $today;
-
-                    $newDataMartProductDetail->save();
+                    DataMartProductDetail::create([
+                        'sku_id' => $product['id'],
+                        'sku_code' => $product['sku'],
+                        'name' => $product['name'],
+                        'product_name' => $productName,
+                        'qty_sold' => $value->qty_sold,
+                        'sync_date' =>$today,
+                    ]);
                 } 
 
                 if($dataMartProductDetail != null){
-                    Log::info('Update Best Product with SKU : ' . $value->sku_code);
-                    
-                    $dataMartProductDetail->sku_code = $product['sku'];
-                    $dataMartProductDetail->name = $product['name'];
-
-                    if($product['article'] != null){
-                        $dataMartProductDetail->product_name = $product['article'];
-                    } else {
-                        $dataMartProductDetail->product_name = $product['name'];
-                    }
+                    Log::info('Quantity Product with SKU Code : ' . $value->sku_code . ' was updated !');
                     $dataMartProductDetail->qty_sold = $value->qty_sold;
                     $dataMartProductDetail->sync_date = $today;
-
                     $dataMartProductDetail->save();
                 }
             }
@@ -681,66 +667,51 @@ use Yajra\DataTables\Facades\DataTables;
         }
     }
 
-    public function syncSellThrough(){
+    public function syncSellThrough($syncToday = null){
         try{
             // Formula
             // X (%) = ( Qty Barang Terjual / Qty Barang Masuk) * 100%
-            $dataSellThrough =   DB::table("data_ware_house_order_details")
-                            ->join("item_stocks", "data_ware_house_order_details.sku_code", "=", "item_stocks.sku_code")
-                            ->select("item_stocks.sku_code", DB::raw("COALESCE(SUM(data_ware_house_order_details.qty_in_base), 0) as total_units_sold"), "item_stocks.qty as unit_stock" );
+           
+            $sumItemStock = DB::table("item_stocks")->select(DB::raw("COALESCE(SUM(qty), 0) as unit_stock"))->first();
+            $dataItemSold = DB::table("data_ware_house_order_details")
+                            ->join("data_ware_house_orders", "data_ware_house_order_details.dwh_order_id", "=", "data_ware_house_orders.id")
+                            ->select("data_ware_house_orders.transaction_date", DB::raw("COALESCE(SUM(data_ware_house_order_details.qty_in_base), 0) as total_units_sold"));
 
-            $dataSellThrough = $dataSellThrough->groupBy("item_stocks.sku_code", "item_stocks.qty")
+            if($syncToday != NULL){
+                $dataItemSold =  $dataItemSold->where('data_ware_house_orders.transaction_date', "=", $syncToday);
+            }
+
+            $dataItemSold = $dataItemSold->groupBy("data_ware_house_orders.transaction_date")
                                 ->orderBy("total_units_sold", "DESC")->get();
 
             $today = date('Y-m-d');
             $sellThrough = null;
+            $totalUnitReceived = $sumItemStock->unit_stock;
 
-            foreach ($dataSellThrough as $key => $value) {
+            foreach ($dataItemSold as $key => $value) {
 
-                $dataMartSellThrough = DataMartSellThrough::where("sku_code", $value->sku_code)->where("sync_date")->first();
-                $product = Product::where("sku", $value->sku_code)->first();
+                $dataMartSellThrough = DataMartSellThrough::where("transaction_date", $value->transaction_date)->first();
 
-                if((int) $value->unit_stock <= 0){
-                    $sellThrough = null;
-                } else {
-                    $sellThrough = ( (int) $value->total_units_sold / (int) $value->unit_stock) * 100;
-                }
-            
                 if($dataMartSellThrough == null){
-                    Log::info('Insert Sell Through with SKU : ' . $value->sku_code);
-                    $newDataMartSellThrough = new DataMartSellThrough();
-                    $newDataMartSellThrough->sku_code = $value->sku_code;
-                 
-                    if($product->article == null){
-                        $newDataMartSellThrough->product_name = $product->name; 
+                    Log::info('Insert Sell Through with transaction date : ' . $value->transaction_date);
+
+                    if((int) $totalUnitReceived <= 0){
+                        $sellThrough = null;
                     } else {
-                        $newDataMartSellThrough->product_name = $product->article; 
+                        $sellThrough = ( (int) $value->total_units_sold / (int)  $totalUnitReceived) * 100;
                     }
 
-                    $newDataMartSellThrough->total_unit_received =  (int) $value->unit_stock;
-                    $newDataMartSellThrough->total_unit_sold = (int) $value->total_units_sold;
-                    $newDataMartSellThrough->sell_through =  $sellThrough;
-                    $newDataMartSellThrough->sync_date = $today = date('Y-m-d');
-                    $newDataMartSellThrough->name = $product->name;
-
-                    $newDataMartSellThrough->save();
+                    DataMartSellThrough::create([
+                        'total_unit_received' =>  (int)  $totalUnitReceived,
+                        'total_unit_sold' =>  (int) $value->total_units_sold,
+                        'sell_through' =>   $sellThrough,
+                        'sync_date' =>  $today,
+                        'transaction_date' => $value->transaction_date
+                    ]);
                 }
 
                 if($dataMartSellThrough != null){
-                    Log::info('Update Sell Through with SKU : ' .$value->sku_code);
-                   
-                    if($product->article == null){
-                        $dataMartSellThrough->product_name = $product->name; 
-                    } else {
-                        $dataMartSellThrough->product_name = $product->article; 
-                    }
-                    $dataMartSellThrough->total_unit_received = (int) $value->unit_stock;
-                    $dataMartSellThrough->total_unit_sold =  (int) $value->total_units_sold;
-                    $dataMartSellThrough->sell_through =  $sellThrough;
-                    $dataMartSellThrough->name = $product->name;
-                    $dataMartSellThrough->sync_date = $today = date('Y-m-d');
-
-                    $dataMartSellThrough->save();
+                    Log::info('Data Sell Through with transaction date ' .$value->transaction_date.' !');
                 }
             }
         }
@@ -750,23 +721,22 @@ use Yajra\DataTables\Facades\DataTables;
         }
     }
 
-    public function syncSaleStockRatio(){
+    public function syncSaleStockRatio($syncToday=null){
         try{
             // Formula
             // X (Rp)= Omset Penjualan (akhir bulan) / Nilai Inventory Keseluruhan dalam rupiah (dari harga jual) dari data gudang
             // Omset Penjualan = SUM(Grand Total dari Invoice)
             // Nilai Inventory = SUM ((Total Stock Per Item x Harga Jual Per Item))
             $today = date('Y-m-d');
+
             // Get inventory value then store to data mart
-            $getInventoryValueSaleStockRatio = $this->getInventoryValueSaleStockRatio($today);
+            $getInventoryValueSaleStockRatio = $this->getInventoryValueSaleStockRatio($today, $syncToday);
             
             // Calculate or SUM total inventory value then Store to report sale stock ratio
             $totalInventoryValue = $this->totalInventoryValue($today);
 
             // Calculate or SUM Total Sales Turn Over (Omset)
-            $totalSalesTurnOver = $this->totalSalesTurnOver($today);
-
-            //$ssr = $this->calculateSSR($today);
+            $totalSalesTurnOver = $this->totalSalesTurnOver($today, $syncToday);
 
         }catch(Exception $ex){
             Log::error($ex->getMessage());
@@ -775,14 +745,18 @@ use Yajra\DataTables\Facades\DataTables;
     }
 
     // Get Inventory Value For SSR (Sell Stock Ratio)
-    public function getInventoryValueSaleStockRatio($today){
+    public function getInventoryValueSaleStockRatio($today, $syncToday = null){
         try{
             // Get Inventory Value
             $dataValueInventory =  DB::table("data_ware_house_order_details")
                                     ->join("item_stocks", "data_ware_house_order_details.sku_code", "=", "item_stocks.sku_code")
                                     ->join("data_ware_house_orders", "data_ware_house_order_details.dwh_order_id", "=", "data_ware_house_orders.id")
                                     ->select("data_ware_house_orders.transaction_date", "data_ware_house_orders.salesorder_no",  "data_ware_house_order_details.dwh_order_id", "data_ware_house_order_details.sku_code", "item_stocks.qty as total_stock", "data_ware_house_order_details.amount" , DB::raw("item_stocks.qty * data_ware_house_order_details.amount  as total_inventory"));
-                
+            
+            if($syncToday != NULL){
+                $dataValueInventory =  $dataValueInventory->where('data_ware_house_orders.transaction_date', "=", $syncToday);
+            }
+
             $dataValueInventory =  $dataValueInventory->orderBy("data_ware_house_order_details.dwh_order_id", "ASC")->get();  
             // Store to data mart
             foreach ($dataValueInventory as $key => $value) {
@@ -803,18 +777,19 @@ use Yajra\DataTables\Facades\DataTables;
                     $newDataMartSaleStockRatio->total_inventory = $value->total_inventory;
                         
                     $newDataMartSaleStockRatio->save();
+                  
                 }
 
                 if($dataMartSaleStockRatio != null){
-                    Log::info('Update Data Mart Inventory Value with SKU : ' . $value->sku_code . ' - Order Number : ' . $value->salesorder_no . ' Date : ' . $value->transaction_date);
-                    $dataMartSaleStockRatio->sync_date =  $today = date('Y-m-d');
-                    $dataMartSaleStockRatio->salesorder_no = $value->salesorder_no;
-                    $dataMartSaleStockRatio->dwh_order_id = $value->dwh_order_id;
-                    $dataMartSaleStockRatio->total_stock = $value->total_stock;
-                    $dataMartSaleStockRatio->amount =$value->amount;
-                    $dataMartSaleStockRatio->total_inventory = $value->total_inventory;
+                    Log::info('Data Mart Inventory Value with SKU : ' . $value->sku_code . ' - Order Number : ' . $value->salesorder_no . ' Date : ' . $value->transaction_date . ' was exist');
+                    // $dataMartSaleStockRatio->sync_date =  $today = date('Y-m-d');
+                    // $dataMartSaleStockRatio->salesorder_no = $value->salesorder_no;
+                    // $dataMartSaleStockRatio->dwh_order_id = $value->dwh_order_id;
+                    // $dataMartSaleStockRatio->total_stock = $value->total_stock;
+                    // $dataMartSaleStockRatio->amount =$value->amount;
+                    // $dataMartSaleStockRatio->total_inventory = $value->total_inventory;
 
-                    $dataMartSaleStockRatio->save();
+                    // $dataMartSaleStockRatio->save();
                 }
             }
         }catch(Exception $ex){
@@ -843,11 +818,11 @@ use Yajra\DataTables\Facades\DataTables;
                 }
 
                 if($dataReportSellStockRatio != null){
-                    Log::info('Update Inventory Value to Report Sell Stock Ratio with transaction date : '.$value->transaction_date. ' and total inventory value : ' . $value->total_inventory_value);
-                    $dataReportSellStockRatio->total_inventory_value = $value->total_inventory;
-                    $dataReportSellStockRatio->total_sales_turn_over = $dataReportSellStockRatio->total_sales_turn_over;
-                    $dataReportSellStockRatio->sync_date = $today;
-                    $dataReportSellStockRatio->save();
+                    Log::info('Data Inventory Value to Report Sell Stock Ratio with transaction date : '.$value->transaction_date. ' and total inventory value : ' . $value->total_inventory_value . ' was exist !');
+                    // $dataReportSellStockRatio->total_inventory_value = $value->total_inventory;
+                    // $dataReportSellStockRatio->total_sales_turn_over = $dataReportSellStockRatio->total_sales_turn_over;
+                    // $dataReportSellStockRatio->sync_date = $today;
+                    // $dataReportSellStockRatio->save();
                 }
             }
         }catch(Exception $ex){
@@ -857,10 +832,15 @@ use Yajra\DataTables\Facades\DataTables;
     }
 
     // Amount of Grand Total From Grand Total For SSR (Sell Stok Ratio)
-    public function totalSalesTurnOver($today){
+    public function totalSalesTurnOver($today,  $syncToday = null){
         try{
             $totalOmset = DB::table("data_ware_house_orders")
                         ->select("transaction_date",  DB::raw("SUM(grand_total) as amount"));
+
+            if($syncToday != NULL){
+                $totalOmset =  $totalOmset->where('transaction_date', "=", $syncToday);
+            }
+
             $totalOmset = $totalOmset->groupBy("transaction_date")->get();
 
             foreach ($totalOmset as $key => $value) {
@@ -876,7 +856,7 @@ use Yajra\DataTables\Facades\DataTables;
                 }
 
                 if($dataReportSellStockRatio!= null){
-                    Log::info('Update Omset to Report Sell Stock Ratio with transaction date : '.$value->transaction_date. ' and amount of grand total : ' . $value->amount);
+                    Log::info('Data Omset to Report Sell Stock Ratio with transaction date : '.$value->transaction_date. ' and amount of grand total : ' . $value->amount . ' was exist !');
                     $newReportAmountGrandTotal = new SellStockRatioReport();
                     $dataReportSellStockRatio->total_sales_turn_over = $value->amount;
                     $dataReportSellStockRatio->total_inventory_value = $dataReportSellStockRatio->total_inventory_value;
