@@ -85,10 +85,14 @@
                                 <div class="alert alert-primary alert-dismissible fade show" role="alert">
                                     <i class="bi bi-star me-1"></i>
                                         Total Pesanan : 
-                                    <label id="lbl-total">-</label> 
+                                    <label id="lbl-total"> - </label> 
+                                    <br/>
+                                    <span id="lbl-range-data" class="text-bold"> - </span> 
                                 </div>
+                               
                             </div>
-                         
+                            
+
                             <div class="table-responsive mt-4">
                                 <table class="table table-striped" id="table-data-warehouse-sales-order">
                                     <thead>
@@ -227,6 +231,7 @@
         end_date = $("#filter_end_date" ).val().split("-").reverse().join("-")
         loadSalesOrderCompleted(invoice_number, start_date, end_date)
         getTotalSalesOrder()
+        getRangeInvoiceSalesCompletedDate()
 
         // Inisialisasi Pusher
         Pusher.logToConsole = true;
@@ -472,7 +477,22 @@
             }
         });
       }
-
+      
+      function getRangeInvoiceSalesCompletedDate(){
+            $.ajax({
+                type: "GET",
+                url: "/api/data-warehouse/sales/order/max-date",
+                data: "data",
+                dataType: "JSON",
+                success: function (response) {
+                    var data = response.data
+                    var minDate = data.min_date.split("-").reverse().join("-")
+                    var maxDate = data.max_date.split("-").reverse().join("-")
+                    var format = "Dari "+ minDate +" s/d " + maxDate
+                    $("#lbl-range-data").text(format)
+                }
+            });
+      }
 
 </script>
 

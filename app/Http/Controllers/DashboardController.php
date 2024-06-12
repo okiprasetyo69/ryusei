@@ -216,6 +216,19 @@ class DashboardController extends Controller
         }
     }
 
+    public function reportSellThroughMonthly(Request $request){
+        try{
+            $reportSellThroughMonthly = $this->dashboardEloquent->reportSellThroughMonthly($request);
+            if($reportSellThroughMonthly != null){
+                return $reportSellThroughMonthly;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
     // Queue Best Store from Marketplace
     public function syncSalesTurnoverMarketPlace(Request $request){
         try{

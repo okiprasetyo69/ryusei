@@ -159,8 +159,9 @@ Route::controller(DashboardController::class)->group(function() {
     Route::get('/analytics/report/basket-size', 'reportBasketSize')->name('analytics.report.basket-size');
     Route::get('/analytics/report/aov', 'reportAov')->name('analytics.report.aov');
     Route::get('/analytics/report/ssr/daily', 'reportSellStockRatioDaily')->name('analytics.report.ssr');
-    Route::get('/analytics/report/ssr/monthly', 'reportSellStockRatioMontly')->name('analytics.report.ssr');
+    Route::get('/analytics/report/ssr/monthly', 'reportSellStockRatioMontly')->name('analytics.report.ssr.monthly');
     Route::get('/analytics/report/sell-through', 'reportSellThrough')->name('analytics.report.sell-through');
+    Route::get('/analytics/report/sell-through/monthly', 'reportSellThroughMonthly')->name('analytics.report.sell-through.monthly');
 
     Route::get('/analytics/sync-sales-turnover-marketplace', 'syncSalesTurnoverMarketPlace')->name('analytics.sync-sales-turnover-marketplace');
     Route::get('/analytics/sync-basket-size', 'syncBaksetSize')->name('analytics.sync-basket-size');
@@ -246,6 +247,7 @@ Route::controller(DataWarehouseSalesOrderController::class)->group(function() {
     Route::get('/data-warehouse/sales/order/completed', 'getAllDataWarehouseOrder')->name('data-warehouse.sales.order.completed');
     Route::get('/data-warehouse/sales/order/total', 'totalSalesOrderCompleted')->name('data-warehouse.sales.order.completed.total');
     Route::get('/data-warehouse/sales/order/detail', 'detailSalesOrderCompleted')->name('data-warehouse.sales.order.completed.detail');
+    Route::get('/data-warehouse/sales/order/max-date', 'getMaxDateSalesOrderCompleted')->name('data-warehouse.sales.order.completed.max-date');
 });
 
 Route::controller(SalesReturnController::class)->group(function() {

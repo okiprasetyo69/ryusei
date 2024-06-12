@@ -501,36 +501,50 @@ use Yajra\DataTables\Facades\DataTables;
 
     public function reportSellThrough(Request $request){
         try{
-            // $reportSellThrough = DataMartSellThrough::orderBy("sync_date", "DESC");
+
             $reportSellThrough = DB::table("data_mart_sell_throughs")
                                 ->select("*");
 
             if($request->start_date != null){
-                $reportSellThrough =  $reportSellThrough->where("sync_date", ">=",$request->start_date);
+                $reportSellThrough =  $reportSellThrough->where("transaction_date", ">=",$request->start_date);
             }
 
             if($request->end_date != null){
-                $reportSellThrough =  $reportSellThrough->where("sync_date", "<=",$request->end_date);
+                $reportSellThrough =  $reportSellThrough->where("transaction_date", "<=",$request->end_date);
             }
 
             if($request->today != null){
-                $reportSellThrough =  $reportSellThrough->where("sync_date", $request->today);
+                $reportSellThrough =  $reportSellThrough->where("transaction_date", $request->today);
             }
 
             if($request->this_month != null){
-                $reportSellThrough =  $reportSellThrough->whereMonth("sync_date", $request->this_month);
+                $reportSellThrough =  $reportSellThrough->whereMonth("transaction_date", $request->this_month);
             }
                 
             if($request->this_year != null){
-                $reportSellThrough =  $reportSellThrough->whereYear("sync_date",$request->this_year);
+                $reportSellThrough =  $reportSellThrough->whereYear("transaction_date",$request->this_year);
             }
-            //$reportSellThrough = $reportSellThrough->get();
+
             $reportSellThrough = $reportSellThrough->orderBy("transaction_date", "DESC")->get(); 
 
             $datatables = Datatables::of($reportSellThrough);
             return $datatables->make(true);
             
         }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function reportSellThroughMonthly(Request $request){
+        try{
+            $reportSellThroughMonthly =  DB::table("data_mart_sell_throughs")
+                                        ->select(DB::raw("DATE_FORMAT(transaction_date, '%M') as by_month"), DB::raw("DATE_FORMAT(transaction_date, '%Y') as by_year"), DB::raw("SUM(total_unit_sold) as total_unit_sold"), DB::raw("SUM(total_unit_received) as total_unit_received"),  DB::raw("(SUM(total_unit_sold) / SUM(total_unit_received)) * 100  as sell_through_monthly"));
+            
+            $reportSellThroughMonthly = $reportSellThroughMonthly->groupBy("by_month", "by_year")->get();
+            $datatables = Datatables::of($reportSellThroughMonthly);
+            return $datatables->make(true);
+        } catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;
         }
@@ -589,14 +603,6 @@ use Yajra\DataTables\Facades\DataTables;
 
                 if($basketSize == null){
                     Log::info('Insert Basket Size with Transaction Date : '. $value->transaction_date);
-                    // $newBasketSize = new BasketSizeReport();
-                    // $newBasketSize->transaction_date = $value->transaction_date;
-                    // $newBasketSize->total_order_number = $value->total_order_number;
-                    // $newBasketSize->grand_total = $value->grand_total;
-                    // $newBasketSize->result_divide = ($value->grand_total / $value->total_order_number);
-                    // $newBasketSize->sync_date =  $today;
-
-                    // $newBasketSize->save();
                     BasketSizeReport::create([
                         'transaction_date' => $value->transaction_date,
                         'total_order_number' => $value->total_order_number,
@@ -608,11 +614,11 @@ use Yajra\DataTables\Facades\DataTables;
 
                 if($basketSize != null){
                     Log::info('Basket Size with Transaction Date : '. $value->transaction_date .' was exist');
-                    // $basketSize->total_order_number = $value->total_order_number;
-                    // $basketSize->grand_total = $value->grand_total;
-                    // $basketSize->result_divide = ($value->grand_total / $value->total_order_number);
+                    $basketSize->total_order_number = $value->total_order_number;
+                    $basketSize->grand_total = $value->grand_total;
+                    $basketSize->result_divide = ($value->grand_total / $value->total_order_number);
                     
-                    // $basketSize->save();
+                    $basketSize->save();
                 }
               
             }

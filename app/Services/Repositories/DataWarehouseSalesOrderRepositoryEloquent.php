@@ -96,6 +96,23 @@ class DataWarehouseSalesOrderRepositoryEloquent implements DataWarehouseSalesOrd
         }
     }
 
+    public function maxDateInvoiceCompleted(Request $request){
+        try{
+            $lastInvoice = DB::table("data_ware_house_orders")
+                            ->select(DB::raw("MAX(transaction_date) as max_date"), DB::raw("MIN(transaction_date) as min_date"));
+            $lastInvoice = $lastInvoice->first();
+            return[
+                'status' => 200,
+                'messaget' => 'Success get max transaction sales order completed. ',
+                'data' =>$lastInvoice
+            ];
+
+        } catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
     public function getDataWareHouseOrderFromJubelio($userData, $transactionDateFrom, $transactionDateTo){
         try{
             // String date ISO UTC

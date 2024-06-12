@@ -17,6 +17,7 @@ class BasketSizeReport extends Model
         'transaction_date',
         'total_order_number',
         'grand_total',
-        'result_divide'
+        'result_divide',
+        'sync_date'
     ];
 }

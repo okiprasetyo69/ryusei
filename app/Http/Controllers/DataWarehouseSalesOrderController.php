@@ -117,4 +117,17 @@ class DataWarehouseSalesOrderController extends Controller
             return false;
         }
     }
+
+    public function getMaxDateSalesOrderCompleted(Request $request){
+        try{
+            $maxDateSalesOrder = $this->service->maxDateInvoiceCompleted($request);
+            if($maxDateSalesOrder != null){
+                return $maxDateSalesOrder;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
 }

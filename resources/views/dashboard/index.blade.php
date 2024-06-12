@@ -428,31 +428,31 @@
           </div>
           <!-- End Sell Through Daily Report -->
 
-          <!-- AOV Report -->
-          <!-- <div class="card">
+        <!-- Sell Through Monthly -->
+        <div class="card">
                 <div class="filter">
                     <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                         <li class="dropdown-header text-start">
                             <h6>Filter</h6>
                         </li>
-                        <li><a class="dropdown-item" href="#">Today</a></li>
-                        <li><a class="dropdown-item" href="#">This Month</a></li>
-                        <li><a class="dropdown-item" href="#">This Year</a></li>
+                        <li><a class="dropdown-item" href="#" id="filter-month-sell-through-monthly">This Month</a></li>
+                        <li><a class="dropdown-item" href="#" id="filter-year-sell-through-monthly">This Year</a></li>
+                        <li><a class="dropdown-item" href="#" id="sync-sell-through-monthly">Sync</a></li>
                     </ul>
                 </div>
 
                 <div class="card-body pb-0">
-                    <h5 class="card-title">AOV</h5>
+                    <h5 class="card-title">Sell Through Monthly</h5>
                     <div class="table-responsinve mt-4">
-                        <table class="table table-striped" id="table-aov">
+                        <table class="table table-striped" id="table-sell-through-monthly">
                             <thead class="text-center">
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Tgl Transaksi</th>
-                                    <th scope="col">Total Pesanan</th>
-                                    <th scope="col">Total Transaksi</th>
-                                    <th scope="col">Rata-Rata</th>
+                                    <th scope="col">Bulan</th>
+                                    <th scope="col">Qty Masuk</th>
+                                    <th scope="col">Qty Terjual</th>
+                                    <th scope="col">%</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -461,8 +461,9 @@
                         </table>
                     </div>
                 </div>
-          </div> -->
-          <!-- End AOV Report -->
+          </div>
+          <!-- End Sell Through Daily Report -->
+
         </div>
 
     </div>
@@ -479,7 +480,7 @@
     // Format tanggal dalam bentuk string YYYY-MM-DD
     var formattedDate = year + '-' + month + '-' + day;
 
-    var now, currentMonth, this_year, myChart, start_date, end_date , convertStartDate, convertEndDate, table, table_sales_turnover, category_name, table_basket_size, table_sell_through, table_ssr_daily, table_ssr_monthly
+    var now, currentMonth, this_year, myChart, start_date, end_date , convertStartDate, convertEndDate, table, table_sales_turnover, category_name, table_basket_size, table_sell_through, table_ssr_daily, table_ssr_monthly, table_sell_through_monthly
     $(document).ready(function () {
       
         totalSoldWithQty()
@@ -505,8 +506,9 @@
         reportSalesTurnoverMarketplace(start_date, end_date)
         reportBasketSize(start_date, end_date)
         reportSellThrough(start_date, end_date)
-        reportSSRDaily()
+        reportSSRDaily(start_date, end_date)
         reportSSRMonthly()
+        reportSellThroughMonthly()
         // -------------------- START FILTER BUTTON ------------------------ //
         $("#btn-search").on("click", function(e){
             e.preventDefault()
@@ -1444,7 +1446,6 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        console.log( rowData)
                         var transaction_date = rowData.transaction_date
                         var currDate = new Date(transaction_date)
                         var currMonth = currDate.toLocaleString('default', { month: 'long' })
@@ -1456,6 +1457,105 @@
             ],
             ajax:{
                 url :  '/api/analytics/report/sell-through',
+                type: "GET",
+                data: {
+                    start_date:start_date, 
+                    end_date : end_date,
+                    today : today,
+                    this_month : this_month,
+                    this_year : this_year
+                }
+            },
+        })
+    }
+
+    function reportSellThroughMonthly(start_date=null, end_date=null, today=null, this_month=null, this_year=null){
+        
+        if (table_sell_through_monthly != null) {
+            table_sell_through_monthly.destroy();
+        }
+
+        table_sell_through_monthly =  $("#table-sell-through-monthly").DataTable({
+            // lengthChange: false,
+            searching: false,
+            destroy: true,
+            processing: true,
+            serverSide: true,
+            bAutoWidth: true,
+            scrollCollapse : true,
+            ordering: false,
+            language: {
+                emptyTable: "Data tidak tersedia",
+                zeroRecords: "Tidak ada data yang ditemukan",
+                infoFiltered: "",
+                infoEmpty: "",
+                paginate: {
+                    previous: "‹",
+                    next: "›",
+                },
+                info: "Display _START_ s/d _END_ dari _TOTAL_ SellThrough",
+                aria: {
+                    paginate: {
+                        previous: "Previous",
+                        next: "Next",
+                    },
+                },
+            },
+            columns: [
+                { data: null, width: "2%" },
+                { data: null },
+                { data: null },
+                { data: null },
+                { data: null },
+            ],
+            columnDefs: [
+                {
+                    targets: 0,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).addClass("text-center");
+                        $(td).html(table_sell_through_monthly.page.info().start + row + 1);
+                    },
+                },
+                {
+                    targets: 1,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var format = rowData.by_month + ' - ' +  rowData.by_year
+                        $(td).html(format);
+                    },
+                },
+                {
+                    targets: 2,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.total_unit_received);
+                    },
+                },
+                {
+                    targets: 3,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.total_unit_sold);
+                    },
+                },
+                {
+                    targets: 4,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        var sell_through_monthly = Number(rowData.sell_through_monthly)
+                        sell_through_monthly = sell_through_monthly.toFixed(2)
+                        $(td).html(sell_through_monthly);
+                    },
+                },
+            ],
+            ajax:{
+                url :  '/api/analytics/report/sell-through/monthly',
                 type: "GET",
                 data: {
                     start_date:start_date, 
