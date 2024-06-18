@@ -11,13 +11,12 @@ use App\Services\Repositories\DashboardRepositoryEloquent;
 use Illuminate\Support\Facades\Log;
 use App\Events\JobCompleted;
 
-class SyncSaleStockRatioJob implements ShouldQueue
+class SyncSaleStockRatioDetailJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $startDate;
     public $endDate;
-
     /**
      * Create a new job instance.
      */
@@ -32,12 +31,15 @@ class SyncSaleStockRatioJob implements ShouldQueue
      */
     public function handle(DashboardRepositoryEloquent $service)
     {
+        Log::info('Sync Process SUM of Inventory Value For SSR (Sell Stok Ratio) ...');
+        $totalInventoryValue = $service->totalInventoryValue();
+        Log::info('Finish Sync SUM of Inventory Value For SSR (Sell Stok Ratio)...');
 
-        Log::info('Sync Process Get Inventory Value For SSR (Sell Stock Ratio) ...');
-        $getInventoryValue = $service->getInventoryValueSaleStockRatio($this->startDate,  $this->endDate);
-        Log::info('Finish Sync Get Inventory Value For SSR (Sell Stock Ratio)...');
+        Log::info('Sync Process Amount (Omset) of Grand Total From Grand Total For SSR (Sell Stok Ratio) ...');
+        $totalSalesTurnOver = $service->totalSalesTurnOver();
+        Log::info('Finish Sync Amount (Omset)  of Grand Total From Grand Total For SSR (Sell Stok Ratio)...');
 
         // Message queue job has done
-        broadcast(new JobCompleted('Sync Sell Stock Ratio has been successed !'));
+        broadcast(new JobCompleted('Sync Sell Stock Ratio Detail has been successed !'));
     }
 }

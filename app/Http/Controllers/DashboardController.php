@@ -18,6 +18,7 @@ use App\Jobs\SyncBasketSizeJob;
 use App\Jobs\SyncBestProductJob;
 use App\Jobs\SyncSaleThroughJob;
 use App\Jobs\SyncSaleStockRatioJob;
+use App\Jobs\SyncSaleStockRatioDetailJob;
 
 class DashboardController extends Controller
 {
@@ -277,8 +278,9 @@ class DashboardController extends Controller
     public function syncSellThrough(Request $request){
         try{
             //$sync = $this->dashboardEloquent->syncSellThrough();
-            $syncToday = $request->sync_today;
-            SyncSaleThroughJob::dispatch($syncToday);
+            $startDate = $request->start_date;
+            $endDate = $request->end_date;
+            SyncSaleThroughJob::dispatch($startDate, $endDate);
             return response()->json([
                 'status' => 200,
                 'message' => 'Sync Sell Through. Please wait a few minutes !',
@@ -292,9 +294,15 @@ class DashboardController extends Controller
     // Queue SSR
     public function syncSaleStockRatio(Request $request){
         try{
-            // $sync = $this->dashboardEloquent->syncSaleStockRatio();
-            $syncToday = $request->sync_today;
-            SyncSaleStockRatioJob::dispatch($syncToday);
+            $startDate = $request->start_date;
+            $endDate = $request->end_date;
+            SyncSaleStockRatioJob::dispatch($startDate, $endDate);
+
+               
+            // SyncSaleStockRatioJob::withChain([
+            //     new SyncSaleStockRatioDetailJob($startDate, $endDate),
+            // ])->dispatch($startDate, $endDate);
+
             return response()->json([
                 'status' => 200,
                 'message' => 'Sync Sell Stock Ratio. Please wait a few minutes !',

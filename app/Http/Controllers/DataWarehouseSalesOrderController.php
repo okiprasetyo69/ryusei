@@ -93,7 +93,7 @@ class DataWarehouseSalesOrderController extends Controller
                 SyncSalesOrderJob::dispatch($userData, $startDate, $endDate);
                 return response()->json([
                     'status' => 200,
-                    'message' => 'Sync product on process. Please wait a few minutes !',
+                    'message' => 'Sync sales order completed on process. Please wait a few minutes !',
                 ]);
             }
         

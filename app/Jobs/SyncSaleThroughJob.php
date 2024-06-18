@@ -14,14 +14,15 @@ use App\Events\JobCompleted;
 class SyncSaleThroughJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    public $userData;
-    public $syncToday;
+    public $endDate;
+    public $startDate;
     /**
      * Create a new job instance.
      */
-    public function __construct($syncToday)
+    public function __construct($startDate, $endDate)
     {
-        $this->syncToday = $syncToday;
+        $this->startDate = $startDate;
+        $this->endDate = $endDate;
     }
 
     /**
@@ -29,11 +30,11 @@ class SyncSaleThroughJob implements ShouldQueue
      */
     public function handle(DashboardRepositoryEloquent $service)
     {
-        Log::info('Sync Process Upsert Sale Through ...');
-        $upsertSaleThrough = $service->syncSellThrough($this->syncToday);
-        Log::info('Finish Sync Sale Through...');
+        Log::info('Sync Process Upsert Sell Through ...');
+        $upsertSaleThrough = $service->syncSellThrough($this->startDate, $this->endDate);
+        Log::info('Finish Sync Sell Through...');
 
         // Message queue job has done
-        broadcast(new JobCompleted('Sync Sale Through has been successed !'));
+        broadcast(new JobCompleted('Sync Sell Through has been successed !'));
     }
 }

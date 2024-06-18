@@ -311,7 +311,7 @@
                                     <h6>Filter</h6>
                                 </li>
                                 <li><a class="dropdown-item" href="#" id="filter-year-ssr-monthly">This Year</a></li>
-                                <li><a class="dropdown-item" href="#" id="sync-sale-stock-ratio-monthly">Sync</a></li>
+                                <!-- <li><a class="dropdown-item" href="#" id="sync-sale-stock-ratio-monthly">Sync</a></li> -->
                             </ul>
                         </div>
                         <div class="card-body pb-0">
@@ -436,9 +436,9 @@
                         <li class="dropdown-header text-start">
                             <h6>Filter</h6>
                         </li>
-                        <li><a class="dropdown-item" href="#" id="filter-month-sell-through-monthly">This Month</a></li>
+                        <!-- <li><a class="dropdown-item" href="#" id="filter-month-sell-through-monthly">This Month</a></li> -->
                         <li><a class="dropdown-item" href="#" id="filter-year-sell-through-monthly">This Year</a></li>
-                        <li><a class="dropdown-item" href="#" id="sync-sell-through-monthly">Sync</a></li>
+                        <!-- <li><a class="dropdown-item" href="#" id="sync-sell-through-monthly">Sync</a></li> -->
                     </ul>
                 </div>
 
@@ -480,7 +480,7 @@
     // Format tanggal dalam bentuk string YYYY-MM-DD
     var formattedDate = year + '-' + month + '-' + day;
 
-    var now, currentMonth, this_year, myChart, start_date, end_date , convertStartDate, convertEndDate, table, table_sales_turnover, category_name, table_basket_size, table_sell_through, table_ssr_daily, table_ssr_monthly, table_sell_through_monthly
+    var now, currentMonth, this_year, myChart, start_date, end_date , convertStartDate, convertEndDate, table, table_sales_turnover, category_name, table_basket_size, table_sell_through, table_ssr_daily, table_ssr_monthly, table_sell_through_monthly, yesterday
     $(document).ready(function () {
       
         totalSoldWithQty()
@@ -707,21 +707,23 @@
 
         $("#sync-sell-through").on("click", function(e){
             e.preventDefault()
-            //now = formattedDate
-            now = '2024-01-01'
-            syncSellThrough(now)
+            start_date = $("#start_date" ).val().split("-").reverse().join("-")
+            end_date = $("#end_date" ).val().split("-").reverse().join("-")
+            syncSellThrough(start_date, end_date)
         })
 
         $("#sync-sale-stock-ratio-daily").on("click", function(e){
             e.preventDefault()
-            now = formattedDate
-            //now = '2024-01-01'
-            syncSSR(now)
+            start_date = $("#start_date" ).val().split("-").reverse().join("-")
+            end_date = $("#end_date" ).val().split("-").reverse().join("-")
+            syncSSR(start_date, end_date)
         })
 
         $("#sync-sale-stock-ratio-monthly").on("click", function(e){
             e.preventDefault()
-            syncSSR()
+            start_date = $("#start_date" ).val().split("-").reverse().join("-")
+            end_date = $("#end_date" ).val().split("-").reverse().join("-")
+            syncSSR(start_date, end_date)
         })
         // -----------------------END SYNC----------------------------------- //
 
@@ -742,6 +744,7 @@
                     typeAnimated: true,
                     buttons: {
                         close: function () {
+                            location.reload()
                         }
                     }
                 });
@@ -1109,12 +1112,13 @@
         });
     }
 
-    function syncSellThrough(sync_today = null){
+    function syncSellThrough(start_date = null, end_date=null){
         $.ajax({
             type: "GET",
             url: "/api/analytics/sync-sell-through",
             data: {
-                sync_today : sync_today
+                start_date : start_date,
+                end_date : end_date
             },
             dataType: "JSON",
             success: function (response) {
@@ -1137,12 +1141,13 @@
         });
     }
 
-    function syncSSR(sync_today = null){
+    function syncSSR(start_date = null, end_date=null){
         $.ajax({
             type: "GET",
             url: "/api/analytics/sync-sell-stock-ratio",
             data: {
-                sync_today : sync_today
+                start_date : start_date,
+                end_date : end_date
             },
             dataType: "JSON",
             success: function (response) {
@@ -1420,6 +1425,7 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
+                        console.log(rowData)
                         $(td).html(rowData.total_unit_received);
                     },
                 },

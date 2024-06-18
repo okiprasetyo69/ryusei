@@ -40,9 +40,9 @@ class SyncSalesOrderJob implements ShouldQueue
         $upsertPurchaseInvoice = $service->getDataWareHouseOrderFromJubelio($this->userData, $this->transactionDateFrom, $this->transactionDateTo);
         Log::info('Finish Sync Process Sales Order...');
 
-        Log::info('Sync Process Upsert Detail Sales Order...');
-        $upsertPurchaseDetailInvoice = $service->getDataWareHouseDetailOrderTransaction($this->userData, $this->transactionDateFrom, $this->transactionDateTo);
-        Log::info('Finish Sync Process Upsert Sales Order...');
+        // Log::info('Sync Process Upsert Detail Sales Order...');
+        // $upsertPurchaseDetailInvoice = $service->getDataWareHouseDetailOrderTransaction($this->userData, $this->transactionDateFrom, $this->transactionDateTo);
+        // Log::info('Finish Sync Process Upsert Sales Order...');
 
         // Log::info('Sync Process Upsert Sell Price...');
         // $upsertPurchaseDetailInvoice = $service->getDataWareHouseDetailOrderTransaction($this->userData, $this->transactionDateFrom, $this->transactionDateTo);
