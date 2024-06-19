@@ -288,7 +288,7 @@ class DataWarehouseSalesOrderRepositoryEloquent implements DataWarehouseSalesOrd
     }
     
     public function endPointSalesOrderTransaction($userData, $firstPage, $pageSize, $transactionDateFrom, $transactionDateTo){
-        $responses = Http::timeout(10)->retry(5, 3000)->withHeaders([
+        $responses = Http::timeout(30)->retry(5, 3000)->withHeaders([
             'Authorization' => 'Bearer ' . $userData['api_token'],
             'Accept' => 'application/json', 
         ])->get(env('JUBELIO_API') . '/sales/orders/completed/?page='.$firstPage.'&pageSize='.$pageSize.'&transactionDateFrom='.$transactionDateFrom.'&transactionDateTo='.$transactionDateTo);
@@ -296,7 +296,7 @@ class DataWarehouseSalesOrderRepositoryEloquent implements DataWarehouseSalesOrd
     }
 
     public function endPointDetailSalesOrderTransaction($userData , $val){
-        $responses = Http::timeout(10)->retry(5, 3000)->withHeaders([
+        $responses = Http::timeout(30)->retry(5, 3000)->withHeaders([
             'Authorization' => 'Bearer ' . $userData['api_token'],
             'Accept' => 'application/json', 
         ])->get(env('JUBELIO_API') . '/sales/orders/'. $val['salesorder_id']);

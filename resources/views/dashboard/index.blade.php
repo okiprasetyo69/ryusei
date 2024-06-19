@@ -413,7 +413,7 @@
                             <thead class="text-center">
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Qty Masuk</th>
+                                    <th scope="col">Stock</th>
                                     <th scope="col">Qty Terjual</th>
                                     <th scope="col">%</th>
                                     <th scope="col">Trx Date</th>
@@ -450,7 +450,7 @@
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Bulan</th>
-                                    <th scope="col">Qty Masuk</th>
+                                    <th scope="col">Stock</th>
                                     <th scope="col">Qty Terjual</th>
                                     <th scope="col">%</th>
                                 </tr>

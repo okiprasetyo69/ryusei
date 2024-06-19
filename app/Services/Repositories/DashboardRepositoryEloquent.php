@@ -531,37 +531,64 @@ use Yajra\DataTables\Facades\DataTables;
     }
 
     // Best Store From Marketplace
-    public function syncSalesTurnOver(){
+    public function syncSalesTurnOver($startDate = null, $endDate = null){
         try{
-            $limit = 100;
+
             $dataWareHouseSalesOrder =  DB::table("data_ware_house_orders")
                                         ->select("channel_id", "channel_name","transaction_date" ,"store_name", DB::raw("SUM(grand_total) as total"));
+            if($startDate != null){
+                $dataWareHouseSalesOrder =  $dataWareHouseSalesOrder->where("transaction_date", ">=", $startDate);
+            }
+
+            if($endDate != null){
+                $dataWareHouseSalesOrder =  $dataWareHouseSalesOrder->where("transaction_date", "<=", $endDate);
+            }
                                        
             $dataWareHouseSalesOrder = $dataWareHouseSalesOrder->groupBy("channel_id", "channel_name", "transaction_date", "store_name")
                                         ->orderBy("transaction_date", "DESC")->get();
             $today = date('Y-m-d');
-            foreach ($dataWareHouseSalesOrder as $key => $value) {
-                $dataMartMarketPlace = DataMartMarketPlace::where("transaction_date", $value->transaction_date)
-                                    ->where("channel_name", $value->channel_name)->first();
 
+            $arrDataSalesOrder = [];
+
+            foreach ($dataWareHouseSalesOrder as $key => $value) {
+                array_push($arrDataSalesOrder, [
+                    'transaction_date' => $value->transaction_date,
+                    'channel_name' => $value->channel_name,
+                    'channel_id' => $value->channel_id,
+                    'store_name' => $value->store_name,
+                    'grand_total' => $value->total,
+                    'sync_date' => $today,
+                ]);
+            }
+
+            foreach ($arrDataSalesOrder as $key => $value) {
+                $dataMartMarketPlace = DataMartMarketPlace::where("transaction_date", $value['transaction_date'])
+                                                            ->where("channel_name", $value['channel_name'])->first();
                 if($dataMartMarketPlace == null){
-                    Log::info('Insert Channel : ' . $value->channel_name. ' and Transaction Date : '. $value->transaction_date);
-                    DataMartMarketPlace::create([
-                        'channel_id' => $value->channel_id,
-                        'channel_name' => $value->channel_name,
-                        'store_name' => $value->store_name,
-                        'transaction_date' => $value->transaction_date,
-                        'grand_total' => $value->total,
-                        'sync_date' => $today,
-                    ]);
+                    Log::info('Insert Channel : ' . $value['channel_name']. ' and Transaction Date : '. $value['transaction_date']);
+                    $newDataMarketplaceSalesTurnOver = new DataMartMarketPlace();
+                    $newDataMarketplaceSalesTurnOver->channel_id = $value['channel_id'];
+                    $newDataMarketplaceSalesTurnOver->channel_name = $value['channel_name'];
+                    $newDataMarketplaceSalesTurnOver->store_name = $value['store_name'];
+                    $newDataMarketplaceSalesTurnOver->transaction_date = $value['transaction_date'];
+                    $newDataMarketplaceSalesTurnOver->grand_total = $value['grand_total'];
+                    $newDataMarketplaceSalesTurnOver->sync_date = $value['sync_date'];
+
+                    $newDataMarketplaceSalesTurnOver->save();
                 }
 
                 if($dataMartMarketPlace != null){
-                    Log::info('Update grand total '. $value->grand_total.' Channel : ' . $value->channel_name. ' Transaction Date : '. $value->transaction_date);
-                    $dataMartMarketPlace->grand_total =  $value->grand_total ;
+                    Log::info('Update Channel : ' . $value['channel_name']. ' and Transaction Date : '. $value['transaction_date']);
+                    $dataMartMarketPlace->channel_id = $value['channel_id'];
+                    $dataMartMarketPlace->store_name = $value['store_name'];
+                    $dataMartMarketPlace->transaction_date = $value['transaction_date'];
+                    $dataMartMarketPlace->grand_total = $value['grand_total'];
+                    $dataMartMarketPlace->sync_date = $value['sync_date'];
+
                     $dataMartMarketPlace->save();
                 }
             }
+
         }catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;

@@ -422,18 +422,11 @@ use Illuminate\Support\Facades\Http;
     public function updateProductItem($userData){
         try{
 
-            $responses = Http::withHeaders([
+            $responses = Http::timeout(30)->retry(5, 3000)->withHeaders([
                 'Authorization' => 'Bearer ' . $userData['api_token'],
                 'Accept' => 'application/json', 
             ])->get(env('JUBELIO_API') . '/inventory/');
             
-            if($responses->failed() == true){
-                $responses = Http::withHeaders([
-                    'Authorization' => 'Bearer ' . $userData['api_token'],
-                    'Accept' => 'application/json', 
-                ])->get(env('JUBELIO_API') . '/inventory/');
-            }
-
             $today = date('Y-m-d');
 
             if($responses->status() == 200){
@@ -520,17 +513,10 @@ use Illuminate\Support\Facades\Http;
         try{
 
             // get item detail to get price per item
-            $itemsResponse = Http::withHeaders([
+            $itemsResponse = Http::timeout(30)->retry(5, 3000)->withHeaders([
                 'Authorization' => 'Bearer ' .  $userData['api_token'],
                 'Accept' => 'application/json', 
             ])->get(env('JUBELIO_API') . '/inventory/items/');
-
-            if($itemsResponse->failed() == true){
-                $itemsResponse = Http::withHeaders([
-                    'Authorization' => 'Bearer ' .  $userData['api_token'],
-                    'Accept' => 'application/json', 
-                ])->get(env('JUBELIO_API') . '/inventory/items/');
-            }
 
             if($itemsResponse->status() == 200){
                 $data = $itemsResponse->json()['data'];
@@ -564,17 +550,10 @@ use Illuminate\Support\Facades\Http;
     public function updateItemBundling($userData){
         try{
             // get price per bundle
-            $itemsBundleResponse = Http::withHeaders([
+            $itemsBundleResponse = Http::timeout(30)->retry(5, 3000)->withHeaders([
                 'Authorization' => 'Bearer ' .  $userData['api_token'],
                 'Accept' => 'application/json', 
             ])->get(env('JUBELIO_API') . '/inventory/item-bundles/');
-
-            if($itemsBundleResponse->failed() == true){
-                $itemsBundleResponse = Http::withHeaders([
-                    'Authorization' => 'Bearer ' . $userData['api_token'],
-                    'Accept' => 'application/json', 
-                ])->get(env('JUBELIO_API') . '/inventory/');
-            }
 
             if($itemsBundleResponse->status() == 200){
                 $data = $itemsBundleResponse->json()['data'];
@@ -637,7 +616,7 @@ use Illuminate\Support\Facades\Http;
     }
 
     public function endPointProductItem($userData){
-        $responses = Http::timeout(10)->retry(5, 3000)->withHeaders([
+        $responses = Http::timeout(30)->retry(5, 3000)->withHeaders([
             'Authorization' => 'Bearer ' . $userData['api_token'],
             'Accept' => 'application/json', 
         ])->get(env('JUBELIO_API') . '/inventory/');
@@ -647,7 +626,7 @@ use Illuminate\Support\Facades\Http;
     }
 
     public function endpointDetailItemBySkuCode($userData, $itemId){
-        $responses = Http::timeout(10)->retry(5, 3000)->withHeaders([
+        $responses = Http::timeout(30)->retry(5, 3000)->withHeaders([
             'Authorization' => 'Bearer ' . $userData['api_token'],
             'Accept' => 'application/json', 
         ])->get(env('JUBELIO_API') . '/inventory/items/'.$itemId);
