@@ -141,6 +141,7 @@ class DataWarehouseSalesOrderRepositoryEloquent implements DataWarehouseSalesOrd
                             $channel = SalesChannel::where("name" , $value['channel_name'])->first();
                             $channelId = null;
                             $channelName = "";
+                            
                             if($dataWarehouseOrder == null){
                                 Log::info('Insert Order Trx with Sales Order Number : ' .$value['salesorder_no'] . ' and Invoice Number : '.$value['invoice_no']);
                               

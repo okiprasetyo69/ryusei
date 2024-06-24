@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('data_mart_sale_stock_ratios', function (Blueprint $table) {
-            $table->bigInteger('total_inventory')->change()->nullable();
-            $table->bigInteger('amount')->change()->nullable();
+            $table->integer('total_item_sold')->nullable();
+            $table->bigInteger('total_sell_price')->nullable();
         });
     }
 
@@ -23,8 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('data_mart_sale_stock_ratios', function (Blueprint $table) {
-            $table->integer('total_inventory')->change();
-            $table->integer('amount')->change();
+            $table->dropColumn('total_item_sold');
+            $table->dropColumn('total_sell_price');
         });
     }
 };

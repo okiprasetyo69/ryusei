@@ -34,7 +34,7 @@ class SyncSaleStockRatioJob implements ShouldQueue
     {
 
         Log::info('Sync Process Get Inventory Value For SSR (Sell Stock Ratio) ...');
-        $getInventoryValue = $service->getInventoryValueSaleStockRatio($this->startDate,  $this->endDate);
+        $getInventoryValue = $service->syncSaleStockRatio($this->startDate,  $this->endDate);
         Log::info('Finish Sync Get Inventory Value For SSR (Sell Stock Ratio)...');
 
         // Message queue job has done

@@ -298,10 +298,6 @@ class DashboardController extends Controller
             $endDate = $request->end_date;
             SyncSaleStockRatioJob::dispatch($startDate, $endDate);
 
-            // SyncSaleStockRatioJob::withChain([
-            //     new SyncSaleStockRatioDetailJob($startDate, $endDate),
-            // ])->dispatch($startDate, $endDate);
-
             return response()->json([
                 'status' => 200,
                 'message' => 'Sync Sell Stock Ratio. Please wait a few minutes !',

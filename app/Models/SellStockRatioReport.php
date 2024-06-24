@@ -20,5 +20,9 @@ class SellStockRatioReport extends Model
         'total_inventory_value',
         'sale_stock_ratio',
         'sync_date',
+        'month',
+        'year',
+        'total_inventory_in_warehouse',
+        'percentage'
     ];
 }

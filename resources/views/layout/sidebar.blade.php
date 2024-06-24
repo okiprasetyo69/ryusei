@@ -2,11 +2,18 @@
  <aside id="sidebar" class="sidebar">
 
 <ul class="sidebar-nav" id="sidebar-nav">
- 
+
+  <li class="nav-heading">Management Dashboard</li>
   <li class="nav-item">
     <a class="nav-link " href="/dashboard">
       <i class="bi bi-grid"></i>
-      <span>Dashboard</span>
+      <span>Dashboard Analytics</span>
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link " href="/dashboard/production">
+      <i class="ri-product-hunt-fill"></i>
+      <span>Dashboard Produksi</span>
     </a>
   </li>
   <!-- End Dashboard Nav -->
@@ -269,6 +276,22 @@
     </ul>
   </li>
   <!-- End Keuangan Nav -->
+
+  <li class="nav-heading">Management Produksi & Development</li>
+  <!-- Start User Nav -->
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="/production">
+      <i class="bi bi-arrow-repeat"></i>
+      <span>Produksi</span>
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="/production/development">
+      <i class="bi bi-arrow-bar-up"></i>
+      <span>Development</span>
+    </a>
+  </li>
+  <!-- End User Nav -->
 
   <li class="nav-heading">Management Pengguna</li>
   <!-- Start User Nav -->

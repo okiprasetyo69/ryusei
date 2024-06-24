@@ -22,5 +22,7 @@ class DataMartSaleStockRatio extends Model
         'amount',
         'total_inventory',
         'sync_date',
+        'total_item_sold',
+        'total_sell_price'
     ];
 }

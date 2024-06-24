@@ -264,7 +264,7 @@
                 <!-- End TReport Basket Size -->
 
                 <!-- Start Report Sell Stock Ratio Daily -->
-                <div class="col-12">  
+                <!-- <div class="col-12">  
                     <div class="card top-selling overflow-auto">
                         <div class="filter">
                             <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
@@ -298,7 +298,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <!-- End Report Sell Stock Ratio Daily -->
 
                 <!-- Start Report Sell Stock Ratio Monthly -->
@@ -311,20 +311,22 @@
                                     <h6>Filter</h6>
                                 </li>
                                 <li><a class="dropdown-item" href="#" id="filter-year-ssr-monthly">This Year</a></li>
-                                <!-- <li><a class="dropdown-item" href="#" id="sync-sale-stock-ratio-monthly">Sync</a></li> -->
+                                <li><a class="dropdown-item" href="#" id="sync-sale-stock-ratio-monthly">Sync</a></li>
                             </ul>
                         </div>
                         <div class="card-body pb-0">
-                            <h5 class="card-title">Sell Stock Ratio Monthly</h5>
+                            <h5 class="card-title">Sell Stock Ratio</h5>
                             <div class="table-responsinve mt-4">
                                 <table class="table table-striped" id="table-ssr-monthly">
                                     <thead class="text-center">
                                         <tr>
                                             <th scope="col">#</th>
                                             <th scope="col">Bulan</th>
-                                            <th scope="col">Omset</th>
-                                            <th scope="col">Nilai Inventory</th>
-                                            <th scope="col">SSR (%)</th>
+                                            <th scope="col">Tahun</th>
+                                            <th scope="col">Nilai Inventory Gudang</th>
+                                            <th scope="col">Nilai Inventory Terjual</th>
+                                            <th scope="col">SSR</th>
+                                            <th scope="col">(%)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -342,130 +344,126 @@
 
         <!-- Right side columns -->
         <div class="col-lg-4">
-
-          <!-- Monitoring Stock -->
-          <div class="card">
-                <div class="filter">
-                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                        <li class="dropdown-header text-start">
-                            <h6>Filter</h6>
-                        </li>
-                        <li><a class="dropdown-item" href="#">Today</a></li>
-                        <li><a class="dropdown-item" href="#">This Month</a></li>
-                        <li><a class="dropdown-item" href="#">This Year</a></li>
-                    </ul>
-                </div>
-
-                <div class="card-body pb-0">
-                    <h5 class="card-title"> Monitoring Stock </h5>
-                    <div class="col-md-4"> 
-                        <label> <strong><span> Cari Kategori : </span></strong> </label>
+            <!-- Monitoring Stock -->
+            <div class="card">
+                    <div class="filter">
+                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                            <li class="dropdown-header text-start">
+                                <h6>Filter</h6>
+                            </li>
+                            <li><a class="dropdown-item" href="#">Today</a></li>
+                            <li><a class="dropdown-item" href="#">This Month</a></li>
+                            <li><a class="dropdown-item" href="#">This Year</a></li>
+                        </ul>
                     </div>
-                    <div class="row">
-                        <div class="col-md-8 mt-1">
-                            <input type="text" class="form-control" name="search_category" id="search_category" placeholder="TShirt" autofocus/>
-                        </div>
+
+                    <div class="card-body pb-0">
+                        <h5 class="card-title"> Monitoring Stock </h5>
                         <div class="col-md-4"> 
-                            <button type="button" class="btn btn-sm btn-success mt-1" style="border-radius:50px;" id="btn-search-stock"> <i class="bi bi-search"></i> Cari</button>
+                            <label> <strong><span> Cari Kategori : </span></strong> </label>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8 mt-1">
+                                <input type="text" class="form-control" name="search_category" id="search_category" placeholder="TShirt" autofocus/>
+                            </div>
+                            <div class="col-md-4"> 
+                                <button type="button" class="btn btn-sm btn-success mt-1" style="border-radius:50px;" id="btn-search-stock"> <i class="bi bi-search"></i> Cari</button>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsinve mt-4">
+                            <table class="table table-striped" id="table-stock-items">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">SKU</th>
+                                        <th scope="col">Nama Produk</th>
+                                        <th scope="col">Stock</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                            
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+            </div>
+            <!-- End Monitoring Stock -->
+
+            <!-- Sell Through Daily -->
+            <div class="card">
+                    <div class="filter">
+                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                            <li class="dropdown-header text-start">
+                                <h6>Filter</h6>
+                            </li>
+                            <li><a class="dropdown-item" href="#" id="filter-today-sell-through">Today</a></li>
+                            <li><a class="dropdown-item" href="#" id="filter-month-sell-through">This Month</a></li>
+                            <li><a class="dropdown-item" href="#" id="filter-year-sell-through">This Year</a></li>
+                            <li><a class="dropdown-item" href="#" id="sync-sell-through">Sync</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="card-body pb-0">
+                        <h5 class="card-title">Sell Through</h5>
+                        <div class="table-responsinve mt-4">
+                            <table class="table table-striped" id="table-sell-through">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Stock</th>
+                                        <th scope="col">Qty Terjual</th>
+                                        <th scope="col">%</th>
+                                        <th scope="col">Trx Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                            
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                    
-                    <div class="table-responsinve mt-4">
-                        <table class="table table-striped" id="table-stock-items">
-                            <thead class="text-center">
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">SKU</th>
-                                    <th scope="col">Nama Produk</th>
-                                    <th scope="col">Stock</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                        
-                            </tbody>
-                        </table>
+            </div>
+            <!-- End Sell Through Daily Report -->
+
+            <!-- Sell Through Monthly -->
+            <!-- <div class="card">
+                    <div class="filter">
+                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                            <li class="dropdown-header text-start">
+                                <h6>Filter</h6>
+                            </li>
+                            <li><a class="dropdown-item" href="#" id="filter-month-sell-through-monthly">This Month</a></li>
+                            <li><a class="dropdown-item" href="#" id="filter-year-sell-through-monthly">This Year</a></li>
+                        </ul>
                     </div>
 
-                </div>
-          </div>
-          <!-- End Monitoring Stock -->
-
-          <!-- Sell Through Daily -->
-          <div class="card">
-                <div class="filter">
-                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                        <li class="dropdown-header text-start">
-                            <h6>Filter</h6>
-                        </li>
-                        <li><a class="dropdown-item" href="#" id="filter-today-sell-through">Today</a></li>
-                        <li><a class="dropdown-item" href="#" id="filter-month-sell-through">This Month</a></li>
-                        <li><a class="dropdown-item" href="#" id="filter-year-sell-through">This Year</a></li>
-                        <li><a class="dropdown-item" href="#" id="sync-sell-through">Sync</a></li>
-                    </ul>
-                </div>
-
-                <div class="card-body pb-0">
-                    <h5 class="card-title">Sell Through</h5>
-                    <div class="table-responsinve mt-4">
-                        <table class="table table-striped" id="table-sell-through">
-                            <thead class="text-center">
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Stock</th>
-                                    <th scope="col">Qty Terjual</th>
-                                    <th scope="col">%</th>
-                                    <th scope="col">Trx Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                        
-                            </tbody>
-                        </table>
+                    <div class="card-body pb-0">
+                        <h5 class="card-title">Sell Through Monthly</h5>
+                        <div class="table-responsinve mt-4">
+                            <table class="table table-striped" id="table-sell-through-monthly">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Bulan</th>
+                                        <th scope="col">Stock</th>
+                                        <th scope="col">Qty Terjual</th>
+                                        <th scope="col">%</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                            
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-          </div>
-          <!-- End Sell Through Daily Report -->
-
-        <!-- Sell Through Monthly -->
-        <div class="card">
-                <div class="filter">
-                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                        <li class="dropdown-header text-start">
-                            <h6>Filter</h6>
-                        </li>
-                        <!-- <li><a class="dropdown-item" href="#" id="filter-month-sell-through-monthly">This Month</a></li> -->
-                        <li><a class="dropdown-item" href="#" id="filter-year-sell-through-monthly">This Year</a></li>
-                        <!-- <li><a class="dropdown-item" href="#" id="sync-sell-through-monthly">Sync</a></li> -->
-                    </ul>
-                </div>
-
-                <div class="card-body pb-0">
-                    <h5 class="card-title">Sell Through Monthly</h5>
-                    <div class="table-responsinve mt-4">
-                        <table class="table table-striped" id="table-sell-through-monthly">
-                            <thead class="text-center">
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Bulan</th>
-                                    <th scope="col">Stock</th>
-                                    <th scope="col">Qty Terjual</th>
-                                    <th scope="col">%</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                        
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-          </div>
-          <!-- End Sell Through Daily Report -->
-
+            </div> -->
+            <!-- End Sell Through Daily Report -->
         </div>
-
     </div>
 </section>
 
@@ -506,9 +504,10 @@
         reportSalesTurnoverMarketplace(start_date, end_date)
         reportBasketSize(start_date, end_date)
         reportSellThrough(start_date, end_date)
-        reportSSRDaily(start_date, end_date)
+        //reportSSRDaily(start_date, end_date)
         reportSSRMonthly()
-        reportSellThroughMonthly()
+        // reportSellThroughMonthly()
+
         // -------------------- START FILTER BUTTON ------------------------ //
         $("#btn-search").on("click", function(e){
             e.preventDefault()
@@ -772,7 +771,7 @@
                     total_sold =  formatter.format(data.total_sold)
                 }
                 if(data.total_item != null){
-                    total_item = data.total_item
+                    total_item = data.total_item.toLocaleString('id-ID')
                 }
 
                 if(data != null){
@@ -841,10 +840,13 @@
                 var number = 1
                 let formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' });
                 var total_sell =  0
+                var qyt_sold = 0 
                 $("#table-most-product").find("tr:gt(0)").remove();
                 $.each(data, function (i, val) {
                     total_sell = formatter.format(val.total_sell)
-                    row += "<tr class='text-center'><td>"+ (number++) +"</td><td>"+val.name+"</td><td>"+val.qty_sold+"</td></tr>"
+                    qty_sold = parseInt(val.qty_sold).toLocaleString('id-ID')
+  
+                    row += "<tr class='text-center'><td>"+ (number++) +"</td><td>"+val.name+"</td><td>"+ qty_sold +"</td></tr>"
                 });
                 $("#table-most-product > tbody:last-child").append(row); 
             }
@@ -1014,7 +1016,6 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                      
                         $(td).html(rowData.product.name);
                     },
                 },
@@ -1023,7 +1024,8 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html(rowData.qty);
+                        var qty = parseInt(rowData.qty).toLocaleString('id-ID')
+                        $(td).html(qty);
                     },
                 },
             ],
@@ -1425,8 +1427,8 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        console.log(rowData)
-                        $(td).html(rowData.total_unit_received);
+                        var total_unit_received = parseInt(rowData.total_unit_received).toLocaleString('id-ID')
+                        $(td).html(total_unit_received);
                     },
                 },
                 {
@@ -1434,7 +1436,8 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html(rowData.total_unit_sold);
+                        var total_unit_sold = parseInt(rowData.total_unit_sold).toLocaleString('id-ID')
+                        $(td).html(total_unit_sold);
                     },
                 },
                 {
@@ -1538,7 +1541,8 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html(rowData.total_unit_received);
+                        var total_unit_received = parseInt(rowData.total_unit_received).toLocaleString('id-ID')
+                        $(td).html(total_unit_received);
                     },
                 },
                 {
@@ -1546,7 +1550,8 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html(rowData.total_unit_sold);
+                        var total_unit_sold = parseInt(rowData.total_unit_sold).toLocaleString('id-ID')
+                        $(td).html(total_unit_sold);
                     },
                 },
                 {
@@ -1719,6 +1724,8 @@
                 { data: null },
                 { data: null },
                 { data: null },
+                { data: null },
+                { data: null },
             ],
             columnDefs: [
                 {
@@ -1735,8 +1742,7 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        var format = rowData.by_month + ' - ' +  rowData.by_year
-                        $(td).html(format);
+                        $(td).html(rowData.month);
                     },
                 },
                 {
@@ -1744,11 +1750,7 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        var omset = 0
-                        if(rowData.omset != null){
-                            omset = BigInt(rowData.omset).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })
-                        }
-                        $(td).html(omset);
+                        $(td).html(rowData.year);
                     },
                 },
                 {
@@ -1756,11 +1758,8 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        var inv_value = 0
-                        if(rowData.inv_value != null){
-                            inv_value = BigInt(rowData.inv_value).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })
-                        }
-                        $(td).html(inv_value);
+                        var invWarehouseValue= rowData.total_inventory_in_warehouse.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })
+                        $(td).html(invWarehouseValue);
                     },
                 },
                 {
@@ -1768,7 +1767,24 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        $(td).html(rowData.ssr_month);
+                        var invSoldValue = rowData.total_inventory_value.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })
+                        $(td).html(invSoldValue);
+                    },
+                },
+                {
+                    targets: 5,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.sell_stock_ratio);
+                    },
+                },
+                {
+                    targets: 6,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.percentage);
                     },
                 },
             ],
