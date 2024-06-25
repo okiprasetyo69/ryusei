@@ -15,6 +15,7 @@ class Development extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'title',
         'received_design_date',
         'sample_date',
         'design_image',
@@ -31,7 +32,7 @@ class Development extends Model
     {
         $url = "";
         if($this->design_image != null){
-            $url = asset('/uploads/production/development/design'. $this->design_image);
+            $url = asset('/uploads/production/development/design/'. $this->design_image);
         }
         return $url;
     }
@@ -40,7 +41,7 @@ class Development extends Model
     {
         $url = "";
         if($this->sample_image != null){
-            $url =  asset('/uploads/production/development/sample'. $this->sample_image);
+            $url =  asset('/uploads/production/development/sample/'. $this->sample_image);
         }
         return $url;
     }

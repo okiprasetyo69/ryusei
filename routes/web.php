@@ -158,6 +158,7 @@ Route::controller(ProductionController::class)->group(function() {
     Route::get('/production', 'productionView')->name('production');
     Route::get('/production/development', 'developmentView')->name('production.development');
     Route::get('/production/development/add', 'developmentAdd')->name('production.development');
+     Route::get('/production/development/{id}', 'editDevelopment')->name('production.development');
 });
 
 // Webhook

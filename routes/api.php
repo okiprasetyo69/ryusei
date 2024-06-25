@@ -260,8 +260,9 @@ Route::controller(SalesReturnController::class)->group(function() {
 Route::controller(ProductionController::class)->group(function() {
     Route::get('/development', 'getAllDevelopement')->name('development');
     Route::post('/development', 'createDevelopment')->name('development.create');
-    Route::get('/development/{id}', 'detailDevelopment')->name('development.detail');
-    Route::put('/development', 'updateDevelopment')->name('development.update');
+    Route::get('/development/{id}', 'editDevelopment')->name('development.detail');
+    Route::post('/development/detail', 'detailDevelopment')->name('development.detail');
+    Route::post('/development/update', 'updateDevelopment')->name('development.update');
     Route::delete('/development', 'deleteDevelopment')->name('development.detail');
 });
 

@@ -40,6 +40,16 @@ class ProductionController extends Controller
         return view("production.development.add");
     }
 
+    public function editDevelopment(Request $request){
+        try{
+            $development = Development::find($request->id);
+            return view("production.development.detail", compact('development'));
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
     // API
     public function getAllDevelopement(Request $request){
         try{
@@ -56,9 +66,10 @@ class ProductionController extends Controller
 
     public function createDevelopment(Request $request){
         try{
-            
+
             $validator = Validator::make(
                 $request->all(), [
+                    'title' => 'required',
                     'received_design_date' => 'required',
                     'sample_date' => 'required',
                     'design_image' => 'file|max:2048',

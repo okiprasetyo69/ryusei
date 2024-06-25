@@ -17,7 +17,7 @@
                     <a href="/production/development">Development</a>
                 </li>
                 <li class="breadcrumb-item active">
-                    <a href="/production/development/add">Tambah</a>
+                    <a href="/production/development/{{$development->id}}">Detail</a>
                 </li>
             </ol>
         </nav>
@@ -33,7 +33,7 @@
                                 <!-- Floating Labels Form -->
                                 <form action="#" id="frm-add-development" class="row g-3">
                                     @csrf
-                                    <input type="hidden" name="code" id="code" class="form-control" />
+                                    <input type="hidden" name="id" id="id" class="form-control" />
                                     <div class="row mt-4">
                                         <div class="col-md-3">
                                             <div class="form-floating">
@@ -99,18 +99,34 @@
 
 <script type="text/javascript"> 
    
-   var design_image, sample_image, received_design_date, sample_date
+    var design_image, sample_image, received_design_date, sample_date, description
+    var development = '<?php echo $development ;?>'
+    var now = new Date();
+    var month = (now.getMonth() + 1);               
+    var day = now.getDate();
+    if (month < 10) 
+        month = "0" + month;
+    if (day < 10) 
+        day = "0" + day;
+    var today = now.getFullYear() + '-' + month + '-' + day;
 
     $(document).ready(function () {
-        var now = new Date();
-        var month = (now.getMonth() + 1);               
-        var day = now.getDate();
 
-        if (month < 10) 
-            month = "0" + month;
-        if (day < 10) 
-            day = "0" + day;
-        var today = now.getFullYear() + '-' + month + '-' + day;
+        // convert string to json
+        development = JSON.parse(development)
+        console.log(development)
+
+        // assign values
+        received_design_date = development.received_design_date.split("-").reverse().join("-")
+        sample_date = development.sample_date.split("-").reverse().join("-")
+        description = development.description
+        $("#id").val(development.id)
+        $("#title").val(development.title)
+        $("#received_design_date").val(received_design_date)
+        $("#sample_date").val(sample_date)
+        $("#description").val(description)
+        $("#preview_design_image").attr("src", development.design_image_url)
+        $("#preview_sample_image").attr("src", development.sample_image_url)
 
         var convertReceivedDesignDate = day + '-' + month.toLocaleString('default', { month: 'long' }) + '-' + now.getFullYear()
         var convertSampleDate = day + '-' + month.toLocaleString('default', { month: 'long' }) + '-' + now.getFullYear()
@@ -119,13 +135,11 @@
             format: 'dd-mm-yyyy',
             defaultDate: new Date(),
         });
-        $('#received_design_date').val(convertReceivedDesignDate);
 
         $("#sample_date").datepicker({
             format: 'dd-mm-yyyy',
             defaultDate: new Date(),
         });
-        $('#sample_date').val(convertSampleDate);
 
         // preview design image
         $("#design_image").change(function(){
@@ -174,6 +188,7 @@
             received_design_date = $("#received_design_date").val().split("-").reverse().join("-")
             sample_date = $("#sample_date").val().split("-").reverse().join("-")
 
+            formData.append('id', $('#id').val())
             formData.append('title', $('#title').val())
             formData.append('received_design_date', received_design_date)
             formData.append('sample_date', sample_date)
@@ -183,7 +198,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "/api/development",
+                url: "/api/development/update",
                 data: formData,
                 contentType: false,
                 processData: false,
