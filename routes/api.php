@@ -25,6 +25,7 @@ use App\Http\Controllers\DataWarehouseInvoiceController;
 use App\Http\Controllers\DataWarehouseSalesOrderController;
 use App\Http\Controllers\SalesReturnController;
 use App\Http\Controllers\ProductionController;
+use App\Http\Controllers\DashboardProductionController;
 
 use App\Http\Controllers\WebhookController;
 use App\Http\Middleware\VerifyWebhookSecret;
@@ -264,6 +265,11 @@ Route::controller(ProductionController::class)->group(function() {
     Route::post('/development/detail', 'detailDevelopment')->name('development.detail');
     Route::post('/development/update', 'updateDevelopment')->name('development.update');
     Route::delete('/development', 'deleteDevelopment')->name('development.detail');
+});
+
+Route::controller(DashboardProductionController::class)->group(function() {
+    Route::get('/analytics/development/total-sample', 'totalSampleDevelopment')->name('analytics.development.total-sample');
+    Route::get('/analytics/development/total-design', 'totsalDesignDevelopment')->name('analytics.development.total-design');
 });
 
 // Web Hook

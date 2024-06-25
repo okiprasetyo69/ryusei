@@ -119,13 +119,13 @@
             format: 'dd-mm-yyyy',
             defaultDate: new Date(),
         });
-        $('#received_design_date').val(convertReceivedDesignDate);
+        // $('#received_design_date').val(convertReceivedDesignDate);
 
         $("#sample_date").datepicker({
             format: 'dd-mm-yyyy',
             defaultDate: new Date(),
         });
-        $('#sample_date').val(convertSampleDate);
+        // $('#sample_date').val(convertSampleDate);
 
         // preview design image
         $("#design_image").change(function(){
@@ -139,23 +139,6 @@
 
         $("#frm-add-development").on("submit", function(e){
             e.preventDefault()
-             // Validation form required
-            if($("#received_design_date").val() == ""){
-                $.alert({
-                    title: 'Pesan !',
-                    content: 'Tanggal terima design tidak boleh kosong !',
-                });
-                return 
-            }
-
-            if($("#sample_date").val() == ""){
-                $.alert({
-                    title: 'Pesan !',
-                    content: 'Tanggal jadi sample tidak boleh kosong !',
-                });
-                return 
-            }
-
             var formData = new FormData()
 
             // Assign image value

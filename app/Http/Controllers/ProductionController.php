@@ -70,10 +70,8 @@ class ProductionController extends Controller
             $validator = Validator::make(
                 $request->all(), [
                     'title' => 'required',
-                    'received_design_date' => 'required',
-                    'sample_date' => 'required',
-                    'design_image' => 'file|max:2048',
-                    'sample_image' => 'file|max:2048'
+                    'design_image' => 'max:2048',
+                    'sample_image' => 'max:2048'
                 ]
             );
     

@@ -29,6 +29,7 @@ use App\Services\Interfaces\DataWarehouseInvoiceService;
 use App\Services\Interfaces\DataWarehouseSalesOrderService;
 use App\Services\Interfaces\SalesReturnService;
 use App\Services\Interfaces\DevelopmentService;
+use App\Services\Interfaces\DashboardProductionService;
 
 use App\Services\Repositories\UserRepositoryEloquent;
 use App\Services\Repositories\RoleRepositoryEloquent;
@@ -53,6 +54,7 @@ use App\Services\Repositories\DataWarehouseInvoiceRepositoryEloquent;
 use App\Services\Repositories\DataWarehouseSalesOrderRepositoryEloquent;
 use App\Services\Repositories\SalesReturnRepositoryEloquent;
 use App\Services\Repositories\DevelopmentRepositoryEloquent;
+use App\Services\Repositories\DashboardProductionRepositoryEloquent;
 
 class AppServiceProvider extends ServiceProvider implements DeferrableProvider
 {
@@ -86,6 +88,7 @@ class AppServiceProvider extends ServiceProvider implements DeferrableProvider
         DataWarehouseSalesOrderService::class => DataWarehouseSalesOrderRepositoryEloquent::class,
         SalesReturnService::class => SalesReturnRepositoryEloquent::class,
         DevelopmentService::class => DevelopmentRepositoryEloquent::class,
+        DashboardProductionService::class => DashboardProductionRepositoryEloquent::class,
     ];
 
     /**
@@ -123,6 +126,7 @@ class AppServiceProvider extends ServiceProvider implements DeferrableProvider
             DataWarehouseSalesOrderService::class,
             SalesReturnService::class,
             DevelopmentService::class,
+            DashboardProductionService::class,
         ];
     }
 

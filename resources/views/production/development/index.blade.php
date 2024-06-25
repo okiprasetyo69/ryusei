@@ -253,12 +253,15 @@
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
-                            var received_design_date = rowData.received_design_date
-                            date = new Date(received_design_date)
-                            month = date.toLocaleString('default', { month: 'long' })
-                            year = date.getFullYear()
-                            format = date.getDate() + "-"+ month +"-"+ year
-                            $(td).html(format);
+                            var received_design_date = ""
+                            if(rowData.received_design_date != null){
+                                received_design_date = rowData.received_design_date.split("-").reverse().join("-")
+                            }
+                            else {
+                                received_design_date = "-"
+                            }
+                            
+                            $(td).html(received_design_date);
                         },
                     },
                     {
@@ -266,12 +269,13 @@
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
-                            var sample_date = rowData.sample_date
-                            date = new Date(sample_date)
-                            month = date.toLocaleString('default', { month: 'long' })
-                            year = date.getFullYear()
-                            format = date.getDate() + "-"+ month +"-"+ year
-                            $(td).html(format);
+                            var sample_date = ""
+                            if(rowData.sample_date != null){
+                                sample_date = rowData.sample_date.split("-").reverse().join("-")
+                            } else {
+                                sample_date = "-"
+                            }
+                            $(td).html(sample_date);
                         },
                     },
                     {

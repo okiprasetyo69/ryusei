@@ -43,6 +43,10 @@ use Illuminate\Support\Facades\File;
                 $development =  $development->where("received_design_date", $request->received_design_date);
             }
 
+            if(($request->received_design_date != null) && ($request->sample_date == null)){
+                $development =  $development->where("received_design_date", $request->received_design_date)->whereNull("sample_date");
+            }
+
             if($request->sample_date != null){
                 $development =  $development->where("sample_date", $request->sample_date);
             }
@@ -217,10 +221,6 @@ use Illuminate\Support\Facades\File;
             Log::error($ex->getMessage());
             return false;
         }
-    }
-
-    public function edit(Request $request){
-
     }
 
     public function detail(Request $request){

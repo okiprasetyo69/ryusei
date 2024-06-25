@@ -20,6 +20,7 @@ use App\Http\Controllers\DataWarehouseInvoiceController;
 use App\Http\Controllers\DataWarehouseSalesOrderController;
 use App\Http\Controllers\SalesReturnController;
 use App\Http\Controllers\ProductionController;
+use App\Http\Controllers\DashboardProductionController;
 
 use App\Http\Controllers\WebhookController;
 use App\Http\Middleware\VerifyWebhookSecret;
@@ -159,6 +160,11 @@ Route::controller(ProductionController::class)->group(function() {
     Route::get('/production/development', 'developmentView')->name('production.development');
     Route::get('/production/development/add', 'developmentAdd')->name('production.development');
      Route::get('/production/development/{id}', 'editDevelopment')->name('production.development');
+});
+
+// Dashboard Production
+Route::controller(DashboardProductionController::class)->group(function() {
+    Route::get('/dashboard/production', 'index')->name('dashboard.production');
 });
 
 // Webhook
