@@ -14,6 +14,8 @@ use App\Models\Product;
 use App\Models\DataMartSellThrough;
 use App\Models\DataMartSaleStockRatio;
 use App\Models\SellStockRatioReport;
+use App\Models\SellThroughReport;
+
 use App\Services\Interfaces\ItemStockService;
 use App\Services\Interfaces\DashboardService;
 
@@ -537,10 +539,11 @@ use Yajra\DataTables\Facades\DataTables;
 
     public function reportSellThroughMonthly(Request $request){
         try{
-            $reportSellThroughMonthly =  DB::table("data_mart_sell_throughs")
-                                        ->select(DB::raw("DATE_FORMAT(transaction_date, '%M') as by_month"), DB::raw("DATE_FORMAT(transaction_date, '%Y') as by_year"), DB::raw("SUM(total_unit_sold) as total_unit_sold"), DB::raw("SUM(total_unit_received) as total_unit_received"),  DB::raw("(SUM(total_unit_sold) / SUM(total_unit_received)) * 100  as sell_through_monthly"));
+            $reportSellThroughMonthly =  DB::table("sell_through_reports")
+                                        ->select("*");
             
-            $reportSellThroughMonthly = $reportSellThroughMonthly->groupBy("by_month", "by_year")->get();
+            $reportSellThroughMonthly = $reportSellThroughMonthly->get();
+            
             $datatables = Datatables::of($reportSellThroughMonthly);
             return $datatables->make(true);
         } catch(Exception $ex){
@@ -701,16 +704,31 @@ use Yajra\DataTables\Facades\DataTables;
         }
     }
 
+    // Sync Sell Through
     public function syncSellThrough($start_date = null, $end_date=null){
         try{
+           
             // Formula
             // X (%) = ( Qty Barang Terjual / Qty Barang Masuk) * 100%
-           
-            $sumItemStock = DB::table("item_stocks")->select(DB::raw("COALESCE(SUM(qty), 0) as unit_stock"))->first();
+            // Get total item sold per period
+            $totalItemSold = $this->getTotalItemSold($start_date, $end_date);
+
+            // Get total item
+            $sellThrough = $this->calculateSellThrough($start_date, $end_date);
+        }
+        catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+    
+    // Get total (SUM) item sold for sell through
+    public function getTotalItemSold($start_date = null, $end_date=null){
+        try{
 
             $dataItemSold = DB::table("data_ware_house_order_details")
                             ->join("data_ware_house_orders", "data_ware_house_order_details.dwh_order_id", "=", "data_ware_house_orders.id")
-                            ->select("data_ware_house_orders.transaction_date", DB::raw("COALESCE(SUM(data_ware_house_order_details.qty_in_base), 0) as total_units_sold"));
+                            ->select("data_ware_house_orders.transaction_date", "data_ware_house_order_details.sku_code", DB::raw("COALESCE(SUM(data_ware_house_order_details.qty_in_base), 0) as total_units_sold"));
 
             if($start_date != NULL){
                 $dataItemSold =  $dataItemSold->where('data_ware_house_orders.transaction_date', ">=", $start_date);
@@ -719,53 +737,113 @@ use Yajra\DataTables\Facades\DataTables;
                 $dataItemSold =  $dataItemSold->where('data_ware_house_orders.transaction_date', "<=", $end_date);
             }
 
-            $dataItemSold = $dataItemSold->groupBy("data_ware_house_orders.transaction_date")
-                                ->orderBy("total_units_sold", "DESC")->get();
+            $dataItemSold = $dataItemSold->groupBy("data_ware_house_orders.transaction_date", "data_ware_house_order_details.sku_code")
+                            ->orderBy("total_units_sold", "DESC")->get();
 
             $today = date('Y-m-d');
-            $sellThrough = null;
-            $totalUnitReceived = $sumItemStock->unit_stock;
 
             foreach ($dataItemSold as $key => $value) {
 
-                $dataMartSellThrough = DataMartSellThrough::where("transaction_date", $value->transaction_date)->first();
+                $dataMartSellThrough = DataMartSellThrough::where("transaction_date", $value->transaction_date)
+                                        ->where("sku_code", $value->sku_code)->first();
 
                 if($dataMartSellThrough == null){
                     Log::info('Insert Sell Through with transaction date : ' . $value->transaction_date);
 
-                    if((int) $totalUnitReceived <= 0){
-                        $sellThrough = null;
-                    } else {
-                        $sellThrough = ( (int) $value->total_units_sold / (int)  $totalUnitReceived) * 100;
-                    }
+                    $newDataMartSellThrough = new DataMartSellThrough();
+                    $newDataMartSellThrough->transaction_date =  $value->transaction_date;
+                    $newDataMartSellThrough->sku_code = $value->sku_code;
+                    $newDataMartSellThrough->total_unit_sold = (int)  $value->total_units_sold;
+                    $newDataMartSellThrough->sync_date =  $today;
 
-                    DataMartSellThrough::create([
-                        'total_unit_received' =>  (int)  $totalUnitReceived,
-                        'total_unit_sold' =>  (int) $value->total_units_sold,
-                        'sell_through' =>   $sellThrough,
-                        'sync_date' =>  $today,
-                        'transaction_date' => $value->transaction_date
-                    ]);
+                    $newDataMartSellThrough->save();
                 }
 
                 if($dataMartSellThrough != null){
-                    Log::info('Update Sell Through with transaction date ' .$value->transaction_date);
-                    $dataMartSellThrough->transaction_date =  $value->transaction_date;
-                    $dataMartSellThrough->total_unit_received = (int)  $totalUnitReceived;
-                    $dataMartSellThrough->total_unit_sold = (int)   $value->total_units_sold;
-                    $dataMartSellThrough->sell_through = $sellThrough;
+                    Log::info('Update Sell Through with transaction date ' . $value->transaction_date);
+                    $dataMartSellThrough->sku_code = $value->sku_code;
+                    $dataMartSellThrough->total_unit_sold = (int) $value->total_units_sold;
                     $dataMartSellThrough->sync_date =  $today;
+
                     $dataMartSellThrough->save();
                 }
             }
+                    
+        } catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
         }
-        catch(Exception $ex){
+    }
+
+    // calculate sell through
+    public function calculateSellThrough($startDate = null, $endDate=null){
+        try{
+
+            $today = date('Y-m-d');
+
+            $setMonth = strtotime($startDate);
+            $setYear= strtotime($endDate);
+            $month = date('m', $setMonth);
+            $year =  date('Y', $setYear);
+
+            // total item sold
+            $getTotalItemSold = DB::table("data_mart_sell_throughs")
+                                ->select(DB::raw("MONTH(transaction_date) as by_month"), DB::raw("YEAR(transaction_date) as by_year"), DB::raw("SUM(total_unit_sold) as total_unit_sold") );
+            
+            if($startDate != null){
+                $getTotalItemSold =  $getTotalItemSold->where("transaction_date", ">=", $startDate);
+            }          
+            
+            if($endDate != null){
+                $getTotalItemSold =  $getTotalItemSold->where("transaction_date", "<=", $endDate);
+            }
+
+            $getTotalItemSold =  $getTotalItemSold->groupBy("by_month", "by_year")->first();
+
+            // Get total (SUM) item in warehouse
+            $getTotalItem = DB::table("item_stocks")->select(DB::raw("SUM(qty) as total_item"))->first();
+            $totalItem = (int) $getTotalItem->total_item;
+
+            // calculate sell through
+            $totalItemSold = $getTotalItemSold->total_unit_sold;
+            $sellThrough = (int) $totalItemSold /$totalItem ;
+            $percentage = $sellThrough * 100;
+
+            //check existing data sell through report
+            $dataSellThroughReport = SellThroughReport::where("month", $month)->where("year", $year)->first();
+
+            if($dataSellThroughReport == null){
+                Log::info("Insert Sell Through Report with ". $month . " and year " . $year);
+                $newSellThroughReport = new SellThroughReport();
+                $newSellThroughReport->month =  $month;
+                $newSellThroughReport->year =  $year;
+                $newSellThroughReport->total_item_in_warehouse = $totalItem;
+                $newSellThroughReport->total_item_sold = $totalItemSold;
+                $newSellThroughReport->sell_through = $sellThrough;
+                $newSellThroughReport->percentage = $percentage;
+                $newSellThroughReport->sync_date = $today;
+
+                $newSellThroughReport->save();
+            }
+
+            if($dataSellThroughReport != null){
+                Log::info("Update Sell Through Report with ". $month . " and year " . $year);
+                $dataSellThroughReport->total_item_in_warehouse = $totalItem;
+                $dataSellThroughReport->total_item_sold = $totalItemSold;
+                $dataSellThroughReport->sell_through = $sellThrough;
+                $dataSellThroughReport->percentage = $percentage;
+                $dataSellThroughReport->sync_date = $today;
+
+                $dataSellThroughReport->save();
+            }
+           
+        }catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;
         }
     }
     
-
+    // Sync Sell Stock Ratio
     public function syncSaleStockRatio($startDate = null, $endDate = null){
         try{
 
@@ -835,10 +913,6 @@ use Yajra\DataTables\Facades\DataTables;
                     $dataMartSaleStockRatio->save();
                 }
             }
-
-            // $this->totalInventoryValue($startDate, $endDate);
-            // $this->totalInvetoryInWarehouse($startDate, $endDate);
-            // $this->calulateSSR($startDate, $endDate);
 
         }catch(Exception $ex){
             Log::error($ex->getMessage());
@@ -965,8 +1039,6 @@ use Yajra\DataTables\Facades\DataTables;
         $endDate = strtotime($endDate);
         $month = date('m', $startDate);
         $year =  date('Y', $startDate);
-
-        $arrSSR = [];
 
         $totalInventoryValue = DB::table("data_mart_inventory_values")
                             ->select("by_month", "by_year", DB::raw("SUM(grand_total) as total_inventory_value"));

@@ -277,7 +277,6 @@ class DashboardController extends Controller
     // Queue Sell Through
     public function syncSellThrough(Request $request){
         try{
-            //$sync = $this->dashboardEloquent->syncSellThrough();
             $startDate = $request->start_date;
             $endDate = $request->end_date;
             SyncSaleThroughJob::dispatch($startDate, $endDate);

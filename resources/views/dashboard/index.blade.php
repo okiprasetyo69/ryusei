@@ -393,7 +393,7 @@
             <!-- End Monitoring Stock -->
 
             <!-- Sell Through Daily -->
-            <div class="card">
+            <!-- <div class="card">
                     <div class="filter">
                         <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
@@ -426,11 +426,11 @@
                             </table>
                         </div>
                     </div>
-            </div>
+            </div> -->
             <!-- End Sell Through Daily Report -->
 
             <!-- Sell Through Monthly -->
-            <!-- <div class="card">
+            <div class="card">
                     <div class="filter">
                         <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
@@ -439,19 +439,22 @@
                             </li>
                             <li><a class="dropdown-item" href="#" id="filter-month-sell-through-monthly">This Month</a></li>
                             <li><a class="dropdown-item" href="#" id="filter-year-sell-through-monthly">This Year</a></li>
+                            <li><a class="dropdown-item" href="#" id="sync-sell-through">Sync</a></li>
                         </ul>
                     </div>
 
                     <div class="card-body pb-0">
-                        <h5 class="card-title">Sell Through Monthly</h5>
+                        <h5 class="card-title">Sell Through</h5>
                         <div class="table-responsinve mt-4">
                             <table class="table table-striped" id="table-sell-through-monthly">
                                 <thead class="text-center">
                                     <tr>
                                         <th scope="col">#</th>
                                         <th scope="col">Bulan</th>
-                                        <th scope="col">Stock</th>
+                                        <th scope="col">Tahun</th>
+                                        <th scope="col">Qty</th>
                                         <th scope="col">Qty Terjual</th>
+                                        <th scope="col">Sell Through</th>
                                         <th scope="col">%</th>
                                     </tr>
                                 </thead>
@@ -461,7 +464,7 @@
                             </table>
                         </div>
                     </div>
-            </div> -->
+            </div>
             <!-- End Sell Through Daily Report -->
         </div>
     </div>
@@ -503,10 +506,10 @@
         end_date = $("#end_date" ).val().split("-").reverse().join("-")
         reportSalesTurnoverMarketplace(start_date, end_date)
         reportBasketSize(start_date, end_date)
-        reportSellThrough(start_date, end_date)
+        // reportSellThrough(start_date, end_date)
         //reportSSRDaily(start_date, end_date)
         reportSSRMonthly()
-        // reportSellThroughMonthly()
+        reportSellThroughMonthly()
 
         // -------------------- START FILTER BUTTON ------------------------ //
         $("#btn-search").on("click", function(e){
@@ -1133,7 +1136,8 @@
                             Ya: {
                                 btnClass: 'btn-success any-other-class',
                                 action: function(){
-                                    table_sell_through.ajax.reload();
+                                    // table_sell_through.ajax.reload();
+                                    table_sell_through_monthly.ajax.reload();
                                 }
                             },
                         }
@@ -1161,7 +1165,7 @@
                             Ya: {
                                 btnClass: 'btn-success any-other-class',
                                 action: function(){
-                                    table_ssr_daily.ajax.reload();
+                                    // table_ssr_daily.ajax.reload();
                                     table_ssr_monthly.ajax.reload();
                                 }
                             },
@@ -1492,6 +1496,7 @@
             serverSide: true,
             bAutoWidth: true,
             scrollCollapse : true,
+            scrollX: true,
             ordering: false,
             language: {
                 emptyTable: "Data tidak tersedia",
@@ -1516,6 +1521,8 @@
                 { data: null },
                 { data: null },
                 { data: null },
+                { data: null },
+                { data: null },
             ],
             columnDefs: [
                 {
@@ -1532,8 +1539,7 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        var format = rowData.by_month + ' - ' +  rowData.by_year
-                        $(td).html(format);
+                        $(td).html(rowData.month);
                     },
                 },
                 {
@@ -1541,8 +1547,7 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        var total_unit_received = parseInt(rowData.total_unit_received).toLocaleString('id-ID')
-                        $(td).html(total_unit_received);
+                        $(td).html(rowData.year);
                     },
                 },
                 {
@@ -1550,8 +1555,7 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        var total_unit_sold = parseInt(rowData.total_unit_sold).toLocaleString('id-ID')
-                        $(td).html(total_unit_sold);
+                        $(td).html(rowData.total_item_in_warehouse.toLocaleString('id-ID'));
                     },
                 },
                 {
@@ -1559,11 +1563,26 @@
                     searchable: false,
                     orderable: false,
                     createdCell: function (td, cellData, rowData, row, col) {
-                        var sell_through_monthly = Number(rowData.sell_through_monthly)
-                        sell_through_monthly = sell_through_monthly.toFixed(2)
-                        $(td).html(sell_through_monthly);
+                        $(td).html(rowData.total_item_sold.toLocaleString('id-ID'));
                     },
                 },
+                {
+                    targets: 5,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.sell_through);
+                    },
+                },
+                {
+                    targets: 6,
+                    searchable: false,
+                    orderable: false,
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        $(td).html(rowData.percentage);
+                    },
+                },
+                
             ],
             ajax:{
                 url :  '/api/analytics/report/sell-through/monthly',
