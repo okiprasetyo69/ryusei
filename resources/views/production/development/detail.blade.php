@@ -114,11 +114,20 @@
 
         // convert string to json
         development = JSON.parse(development)
-        console.log(development)
 
         // assign values
-        received_design_date = development.received_design_date.split("-").reverse().join("-")
-        sample_date = development.sample_date.split("-").reverse().join("-")
+        if(development.received_design_date != null){
+            received_design_date = development.received_design_date.split("-").reverse().join("-")
+        } else {
+            received_design_date = null
+        }
+        
+        if(development.sample_date != null){
+            sample_date = development.sample_date.split("-").reverse().join("-")
+        } else {
+            sample_date = null
+        }
+       
         description = development.description
         $("#id").val(development.id)
         $("#title").val(development.title)
@@ -153,23 +162,7 @@
 
         $("#frm-add-development").on("submit", function(e){
             e.preventDefault()
-             // Validation form required
-            if($("#received_design_date").val() == ""){
-                $.alert({
-                    title: 'Pesan !',
-                    content: 'Tanggal terima design tidak boleh kosong !',
-                });
-                return 
-            }
-
-            if($("#sample_date").val() == ""){
-                $.alert({
-                    title: 'Pesan !',
-                    content: 'Tanggal jadi sample tidak boleh kosong !',
-                });
-                return 
-            }
-
+            
             var formData = new FormData()
 
             // Assign image value

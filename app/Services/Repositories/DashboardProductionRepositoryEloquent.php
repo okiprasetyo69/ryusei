@@ -38,6 +38,7 @@ use Yajra\DataTables\Facades\DataTables;
         try{
             $totalSampleDevelopment = DB::table("developments")
                                         ->select(DB::raw("COUNT('*') as total_sample"))
+                                        ->where("sample_image", "!=", "")
                                         ->first();
 
             return response()->json([

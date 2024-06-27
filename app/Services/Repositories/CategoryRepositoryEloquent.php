@@ -122,4 +122,18 @@ use Yajra\DataTables\Facades\DataTables;
             return false;
         }
     }
+
+    public function getCategorySelect2(Request $request){
+        try{
+            $category = $this->category::where("name", "like", "%" . $request->input('searchTerm'). "%")
+                        ->orderBy('id', 'ASC')
+                        ->get(['id', 'name as text', 'name']);
+                        
+            return response()->json($category, 200);
+        }
+        catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
  }

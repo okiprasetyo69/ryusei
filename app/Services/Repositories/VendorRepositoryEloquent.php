@@ -211,6 +211,19 @@ use Illuminate\Support\Facades\Http;
         }catch(Exception $ex){
             Log::error($ex->getMessage());
             return false;
+        }
+    }
+
+    public function getVendorSelect2(Request $request){
+        try{
+            $vendor = $this->vendor::where("name", "like", "%" . $request->input('searchTerm'). "%")
+            ->orderBy('id', 'ASC')
+            ->get(['id', 'name as text', 'name']);
+            
+            return response()->json($vendor, 200);
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
          }
     }
 

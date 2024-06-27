@@ -69,7 +69,7 @@ class ProductionController extends Controller
 
             $validator = Validator::make(
                 $request->all(), [
-                    'title' => 'required',
+                    'article' => 'required',
                     'design_image' => 'max:2048',
                     'sample_image' => 'max:2048'
                 ]

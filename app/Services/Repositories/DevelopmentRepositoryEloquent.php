@@ -37,7 +37,7 @@ use Illuminate\Support\Facades\File;
 
     public function getDevelopment(Request $request){
         try{
-            $development = $this->development::orderBy("created_at", "DESC");
+            $development = $this->development::with("category", "vendor")->orderBy("created_at", "DESC");
 
             if($request->received_design_date != null){
                 $development =  $development->where("received_design_date", $request->received_design_date);
@@ -95,6 +95,12 @@ use Illuminate\Support\Facades\File;
             $development->design_image = $designImageName;
             $development->sample_image = $sampleImageName;
             $development->description = $request->description;
+            $development->article = $request->article;
+            $development->category_id = $request->category_id;
+            $development->vendor_id = $request->vendor_id;
+            $development->qty_per_size = $request->qty_per_size;
+            $development->status = $request->status;
+            $development->film_date = $request->film_date;
 
             $development->save();
 

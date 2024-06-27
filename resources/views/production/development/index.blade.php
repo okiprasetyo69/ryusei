@@ -73,10 +73,13 @@
                                         <thead>
                                             <tr>
                                                 <th scope="col">#</th>
-                                                <th scope="col">Judul</th>
-                                                <th scope="col">Tanggal Terima Design</th>
-                                                <th scope="col">Tanggal Jadi Sample</th>
-                                                <th scope="col">Deskripsi</th>
+                                                <th scope="col">Artikel</th>
+                                                <th scope="col">Tgl Terima Design</th>
+                                                <th scope="col">Tgl Sample</th>
+                                                <th scope="col">Tgl Film </th>
+                                                <th scope="col">Kategori</th>
+                                                <th scope="col">Vendor</th>
+                                                <th scope="col">Status</th>
                                                 <th scope="col">Action</th>
                                             </tr>
                                         </thead>
@@ -95,26 +98,50 @@
 </main>
 
 <div class="modal fade" id="modalDetailDevelopment" tabindex="-1" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Detail Development</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="col-md-12"> 
-                        <label> <strong><span>Foto Design : </span></strong> </label>
-                        <img id="preview_design_image" src="#" alt="Design"  class="rounded float-left" style="height: 200px; width: 300px"/>
+                    <div class="row">
+                        <div class="col-md-6"> 
+                            <label> <strong><span>Foto Design : </span></strong> </label>
+                            <img id="preview_design_image" src="#" alt="Design"  class="rounded float-left" style="height: 200px; width: 300px"/>
+                        </div>
+                        <div class="col-md-6"> 
+                            <label> <strong><span>Foto Sample : </span></strong> </label>
+                            <img id="preview_sample_image" src="#" alt="Sample"  class="rounded float-left" style="height: 200px; width: 300px"/>
+                        </div>
                     </div>
-                    <div class="col-md-12 mt-2"> 
-                        <label> <strong><span>Foto Sample : </span></strong> </label>
-                        <img id="preview_sample_image" src="#" alt="Sample"  class="rounded float-left" style="height: 200px; width: 300px"/>
+                    <div class="row mt-4">
+                        <div class="col-md-12"> 
+                            <table class="table table-striped table-hover mt-4" id="table-detail-qty-size"> 
+                                <thead> 
+                                    <tr class="text-center"> 
+                                        <td colspan="5" > <strong> Qty </strong> </td>
+                                    </tr>
+                                    <tr id="sizeName"> 
+                                       
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                     <tr id="qtySize"> 
+
+                                     </tr>       
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-12">
+                            <label> <strong> <span> Total :  </span></strong> </label>
+                        </div>
                     </div>
+                   
+                  
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" id="btn-import-file">Import</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                  
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </form>
         </div>
@@ -128,19 +155,6 @@
     var table, title, received_design_date, sample_date, sample_image_url, design_image_url
     
     $(document).ready(function () {
-
-        var now = new Date();
-        var month = (now.getMonth() + 1);               
-        var day = now.getDate();
-
-        if (month < 10) 
-            month = "0" + month;
-        if (day < 10) 
-            day = "0" + day;
-        var today = now.getFullYear() + '-' + month + '-' + day;
-
-        var convertDesignImageDate = day + '-' + month.toLocaleString('default', { month: 'long' }) + '-' + now.getFullYear()
-        var convertSampleImageDate = day + '-' + month.toLocaleString('default', { month: 'long' }) + '-' + now.getFullYear()
 
         $("#filter_design_image_date").datepicker({
             format: 'dd-mm-yyyy',
@@ -229,6 +243,15 @@
                     {
                         data: null,
                     },
+                    {
+                        data: null,
+                    },
+                    {
+                        data: null,
+                    },
+                    {
+                        data: null,
+                    },
                 ],
                 columnDefs: [
                     {
@@ -245,7 +268,8 @@
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
-                            $(td).html(rowData.title);
+                            $(td).html(rowData.article);
+                            console.log(rowData)
                         },
                     },
                     {
@@ -283,7 +307,13 @@
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
-                            $(td).html(rowData.description);
+                            var film_date = ""
+                            if(rowData.film_date != null){
+                                film_date = rowData.film_date.split("-").reverse().join("-")
+                            } else {
+                                film_date = "-"
+                            }
+                            $(td).html(film_date);
                         },
                     },
                     {
@@ -291,7 +321,62 @@
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
-                            var html = "<button type='button' class='btn btn-sm btn-secondary' onclick='detail("+rowData.id+")'> Detail </button> <a href='/production/development/"+rowData.id+"' class='btn btn-sm btn-warning'> Ubah </a> <button type='button' class='btn btn-sm btn-danger' onclick='confirm("+rowData.id+")'> Hapus </button>"
+                            var category = ""
+                            if(rowData.category_id != null){
+                                category = rowData.category.name
+                            }else {
+                                category = "-"
+                            }
+                            $(td).html(category);
+                        },
+                    },
+                    {
+                        targets: 6,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var vendor = ""
+                            if(rowData.vendor_id != null){
+                                vendor = rowData.vendor.name
+                            }else {
+                                vendor = "-"
+                            }
+                            $(td).html(vendor);
+                        },
+                    },
+                    {
+                        targets: 7,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var status = ""
+                            if(rowData.status == 1){
+                                status = "PO"
+                            }
+                            if(rowData.status == 2){
+                                status = "FILM"
+                            }
+                            if(rowData.status == 3){
+                                status = "SAMPLING"
+                            }
+                            if(rowData.status == 4){
+                                status = "PRODUKSI"
+                            }
+                            $(td).html(status);
+                        },
+                    },
+                    {
+                        targets: 8,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            // var html = "<button type='button' class='btn btn-sm btn-secondary' onclick='detail("+rowData.id+")'> Detail </button> <a href='/production/development/"+rowData.id+"' class='btn btn-sm btn-warning'> Ubah </a> <button type='button' class='btn btn-sm btn-danger' onclick='confirm("+rowData.id+")'> Hapus </button>"
+                            var html = ` <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                            <li><a class="dropdown-item" href="#" onclick='detail(`+rowData.id+`)'>Detail</a></li>
+                                            <li><a class="dropdown-item" href="/production/development/`+rowData.id+`">Ubah</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick='confirm(`+rowData.id+`)'>Hapus</a></li>
+                                        </ul>`
                             $(td).html(html);
                         },
                     },
@@ -310,6 +395,18 @@
             dataType: "JSON",
             success: function (response) {
                 var data = response.data
+                var qty_per_size = JSON.parse(data.qty_per_size)
+                var header_table = ""
+                var row_table = ""
+
+                $.each(qty_per_size, function (i, val) { 
+                    header_table += "<th>"+ val.size +"</th>"
+                    row_table += "<td>"+val.qty+"</td>"
+                });
+
+                $("#sizeName").append(header_table)
+                $("#qtySize").append(row_table)
+
                 sample_image_url = data.sample_image_url
                 design_image_url = data.design_image_url
                 $("#modalDetailDevelopment").modal('toggle')

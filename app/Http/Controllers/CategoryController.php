@@ -104,6 +104,15 @@ class CategoryController extends Controller
     }
 
     public function getCategorySelect2(Request $request){
-        
+        try{
+            $category = $this->service->getCategorySelect2($request);
+            if($category != null){
+                return $category;
+            }
+            return false;
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
     }
 }

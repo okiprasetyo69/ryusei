@@ -50,4 +50,13 @@ use Illuminate\Http\Request;
      * @param Illuminate\Support\Facades\Request
      */
     public function detail(Request $request);
+
+     /**
+     * @author Oki Prasetyo <oki.prasetyo45@gmail.com>
+     * @since   2024.06.27
+     * Function for handle requests get category select2.
+     * 
+     * @param Illuminate\Support\Facades\Request
+     */
+    public function getCategorySelect2(Request $request);
  }

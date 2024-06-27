@@ -49,6 +49,14 @@ use Illuminate\Http\Request;
      * 
      * @param Illuminate\Support\Facades\Request
      */
-
     public function detail(Request $request);
+
+     /**
+     * @author Oki Prasetyo <oki.prasetyo45@gmail.com>
+     * @since   2024.04.23
+     * Function for handle requests get vendor select2.
+     * 
+     * @param Illuminate\Support\Facades\Request
+     */
+    public function getVendorSelect2(Request $request);
  }

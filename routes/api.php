@@ -77,6 +77,7 @@ Route::controller(CategoryController::class)->group(function() {
     Route::post('/category/create', 'create')->name('category.create');
     Route::post('/category/delete', 'delete')->name('category.delete');
     Route::post('/category/detail', 'detail')->name('category.detail');
+    Route::get('/category/list/select2', 'getCategorySelect2')->name('category.list.select2');
 });
 
 // Manage List Category
@@ -212,6 +213,7 @@ Route::controller(VendorController::class)->group(function() {
     Route::post('/vendor/create', 'create')->name('vendor.create');
     Route::post('/vendor/delete', 'delete')->name('vendor.delete');
     Route::post('/vendor/detail', 'detail')->name('vendor.detail');
+    Route::get('/vendors/list/select2', 'getVendorSelect2')->name('vendors.data');
 });
 
 // Manage purchasing invoice
