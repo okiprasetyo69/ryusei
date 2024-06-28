@@ -25,6 +25,7 @@ class Development extends Model
         'category_id',
         'vendor_id',
         'qty_per_size',
+        'qty',
         'status',
         'film_date'
     ];

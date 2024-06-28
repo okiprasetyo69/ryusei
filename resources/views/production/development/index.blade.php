@@ -3,6 +3,7 @@
 @section('title','Management Produksi')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 @section('content')
 
 <main id="main" class="main">
@@ -27,16 +28,19 @@
                                 <label> <strong><span>Pencarian</span></strong> </label>
                             </div>
                             <div class="col-md-2">
-                                <label> <strong><span>Tanggal Terima Design</span></strong> </label>
+                                <label> <strong><span>Tanggal Design</span></strong> </label>
                             </div>
                             <div class="col-md-2"> 
-                                <label> <strong><span>Tanggal Terima Sample</span></strong> </label>
+                                <label> <strong><span>Tanggal Sample</span></strong> </label>
+                            </div>
+                            <div class="col-md-2"> 
+                                <label> <strong><span>Tanggal Film</span></strong> </label>
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <input type="text" name="filter_title_name" class="form-control" id="filter_title_name" placeholder="Masukkan kata kunci judul" autofocus/>
+                                    <input type="text" name="filter_title_name" class="form-control" id="filter_title_name" placeholder="Masukkan kata kunci artikel" autofocus/>
                                 </div>
                             </div>
                             <div class="col-md-2"> 
@@ -49,7 +53,45 @@
                                     <input type="text" name="filter_sample_image_date" class="form-control" id="filter_sample_image_date" />
                                 </div>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2"> 
+                                <div class="form-group"> 
+                                    <input type="text" name="filter_film_date" class="form-control" id="filter_film_date" />
+                                </div>
+                            </div>
+                           
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-3"> 
+                                <label> <strong><span> Vendor </span></strong> </label>
+                            </div>
+                            <div class="col-md-3">
+                                <label> <strong><span> Kategori </span></strong> </label>
+                            </div>
+                            <div class="col-md-3"> 
+                                <label> <strong><span> Status </span></strong> </label>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-3"> 
+                               <select name="filter_vendor" id="filter_vendor" class="form-control filter_vendor" width="100%;"> 
+
+                               </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select name="filter_category" id="filter_category" class="form-control filter_category"  width="100%;"> 
+
+                                </select>
+                            </div>
+                            <div class="col-md-2"> 
+                                <select name="filter_status" id="filter_status" class="form-control"> 
+                                    <option value=""> - Pilih Status - </option> 
+                                    <option value="1"> PO </option> 
+                                    <option value="2"> Film </option> 
+                                    <option value="3"> Sampling </option> 
+                                    <option value="4"> Produksi </option> 
+                                </select>
+                            </div>
+                            <div class="col-md-3">
                                 <div class="form-group"> 
                                     <button type="button" class="btn btn-md btn-success" style="border-radius:50px;" id="btn-search"> <i class="bi bi-search"></i> Cari </button>
                                 </div>
@@ -78,6 +120,7 @@
                                                 <th scope="col">Tgl Sample</th>
                                                 <th scope="col">Tgl Film </th>
                                                 <th scope="col">Kategori</th>
+                                                <th scope="col">Qty</th>
                                                 <th scope="col">Vendor</th>
                                                 <th scope="col">Status</th>
                                                 <th scope="col">Action</th>
@@ -134,7 +177,7 @@
                             </table>
                         </div>
                         <div class="col-md-12">
-                            <label> <strong> <span> Total :  </span></strong> </label>
+                            <label> <strong>  Total : <span id="totalQty">  </span></strong> </label>
                         </div>
                     </div>
                    
@@ -152,9 +195,12 @@
 
 <script type="text/javascript"> 
 
-    var table, title, received_design_date, sample_date, sample_image_url, design_image_url
+    var table, title, received_design_date, sample_date, film_date, sample_image_url, design_image_url, vendor_id, category_id, status
     
     $(document).ready(function () {
+
+        $(".filter_category").select2()
+        $(".filter_vendor").select2()
 
         $("#filter_design_image_date").datepicker({
             format: 'dd-mm-yyyy',
@@ -166,24 +212,35 @@
             defaultDate: new Date(),
         });
 
+        $("#filter_film_date").datepicker({
+            format: 'dd-mm-yyyy',
+            defaultDate: new Date(),
+        });
+
         $("#btn-add").on("click", function(e){
             e.preventDefault()
             window.location.href = "/production/development/add"
         })  
 
+        getVendor()
         getDevelopment()
+        getCategory()
 
         $("#btn-search").on("click", function(e){
             e.preventDefault()
             title = $("#filter_title_name").val()
             received_design_date = $("#filter_design_image_date").val().split("-").reverse().join("-")
             sample_date = $("#filter_sample_image_date").val().split("-").reverse().join("-")
-            getDevelopment(title, received_design_date, sample_date)
+            film_date = $("#filter_film_date").val().split("-").reverse().join("-")
+            vendor_id = $("#filter_vendor option:selected").val()
+            category_id = $("#filter_category option:selected").val()
+            status = $("#filter_status option:selected").val()
+            getDevelopment(title, received_design_date, sample_date, film_date, vendor_id, category_id, status)
         })
             
     });
 
-    function getDevelopment(title=null, received_design_date=null, sample_date=null){
+    function getDevelopment(title=null, received_design_date=null, sample_date=null, film_date=null, vendor_id=null, category_id=null, status=null){
         if (table != null) {
             table.destroy();
         }
@@ -222,11 +279,18 @@
                         title: title,
                         received_design_date : received_design_date,
                         sample_date : sample_date,
+                        film_date : film_date,
+                        vendor_id : vendor_id,
+                        category_id : category_id,
+                        status : status
                     }
                 },
                 columns: [
                     {
                         data: null, width: "5%"
+                    },
+                    {
+                        data: null,
                     },
                     {
                         data: null,
@@ -335,6 +399,15 @@
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
+                            var totalQty = rowData.qty
+                            $(td).html(totalQty);
+                        },
+                    },
+                    {
+                        targets: 7,
+                        searchable: false,
+                        orderable: false,
+                        createdCell: function (td, cellData, rowData, row, col) {
                             var vendor = ""
                             if(rowData.vendor_id != null){
                                 vendor = rowData.vendor.name
@@ -345,7 +418,7 @@
                         },
                     },
                     {
-                        targets: 7,
+                        targets: 8,
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
@@ -366,11 +439,11 @@
                         },
                     },
                     {
-                        targets: 8,
+                        targets: 9,
                         searchable: false,
                         orderable: false,
                         createdCell: function (td, cellData, rowData, row, col) {
-                            // var html = "<button type='button' class='btn btn-sm btn-secondary' onclick='detail("+rowData.id+")'> Detail </button> <a href='/production/development/"+rowData.id+"' class='btn btn-sm btn-warning'> Ubah </a> <button type='button' class='btn btn-sm btn-danger' onclick='confirm("+rowData.id+")'> Hapus </button>"
+                           
                             var html = ` <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
                                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                                             <li><a class="dropdown-item" href="#" onclick='detail(`+rowData.id+`)'>Detail</a></li>
@@ -398,6 +471,10 @@
                 var qty_per_size = JSON.parse(data.qty_per_size)
                 var header_table = ""
                 var row_table = ""
+                sample_image_url = data.sample_image_url
+                design_image_url = data.design_image_url
+                $("#sizeName").html("")
+                $("#totalQty").html("")
 
                 $.each(qty_per_size, function (i, val) { 
                     header_table += "<th>"+ val.size +"</th>"
@@ -406,9 +483,7 @@
 
                 $("#sizeName").append(header_table)
                 $("#qtySize").append(row_table)
-
-                sample_image_url = data.sample_image_url
-                design_image_url = data.design_image_url
+                $("#totalQty").html(data.qty)
                 $("#modalDetailDevelopment").modal('toggle')
                 $("#preview_design_image").attr("src", design_image_url)
                 $("#preview_sample_image").attr("src", sample_image_url)
@@ -461,11 +536,67 @@
         });
     }
 
+    function getVendor(){
+        let vendor = $('.filter_vendor').val()
+        $(".filter_vendor").select2({
+            ajax: {
+                url: "/api/vendors/list/select2",
+                dataType: "JSON",
+                type: "GET",
+                data: function (params) {
+                    //console.log(params)
+                    return {
+                        searchTerm: params.term,
+                        id: vendor,
+                    };
+                },
+                processResults: function (response) {
+                    //console.log(response)
+                    return {
+                        results: response,
+                    };
+                },
+                cache: true,
+            },
+        })
+        .on("select2:select", function (e) {
+            var data = e.params.data;
+        });
+    }
+
+    function getCategory(){
+        let category = $('.filter_category').val()
+        $(".filter_category").select2({
+            ajax: {
+                url: "/api/category/list/select2",
+                dataType: "JSON",
+                type: "GET",
+                data: function (params) {
+                    //console.log(params)
+                    return {
+                        searchTerm: params.term,
+                        id: category,
+                    };
+                },
+                processResults: function (response) {
+                    //console.log(response)
+                    return {
+                        results: response,
+                    };
+                },
+                cache: true,
+            },
+        })
+        .on("select2:select", function (e) {
+            var data = e.params.data;
+        });
+    }
+
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 @endsection
 @section('pagespecificscripts')
    

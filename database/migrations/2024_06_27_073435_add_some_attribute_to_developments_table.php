@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('category_id')->nullable();
             $table->integer('vendor_id')->nullable();
             $table->json('qty_per_size')->nullable();
+            $table->integer('qty')->nullable();
             $table->integer('status')->nullable(); // 1 : PO , 2 : Film , 3 : Sampling, 4 : Production
             $table->date('film_date')->nullable();
         });

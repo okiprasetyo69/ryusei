@@ -308,7 +308,6 @@
                 qtyDevelopment.push({'size':'3XL', 'qty':qtysize3XL})
             }
 
-            qtyDevelopment.push({'total_qty': totalQty})
             status = $('input[name="status"]:checked').val();
         
             var jsonQtyPerSize = JSON.stringify(qtyDevelopment);
@@ -334,6 +333,7 @@
             formData.append('category_id', $('#category option:selected').val())
             formData.append('vendor_id', $('#vendor option:selected').val())
             formData.append('qty_per_size', jsonQtyPerSize)
+            formData.append('qty', totalQty)
             formData.append('status', status)
             formData.append('received_design_date', received_design_date)
             formData.append('sample_date', sample_date)
@@ -456,7 +456,6 @@
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.4/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 @endsection

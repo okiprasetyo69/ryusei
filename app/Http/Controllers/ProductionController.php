@@ -42,7 +42,7 @@ class ProductionController extends Controller
 
     public function editDevelopment(Request $request){
         try{
-            $development = Development::find($request->id);
+            $development = Development::with("category", "vendor")->find($request->id);
             return view("production.development.detail", compact('development'));
         }catch(Exception $ex){
             Log::error($ex->getMessage());

@@ -55,6 +55,22 @@ use Illuminate\Support\Facades\File;
                 $development =  $development->where("title", $request->title);
             }
 
+            if($request->film_date != null){
+                $development =  $development->where("film_date", $request->film_date);
+            }
+
+            if($request->category_id != null){
+                $development =  $development->where("category_id", $request->category_id);
+            }
+
+            if($request->vendor_id != null){
+                $development =  $development->where("vendor_id", $request->vendor_id);
+            }
+
+            if($request->status != null){
+                $development =  $development->where("status", $request->status);
+            }
+
             $development = $development->get();
 
             $datatables = Datatables::of($development);
@@ -67,6 +83,7 @@ use Illuminate\Support\Facades\File;
 
     public function create(Request $request){
         try{
+
             $development = $this->development; 
             $development->fill($request->all());
 
@@ -99,6 +116,7 @@ use Illuminate\Support\Facades\File;
             $development->category_id = $request->category_id;
             $development->vendor_id = $request->vendor_id;
             $development->qty_per_size = $request->qty_per_size;
+            $development->qty = $request->qty;
             $development->status = $request->status;
             $development->film_date = $request->film_date;
 
@@ -179,6 +197,13 @@ use Illuminate\Support\Facades\File;
             $development->design_image = $newDesignName;
             $development->sample_image = $newSampleName;
             $development->description = $request->description;
+            $development->article = $request->article;
+            $development->category_id = $request->category_id;
+            $development->vendor_id = $request->vendor_id;
+            $development->qty_per_size = $request->qty_per_size;
+            $development->qty = $request->qty;
+            $development->status = $request->status;
+            $development->film_date = $request->film_date;
 
             $development->save();
 
