@@ -119,6 +119,7 @@ use Illuminate\Support\Facades\File;
             $development->qty = $request->qty;
             $development->status = $request->status;
             $development->film_date = $request->film_date;
+            $development->description = $request->description;
 
             $development->save();
 
@@ -204,7 +205,7 @@ use Illuminate\Support\Facades\File;
             $development->qty = $request->qty;
             $development->status = $request->status;
             $development->film_date = $request->film_date;
-
+            
             $development->save();
 
             return response()->json([

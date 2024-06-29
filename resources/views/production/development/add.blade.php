@@ -154,6 +154,12 @@
                                                 <label for="">Tanggal Film</label>
                                             </div>
                                         </div>
+                                        <div class="col-md-3">
+                                            <div class="form-floating">
+                                                <textarea name="description" id="description" class="form-control"></textarea>
+                                                <label for="">Keterangan</label>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="row mt-4">
@@ -338,6 +344,7 @@
             formData.append('received_design_date', received_design_date)
             formData.append('sample_date', sample_date)
             formData.append('film_date', film_date)
+            formData.append('description', $('#description').val())
             formData.append('design_image', design_image)
             formData.append('sample_image', sample_image)
            

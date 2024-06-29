@@ -154,6 +154,12 @@
                                                 <label for="">Tanggal Film</label>
                                             </div>
                                         </div>
+                                        <div class="col-md-3">
+                                            <div class="form-floating">
+                                                <textarea name="description" id="description" class="form-control"></textarea>
+                                                <label for="">Keterangan</label>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="row mt-4">
@@ -236,6 +242,7 @@
         $("#preview_design_image").attr("src", development.design_image_url)
         $("#preview_sample_image").attr("src", development.sample_image_url)
         $("#total_qty").val(development.qty)
+        $("#description").val(development.description)
         
         // Checked radio button attribute status
         if(development.status == 1){
@@ -422,6 +429,7 @@
             formData.append('film_date', film_date)
             formData.append('design_image', design_image)
             formData.append('sample_image', sample_image)
+            formData.append('description', $('#description').val())
 
             $.ajax({
                 type: "POST",

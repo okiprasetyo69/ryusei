@@ -180,7 +180,12 @@
                             <label> <strong>  Total : <span id="totalQty">  </span></strong> </label>
                         </div>
                     </div>
-                   
+                    <div class="row mt-2">
+                        <div class="col-md-12"> 
+                            <label> <strong><span>Keterangan :</span></strong> </label>
+                           <textarea name="description" id="description" class="form-control"></textarea>
+                        </div>
+                    </div>
                   
                 </div>
                 <div class="modal-footer">
@@ -476,7 +481,7 @@
                 $("#sizeName").html("")
                 $("#totalQty").html("")
                 $("#qtySize").html("")
-                
+                $("#description").html("")
                 $.each(qty_per_size, function (i, val) { 
                     header_table += "<th>"+ val.size +"</th>"
                     row_table += "<td>"+val.qty+"</td>"
@@ -485,6 +490,7 @@
                 $("#sizeName").append(header_table)
                 $("#qtySize").append(row_table)
                 $("#totalQty").html(data.qty)
+                $("#description").val(data.description).prop("readonly", true)
                 $("#modalDetailDevelopment").modal('toggle')
                 $("#preview_design_image").attr("src", design_image_url)
                 $("#preview_sample_image").attr("src", sample_image_url)
