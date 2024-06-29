@@ -66,7 +66,7 @@
                             </ul>
                         </div>
                             <div class="card-body">
-                            <h5 class="card-title">Total Tanggal Sample <span id="total_sample">  </span></h5>
+                            <h5 class="card-title">Total Antrian Sample <span id="total_sample">  </span></h5>
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                     <i class="bx bxs-checkbox"></i>
@@ -95,7 +95,7 @@
                             </ul>
                         </div>
                             <div class="card-body">
-                            <h5 class="card-title">Total Tanggal Design <span id="total_design">  </span></h5>
+                            <h5 class="card-title">Total Antrian Design <span id="total_design">  </span></h5>
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                     <i class="bx bxs-card"></i>
@@ -124,7 +124,7 @@
                             </ul>
                         </div>
                             <div class="card-body">
-                            <h5 class="card-title">Total Tanggal Film <span id="total_film">  </span></h5>
+                            <h5 class="card-title">Total Antrian Film <span id="total_film">  </span></h5>
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                     <i class="bi bi-film"></i>

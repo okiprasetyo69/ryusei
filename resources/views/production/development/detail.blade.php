@@ -242,13 +242,13 @@
             $("#status_po").attr("checked", true)
         }
         if(development.status == 2){
-            $("#status_po").attr("checked", true)
+            $("#status_film").attr("checked", true)
         }
         if(development.status == 3){
-            $("#status_po").attr("checked", true)
+            $("#status_sampling").attr("checked", true)
         }
         if(development.status == 4){
-            $("#status_po").attr("checked", true)
+            $("#status_production").attr("checked", true)
         }
 
         // assign detail qty per sizer
