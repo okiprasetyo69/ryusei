@@ -50,4 +50,83 @@ class DashboardProductionController extends Controller
             return false;
         }
     }
+
+    public function totalFilmDevelopment(Request $request){
+        try{
+            $totalFilmDevelopment = $this->service->totalFilmDevelopment($request);
+            if($totalFilmDevelopment != null){
+                return $totalFilmDevelopment;
+            }
+            return false; 
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function totalQtyPerCategory(Request $request){
+        try{
+            $totalQtyPerCategory = $this->service->totalQtyPerCategory($request);
+            if($totalQtyPerCategory != null){
+                return $totalQtyPerCategory;
+            }
+            return false; 
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function totalPoDevelopment(Request $request){
+        try{
+            $totalPoDevelopment = $this->service->totalPoStatus($request);
+            if($totalPoDevelopment != null){
+                return $totalPoDevelopment;
+            }
+            return false; 
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function totalProductionDevelopment(Request $request){
+        try{
+            $totalProductionDevelopment = $this->service->totalProductionStatus($request);
+            if($totalProductionDevelopment != null){
+                return $totalProductionDevelopment;
+            }
+            return false; 
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function totalStatusSampleDevelopment(Request $request){
+        try{
+            $totalStatusSampleDevelopment = $this->service->totalSamplingStatus($request);
+            if($totalStatusSampleDevelopment != null){
+                return $totalStatusSampleDevelopment;
+            }
+            return false; 
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
+    public function totalStatusFilmDevelopment(Request $request){
+        try{
+            $totalStatusFilmDevelopment = $this->service->totalFilmStatus($request);
+            if($totalStatusFilmDevelopment != null){
+                return $totalStatusFilmDevelopment;
+            }
+            return false; 
+        }catch(Exception $ex){
+            Log::error($ex->getMessage());
+            return false;
+        }
+    }
+
 }

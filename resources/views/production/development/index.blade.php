@@ -475,7 +475,8 @@
                 design_image_url = data.design_image_url
                 $("#sizeName").html("")
                 $("#totalQty").html("")
-
+                $("#qtySize").html("")
+                
                 $.each(qty_per_size, function (i, val) { 
                     header_table += "<th>"+ val.size +"</th>"
                     row_table += "<td>"+val.qty+"</td>"

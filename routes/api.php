@@ -270,8 +270,14 @@ Route::controller(ProductionController::class)->group(function() {
 });
 
 Route::controller(DashboardProductionController::class)->group(function() {
-    Route::get('/analytics/development/total-sample', 'totalSampleDevelopment')->name('analytics.development.total-sample');
-    Route::get('/analytics/development/total-design', 'totsalDesignDevelopment')->name('analytics.development.total-design');
+    Route::get('/analytics/development/total/sample', 'totalSampleDevelopment')->name('analytics.development.total-sample');
+    Route::get('/analytics/development/total/design', 'totsalDesignDevelopment')->name('analytics.development.total-design');
+    Route::get('/analytics/development/total/film', 'totalFilmDevelopment')->name('analytics.development.total-film');
+    Route::get('/analytics/development/total/qty-categories', 'totalQtyPerCategory')->name('analytics.development.total-qty-categories');
+    Route::get('/analytics/development/total/po-development', 'totalPoDevelopment')->name('analytics.development.total-po-development');
+    Route::get('/analytics/development/total/production-development', 'totalProductionDevelopment')->name('analytics.development.total-production-development');
+    Route::get('/analytics/development/total/sample-status', 'totalStatusSampleDevelopment')->name('analytics.development.total-sample-status');
+    Route::get('/analytics/development/total/film-status', 'totalStatusFilmDevelopment')->name('analytics.development.total-sample-status');
 });
 
 // Web Hook
